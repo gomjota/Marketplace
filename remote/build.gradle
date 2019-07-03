@@ -1,0 +1,26 @@
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
+
+dependencies {
+    implementation(
+            deps.kotlin.stdlib,
+            deps.kotlin.rx,
+            deps.third.rx_android,
+            deps.third.rxjava2,
+            deps.retrofit.rx,
+            deps.retrofit.gson,
+            deps.third.loggin_interceptor
+    )
+
+    testImplementation(
+            deps.test.junit,
+            deps.third.mock_web_server,
+            deps.test.mockito_core
+    )
+
+    implementation project(":data")
+}
+
+
+sourceCompatibility = "7"
+targetCompatibility = "7"
