@@ -37,7 +37,11 @@ deps.kotlin = kotlin
 
 def support = [:]
 versions.androidx = "1.0.0"
+versions.test_runner = "1.0.2"
+versions.test_core = "1.2.0"
 support.app_compat = "androidx.appcompat:appcompat:$versions.androidx"
+support.test_runner = "com.android.support.test:runner:$versions.test_runner"
+support.test_core = "com.android.support.test:runner:$versions.test_core"
 deps.support = support
 
 def ui = [:]
@@ -72,6 +76,7 @@ def room = [:]
 versions.room = "2.1.0"
 room.runtime = "androidx.room:room-runtime:$versions.room"
 room.ktx = "androidx.room:room-ktx:$versions.room"
+room.compiler = "android.arch.persistence.room:compiler:$versions.room"
 room.rxjava = "androidx.room:room-rxjava2:$versions.room"
 room.testing = "androidx.room:room-testing:$versions.room"
 deps.room = room

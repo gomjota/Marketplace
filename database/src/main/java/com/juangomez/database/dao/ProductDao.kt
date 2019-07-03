@@ -4,19 +4,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.juangomez.data.entities.ProductEntity
+import com.juangomez.database.entities.DatabaseProductEntity
 
 @Dao
 interface ProductDao {
 
     @Query("SELECT * FROM products")
-    fun getAll(): List<ProductEntity>
-
-    @Query("SELECT * FROM products WHERE code = :code")
-    fun getByCode(code: String): ProductEntity?
+    fun getAll(): List<DatabaseProductEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(products: List<ProductEntity>)
+    fun insertAll(products: List<DatabaseProductEntity>)
 
     @Query("DELETE FROM products")
     fun deleteAll()

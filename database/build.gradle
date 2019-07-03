@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: "kotlin-kapt"
 
 android {
     compileSdkVersion build_versions.target_sdk
@@ -11,6 +12,8 @@ android {
 
         versionCode getVersionCodeFromProperties()
         versionName getVersionNameFromProperties()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -30,11 +33,19 @@ dependencies {
             deps.room.rxjava
     )
 
+    kapt deps.room.compiler
+
     testImplementation(
             deps.test.junit,
             deps.test.roboelectric,
             deps.room.testing
     )
+
+    androidTestImplementation(
+            deps.support.test_runner,
+            deps.support.test_core
+    )
+
 
     implementation project(":data")
 }
