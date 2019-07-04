@@ -3,7 +3,7 @@ package com.juangomez.database
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.juangomez.database.dao.ProductDao
 import com.juangomez.database.entities.DatabaseProductEntity
 import org.junit.After

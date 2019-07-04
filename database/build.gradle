@@ -37,13 +37,15 @@ dependencies {
 
     testImplementation(
             deps.test.junit,
-            deps.test.roboelectric,
-            deps.room.testing
+            deps.test.roboelectric
     )
 
     androidTestImplementation(
             deps.support.test_runner,
-            deps.support.test_core
+            deps.support.test_rules,
+            deps.support.test_core,
+            deps.support.test_junit,
+            deps.room.testing
     )
 
 

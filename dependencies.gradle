@@ -8,7 +8,7 @@ static def addRepos(RepositoryHandler handler) {
 ext.addRepos = this.&addRepos
 
 def build_versions = [:]
-build_versions.min_sdk = 23
+build_versions.min_sdk = 26
 build_versions.target_sdk = 28
 build_versions.build_tools = "28.0.2"
 build_versions.compile_sdk = 28
@@ -36,12 +36,13 @@ kotlin.rx = "io.reactivex.rxjava2:rxkotlin:$versions.rx_kotlin"
 deps.kotlin = kotlin
 
 def support = [:]
-versions.androidx = "1.0.0"
-versions.test_runner = "1.0.2"
-versions.test_core = "1.2.0"
+versions.androidx = "1.2.0"
+versions.test_junit = "1.1.0"
 support.app_compat = "androidx.appcompat:appcompat:$versions.androidx"
-support.test_runner = "com.android.support.test:runner:$versions.test_runner"
-support.test_core = "com.android.support.test:runner:$versions.test_core"
+support.test_runner = "androidx.test:runner:$versions.androidx"
+support.test_rules = "androidx.test:rules:$versions.androidx"
+support.test_core = "androidx.test:core:$versions.androidx"
+support.test_junit = "androidx.test.ext:junit:$versions.test_junit"
 deps.support = support
 
 def ui = [:]
