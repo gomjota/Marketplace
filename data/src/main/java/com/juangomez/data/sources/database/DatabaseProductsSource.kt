@@ -1,10 +1,13 @@
 package com.juangomez.data.sources.database
 
 import com.juangomez.data.entities.ProductEntity
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 
 interface DatabaseProductsSource {
 
-    fun getProducts(): List<ProductEntity>
+    fun getProducts(): Single<List<ProductEntity>>
 
     fun insertProducts(products: List<ProductEntity>)
 

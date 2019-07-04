@@ -2,9 +2,13 @@ package com.juangomez.database.mappers
 
 import com.juangomez.data.entities.ProductEntity
 import com.juangomez.database.entities.DatabaseProductEntity
+import io.reactivex.Flowable
+import io.reactivex.Single
+
+fun Single<List<DatabaseProductEntity>>.toEntity() = this.map { it.toEntity() }
 
 fun List<DatabaseProductEntity>.toEntity(): List<ProductEntity> {
-    return this.map { it.toEntity() }
+    return map { it.toEntity() }
 }
 
 fun DatabaseProductEntity.toEntity(): ProductEntity {

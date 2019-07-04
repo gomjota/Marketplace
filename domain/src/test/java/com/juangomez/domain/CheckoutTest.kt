@@ -1,6 +1,6 @@
 package com.juangomez.domain
 
-import com.juangomez.domain.models.Checkout
+import com.juangomez.domain.models.checkout.Checkout
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.offer.BulkOffer
 import com.juangomez.domain.models.offer.TwoForOneOffer

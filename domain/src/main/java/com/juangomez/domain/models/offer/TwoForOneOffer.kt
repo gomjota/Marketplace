@@ -10,7 +10,7 @@ class TwoForOneOffer : Offer() {
 
     override fun applyOffer(cart: Cart): Cart {
         if (LocalDate.now() > EXPIRATION) return cart
-        val cartAfterOffer = Cart()
+        val cartAfterOffer = Cart(mutableListOf())
 
         cartAfterOffer.items = cart.items
             .map { it.copy(product = it.product, cartPrice = it.cartPrice) }

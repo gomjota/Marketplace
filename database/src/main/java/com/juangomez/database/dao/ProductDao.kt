@@ -5,12 +5,15 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.juangomez.database.entities.DatabaseProductEntity
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 
 @Dao
 interface ProductDao {
 
     @Query("SELECT * FROM products")
-    fun getAll(): List<DatabaseProductEntity>
+    fun getAll(): Single<List<DatabaseProductEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(products: List<DatabaseProductEntity>)

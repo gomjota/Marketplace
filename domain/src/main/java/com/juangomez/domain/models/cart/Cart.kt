@@ -3,9 +3,7 @@ package com.juangomez.domain.models.cart
 import com.juangomez.domain.mappers.toCartItem
 import com.juangomez.domain.models.product.Product
 
-class Cart {
-
-    var items = mutableListOf<CartItem>()
+data class Cart(var items: MutableList<CartItem>) {
 
     val totalPrice: Float
         get() = items.sumByDouble { it.cartPrice.toDouble() }.toFloat()
