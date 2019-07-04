@@ -2,6 +2,7 @@ package com.juangomez.domain
 
 import com.juangomez.domain.models.checkout.Checkout
 import com.juangomez.domain.models.cart.Cart
+import com.juangomez.domain.models.cart.CartItem
 import com.juangomez.domain.models.offer.BulkOffer
 import com.juangomez.domain.models.offer.TwoForOneOffer
 import com.juangomez.domain.models.product.Product
@@ -11,10 +12,13 @@ class CheckoutTest {
 
     @Test
     fun `should be the same cart with no offers`() {
-        val cart = Cart()
-        cart.addProduct(Product("VOUCHER", "Cabify Voucher", 5f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("MUG", "Cabify Coffee Mug", 7.5f))
+        val products = mutableListOf(
+            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+        )
+
+        val cart = Cart(products)
 
         val twoForOneOffer = TwoForOneOffer()
         val bulkOffer = BulkOffer()
@@ -26,13 +30,16 @@ class CheckoutTest {
     }
 
     @Test
-    fun `should be different carts with two for one offer`() {
-        val cart = Cart()
-        cart.addProduct(Product("VOUCHER", "Cabify Voucher", 5f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("MUG", "Cabify Coffee Mug", 7.5f))
+    fun `should be different carts with bulk offer`() {
+        val products = mutableListOf(
+            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+        )
+
+        val cart = Cart(products)
 
         val bulkOffer = BulkOffer()
         val twoForOneOffer = TwoForOneOffer()
@@ -45,12 +52,15 @@ class CheckoutTest {
     }
 
     @Test
-    fun `should be different carts with bulk offer`() {
-        val cart = Cart()
-        cart.addProduct(Product("VOUCHER", "Cabify Voucher", 5f))
-        cart.addProduct(Product("VOUCHER", "Cabify Voucher", 5f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("MUG", "Cabify Coffee Mug", 7.5f))
+    fun `should be different carts with two for one offer`() {
+        val products = mutableListOf(
+            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
+            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+        )
+
+        val cart = Cart(products)
 
         val bulkOffer = BulkOffer()
         val twoForOneOffer = TwoForOneOffer()
@@ -64,14 +74,17 @@ class CheckoutTest {
 
     @Test
     fun `should be different carts with both offers`() {
-        val cart = Cart()
-        cart.addProduct(Product("VOUCHER", "Cabify Voucher", 5f))
-        cart.addProduct(Product("VOUCHER", "Cabify Voucher", 5f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("TSHIRT", "Cabify T-Shirt", 20f))
-        cart.addProduct(Product("MUG", "Cabify Coffee Mug", 7.5f))
-        cart.addProduct(Product("MUG", "Cabify Coffee Mug", 7.5f))
+        val products = mutableListOf(
+            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
+            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
+            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f)),
+            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+        )
+
+        val cart = Cart(products)
 
         val bulkOffer = BulkOffer()
         val twoForOneOffer = TwoForOneOffer()
