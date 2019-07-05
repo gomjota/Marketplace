@@ -7,6 +7,7 @@ import com.juangomez.data.sources.remote.RemoteProductsSource
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.ProductRepository
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 
 class ProductRepositoryImpl constructor(
@@ -14,14 +15,14 @@ class ProductRepositoryImpl constructor(
     private val database: DatabaseProductsSource
 ) : ProductRepository {
 
-    override fun getProducts(): Single<List<Product>> {
+    override fun getProducts(): Flowable<List<Product>> {
         return database.getProducts()
             .doOnError {
                 remote.getProducts()
             }.map { it.toModel() }
     }
 
-    override fun setProducts(products: List<Product>) {
-        database.insertProducts(products.toEntity())
+    override fun setProducts(products: List<Product>): Completable {
+        return database.insertProducts(products.toEntity())
     }
 }

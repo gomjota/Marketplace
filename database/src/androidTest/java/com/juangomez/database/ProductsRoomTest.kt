@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class RoomTest {
+class ProductsRoomTest {
     private lateinit var productDao: ProductDao
     private lateinit var database: MarketplaceDatabase
 
@@ -22,7 +22,8 @@ class RoomTest {
     fun createDatabase() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         database = Room.inMemoryDatabaseBuilder(
-            context, MarketplaceDatabase::class.java).build()
+            context, MarketplaceDatabase::class.java
+        ).build()
         productDao = database.productsDao()
     }
 
@@ -33,20 +34,25 @@ class RoomTest {
             DatabaseProductEntity(
                 code = "VOUCHER",
                 name = "Cabify Voucher",
-                price = 5f),
+                price = 5f
+            ),
             DatabaseProductEntity(
                 code = "TSHIRT",
                 name = "Cabify T-Shirt",
-                price = 10f),
+                price = 10f
+            ),
             DatabaseProductEntity(
                 code = "Mug",
                 name = "Cabify Mug",
-                price = 15f)
+                price = 15f
+            )
         )
 
         productDao.insertAll(productsToSave)
-        val productsSaved = productDao.getAll()
-        assertTrue(productsToSave.size == productsSaved.size)
+        productDao.getAll()
+            .test()
+            .assertNoErrors()
+            .assertValue { productsToSave.size == it.size }
     }
 
     @Test
@@ -56,21 +62,26 @@ class RoomTest {
             DatabaseProductEntity(
                 code = "VOUCHER",
                 name = "Cabify Voucher",
-                price = 5f),
+                price = 5f
+            ),
             DatabaseProductEntity(
                 code = "TSHIRT",
                 name = "Cabify T-Shirt",
-                price = 20f),
+                price = 20f
+            ),
             DatabaseProductEntity(
                 code = "MUG",
                 name = "Cabify Coffee Mug",
-                price = 7.5f)
+                price = 7.5f
+            )
         )
 
         productDao.insertAll(productsToSave)
         productDao.deleteAll()
-        val productsSaved = productDao.getAll()
-        assertTrue(productsSaved.isEmpty())
+        productDao.getAll()
+            .test()
+            .assertNoErrors()
+            .assertValue { it.isEmpty() }
     }
 
     @After

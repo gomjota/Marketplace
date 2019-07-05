@@ -12,16 +12,16 @@ import io.reactivex.Single
 
 class DatabaseProductsSourceImpl(private val productDao: ProductDao) : DatabaseProductsSource {
 
-    override fun getProducts(): Single<List<ProductEntity>> {
+    override fun getProducts(): Flowable<List<ProductEntity>> {
         return productDao.getAll().toEntity()
     }
 
-    override fun insertProducts(products: List<ProductEntity>) {
-        productDao.insertAll(products.toDatabaseEntity())
+    override fun insertProducts(products: List<ProductEntity>): Completable {
+        return productDao.insertAll(products.toDatabaseEntity())
     }
 
-    override fun deleteProducts() {
-        productDao.deleteAll()
+    override fun deleteProducts(): Completable {
+        return productDao.deleteAll()
     }
 
 }

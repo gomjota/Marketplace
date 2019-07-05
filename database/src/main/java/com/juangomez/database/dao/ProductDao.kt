@@ -13,11 +13,11 @@ import io.reactivex.Single
 interface ProductDao {
 
     @Query("SELECT * FROM products")
-    fun getAll(): Single<List<DatabaseProductEntity>>
+    fun getAll(): Flowable<List<DatabaseProductEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(products: List<DatabaseProductEntity>)
+    fun insertAll(products: List<DatabaseProductEntity>): Completable
 
     @Query("DELETE FROM products")
-    fun deleteAll()
+    fun deleteAll(): Completable
 }

@@ -30,7 +30,8 @@ dependencies {
             deps.kotlin.rx,
             deps.room.runtime,
             deps.room.ktx,
-            deps.room.rxjava
+            deps.room.rxjava,
+            deps.third.gson
     )
 
     kapt deps.room.compiler
@@ -45,7 +46,8 @@ dependencies {
             deps.support.test_rules,
             deps.support.test_core,
             deps.support.test_junit,
-            deps.room.testing
+            deps.room.testing,
+            deps.test.arch
     )
 
 

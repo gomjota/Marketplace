@@ -1,6 +1,6 @@
 package com.juangomez.domain.models.cart
 
-import com.juangomez.domain.mappers.toCartItem
+import com.juangomez.domain.mappers.toCartItemModel
 import com.juangomez.domain.models.product.Product
 
 data class Cart(var items: MutableList<CartItem>) {
@@ -9,7 +9,7 @@ data class Cart(var items: MutableList<CartItem>) {
         get() = items.sumByDouble { it.cartPrice.toDouble() }.toFloat()
 
     fun addProduct(product: Product) {
-        items.add(product.toCartItem())
+        items.add(product.toCartItemModel())
     }
 
     fun removeProduct(product: Product) {
