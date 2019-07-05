@@ -14,7 +14,7 @@ open class DeleteProductUseCase constructor(
 ) :
     CompletableUseCase<Product>(threadExecutor, postExecutionThread) {
 
-    override fun buildUseCaseObservable(params: Product): Completable {
+    public override fun buildUseCaseObservable(params: Product): Completable {
         return cartRepository.getCart()
             .map {
                 it.removeProduct(params)

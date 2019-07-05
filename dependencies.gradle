@@ -61,6 +61,7 @@ test.junit="junit:junit:$versions.jUnitVersion"
 test.roboelectric="org.robolectric:robolectric:$versions.roboelectric"
 test.mockito_core = "org.mockito:mockito-core:$versions.mockito"
 test.mockito_android = "org.mockito:mockito-android:$versions.mockito"
+test.mockito_inline = "org.mockito:mockito-inline:$versions.mockito"
 test.arch = "androidx.arch.core:core-testing:$versions.arch"
 deps.test = test
 
