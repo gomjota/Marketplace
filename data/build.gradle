@@ -12,7 +12,8 @@ dependencies {
     testImplementation(
             deps.test.junit,
             deps.third.mock_web_server,
-            deps.test.mockito_core
+            deps.test.mockito_core,
+            deps.test.mockito_inline
     )
 
     implementation project(":domain")

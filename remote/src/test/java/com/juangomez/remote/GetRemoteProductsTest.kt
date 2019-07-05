@@ -52,19 +52,6 @@ class GetRemoteProductsTest {
             .assertComplete()
     }
 
-    @Test
-    fun `should get empty list`() {
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("{\"products\":[]}")
-        )
-
-        remoteProductsSource.getProducts()
-            .test()
-            .assertValue { it.isEmpty() }
-            .assertComplete()
-    }
 
     @Test
     fun `should get a server error`() {

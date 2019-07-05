@@ -19,7 +19,8 @@ class ProductRepositoryImpl constructor(
         return database.getProducts()
             .doOnError {
                 remote.getProducts()
-            }.map { it.toModel() }
+            }
+            .map { it.toModel() }
     }
 
     override fun setProducts(products: List<Product>): Completable {
