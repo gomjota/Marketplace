@@ -41,7 +41,7 @@ class AddProductUseCaseTest {
     }
 
     @Test
-    fun buildUseCaseObservableCompletes() {
+    fun buildUseCaseCompletes() {
         val cart = Cart(
             mutableListOf(
                 CartItem(

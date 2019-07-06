@@ -51,7 +51,7 @@ class CreateCheckoutUseCaseTest {
                 )
             )
         )
-        
+
         Mockito.`when`(twoForOneOffer.applyOffer(cart))
             .thenReturn(any())
 

@@ -8,7 +8,7 @@ import com.juangomez.domain.interactors.base.FlowableUseCase
 import io.reactivex.Flowable
 
 open class GetProductsUseCase constructor(
-    val productRepository: ProductRepository,
+    private val productRepository: ProductRepository,
     threadExecutor: ThreadExecutor,
     postExecutionThread: PostExecutionThread
 ) :

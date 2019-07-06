@@ -36,13 +36,13 @@ class GetProductsUseCaseTest {
     }
 
     @Test
-    fun buildUseCaseObservableCallsRepository() {
+    fun buildUseCaseCallsRepository() {
         getProductsUseCase.buildUseCaseFlowable(null)
         Mockito.verify(mockProductsRepository).getProducts()
     }
 
     @Test
-    fun buildUseCaseObservableCompletes() {
+    fun buildUseCaseCompletes() {
         val products = emptyList<Product>()
 
         stubProductsRepositoryGetProducts(Flowable.just(products))
@@ -52,7 +52,7 @@ class GetProductsUseCaseTest {
     }
 
     @Test
-    fun buildUseCaseObservableReturnsData() {
+    fun buildUseCaseReturnsData() {
         val products = listOf(
             Product("VOUCHER", "Cabify Voucher", 5f),
             Product("TSHIRT", "Cabify Tshirt", 20f)

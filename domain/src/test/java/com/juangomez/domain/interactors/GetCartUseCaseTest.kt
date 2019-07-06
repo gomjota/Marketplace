@@ -38,13 +38,13 @@ class GetCartUseCaseTest {
     }
 
     @Test
-    fun buildUseCaseObservableCallsRepository() {
+    fun buildUseCaseCallsRepository() {
         getCartUseCase.buildUseCaseFlowable(null)
         verify(mockCartRepository).getCart()
     }
 
     @Test
-    fun buildUseCaseObservableCompletes() {
+    fun buildUseCaseCompletes() {
         val cart = Cart(mutableListOf())
 
         stubCartRepositoryGetCart(Flowable.just(cart))
@@ -54,7 +54,7 @@ class GetCartUseCaseTest {
     }
 
     @Test
-    fun buildUseCaseObservableReturnsData() {
+    fun buildUseCaseReturnsData() {
         val cart = Cart(
             mutableListOf(
                 CartItem(

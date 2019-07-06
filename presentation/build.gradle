@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion androidConfiguration.targetSDK
@@ -11,6 +12,8 @@ android {
 
         versionCode getVersionCodeFromProperties()
         versionName getVersionNameFromProperties()
+
+        buildConfigField "String", "BASE_URL", '"https://api.myjson.com"'
     }
 
     buildTypes {
@@ -19,12 +22,27 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
     implementation(
             kotlin.stdlib,
-            rx.rxKotlin
+            rx.rxKotlin,
+            rx.rxAndroid,
+            support.appCompat,
+            support.constraintlayout,
+            support.recyclerview,
+            support.cardview,
+            support.lifecycleRuntime,
+            support.lifecycleExtensions,
+            koin.viewModel,
+            koin.core,
+            koin.android,
+            room.runtime
     )
 
     testImplementation(
