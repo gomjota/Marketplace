@@ -5,7 +5,7 @@ import com.juangomez.database.entities.DatabaseProductEntity
 import io.reactivex.Flowable
 import io.reactivex.Single
 
-fun Flowable<List<DatabaseProductEntity>>.toEntity() = this.map { it.toEntity() }
+fun Single<List<DatabaseProductEntity>>.toEntity() = this.map { it.toEntity() }
 
 fun List<DatabaseProductEntity>.toEntity(): List<ProductEntity> {
     return map { it.toEntity() }

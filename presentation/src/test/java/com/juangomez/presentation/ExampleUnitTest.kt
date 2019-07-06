@@ -1,4 +1,4 @@
-package com.juangomez.marketplace
+package com.juangomez.presentation
 
 import org.junit.Test
 

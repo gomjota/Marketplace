@@ -1,5 +1,6 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -39,6 +40,7 @@ dependencies {
             support.cardview,
             support.lifecycleRuntime,
             support.lifecycleExtensions,
+            retrofit.runtime,
             koin.viewModel,
             koin.core,
             koin.android,

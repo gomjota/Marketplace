@@ -1,13 +1,13 @@
-package com.juangomez.marketplace.views.adapters
+package com.juangomez.presentation.views.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.juangomez.marketplace.R
-import com.juangomez.marketplace.databinding.ProductRowBinding
-import com.juangomez.marketplace.models.ProductPresentationModel
-import com.juangomez.marketplace.viewmodels.ProductsViewModel
+import com.juangomez.presentation.R
+import com.juangomez.presentation.databinding.ProductRowBinding
+import com.juangomez.presentation.models.ProductPresentationModel
+import com.juangomez.presentation.viewmodels.ProductsViewModel
 
 internal class ProductsAdapter(
     private val viewModel: ProductsViewModel

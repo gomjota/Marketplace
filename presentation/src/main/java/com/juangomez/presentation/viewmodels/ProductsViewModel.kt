@@ -1,11 +1,14 @@
-package com.juangomez.marketplace.viewmodels
+package com.juangomez.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.juangomez.domain.interactors.GetProductsUseCase
 import com.juangomez.domain.models.product.Product
-import com.juangomez.marketplace.models.ProductPresentationModel
-import com.juangomez.marketplace.viewmodels.base.BaseViewModel
+import com.juangomez.presentation.mappers.toPresentationModel
+import com.juangomez.presentation.models.ProductPresentationModel
+import com.juangomez.presentation.viewmodels.base.BaseViewModel
+import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.subscribers.DisposableSubscriber
 
 class ProductsViewModel(
@@ -27,14 +30,10 @@ class ProductsViewModel(
 
     }
 
-    inner class GetProductsSubscriber : DisposableSubscriber<List<Product>>() {
-
-        override fun onComplete() {
+    inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
+        override fun onSuccess(t: List<Product>) {
             isLoading.postValue(false)
-        }
-
-        override fun onNext(t: List<Product>) {
-
+            products.postValue(t.toPresentationModel())
         }
 
         override fun onError(exception: Throwable) {

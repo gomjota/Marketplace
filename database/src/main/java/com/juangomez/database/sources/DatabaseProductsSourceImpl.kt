@@ -15,7 +15,7 @@ class DatabaseProductsSourceImpl(private val database: MarketplaceDatabase) : Da
 
     private val productDao: ProductDao = database.productsDao()
 
-    override fun getProducts(): Flowable<List<ProductEntity>> {
+    override fun getProducts(): Single<List<ProductEntity>> {
         return productDao.getAll().toEntity()
     }
 

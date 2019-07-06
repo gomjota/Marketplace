@@ -1,7 +1,7 @@
-package com.juangomez.marketplace
+package com.juangomez.presentation
 
 import android.app.Application
-import com.juangomez.marketplace.di.*
+import com.juangomez.presentation.di.*
 import org.koin.android.ext.android.startKoin
 
 class MarketplaceApplication : Application() {

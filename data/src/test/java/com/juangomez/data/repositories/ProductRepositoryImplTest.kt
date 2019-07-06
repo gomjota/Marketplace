@@ -42,7 +42,7 @@ class ProductRepositoryImplTest {
         )
 
         Mockito.`when`(mockDatabaseProductSource.getProducts())
-            .thenReturn(Flowable.error(Exception()))
+            .thenReturn(Single.error(Exception()))
 
         Mockito.`when`(mockRemoteProductSource.getProducts())
             .thenReturn(Single.just(products))
@@ -62,7 +62,7 @@ class ProductRepositoryImplTest {
         )
 
         Mockito.`when`(mockDatabaseProductSource.getProducts())
-            .thenReturn(Flowable.just(products))
+            .thenReturn(Single.just(products))
 
         Mockito.`when`(mockRemoteProductSource.getProducts())
             .thenReturn(Single.just(products))

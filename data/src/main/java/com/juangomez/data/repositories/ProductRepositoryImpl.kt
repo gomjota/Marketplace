@@ -15,12 +15,9 @@ class ProductRepositoryImpl constructor(
     private val database: DatabaseProductsSource
 ) : ProductRepository {
 
-    override fun getProducts(): Flowable<List<Product>> {
-        return database.getProducts()
-            .doOnError {
-                remote.getProducts()
-            }
-            .map { it.toModel() }
+    override fun getProducts(): Single<List<Product>> {
+        return remote.getProducts().toModel()
+
     }
 
     override fun setProducts(products: List<Product>): Completable {

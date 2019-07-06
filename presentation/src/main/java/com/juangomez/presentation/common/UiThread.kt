@@ -1,4 +1,4 @@
-package com.juangomez.marketplace.common
+package com.juangomez.presentation.common
 
 import com.juangomez.domain.executor.PostExecutionThread
 import io.reactivex.Scheduler

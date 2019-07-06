@@ -7,7 +7,7 @@ import io.reactivex.Single
 
 interface ProductRepository {
 
-    fun getProducts(): Flowable<List<Product>>
+    fun getProducts(): Single<List<Product>>
 
     fun setProducts(products: List<Product>): Completable
 }

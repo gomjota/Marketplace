@@ -1,4 +1,4 @@
-package com.juangomez.marketplace.models
+package com.juangomez.presentation.models
 
 data class ProductPresentationModel(
     val code: String,

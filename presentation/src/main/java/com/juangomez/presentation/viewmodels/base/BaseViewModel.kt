@@ -1,4 +1,4 @@
-package com.juangomez.marketplace.viewmodels.base
+package com.juangomez.presentation.viewmodels.base
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable

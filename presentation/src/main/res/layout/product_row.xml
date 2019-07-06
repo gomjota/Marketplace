@@ -9,11 +9,11 @@
 
         <variable
                 name="product"
-                type="com.juangomez.marketplace.models.ProductPresentationModel"/>
+                type="com.juangomez.presentation.models.ProductPresentationModel"/>
 
         <variable
                 name="listener"
-                type="com.juangomez.marketplace.viewmodels.ProductsListener"/>
+                type="com.juangomez.presentation.viewmodels.ProductsListener"/>
     </data>
 
     <androidx.cardview.widget.CardView

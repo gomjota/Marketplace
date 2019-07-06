@@ -1,22 +1,31 @@
-package com.juangomez.marketplace.di
+package com.juangomez.presentation.di
 
 import androidx.room.Room
 import com.juangomez.data.executor.JobExecutor
 import com.juangomez.data.repositories.CartRepositoryImpl
 import com.juangomez.data.repositories.ProductRepositoryImpl
+import com.juangomez.data.sources.database.DatabaseCartSource
+import com.juangomez.data.sources.database.DatabaseProductsSource
+import com.juangomez.data.sources.remote.RemoteProductsSource
 import com.juangomez.database.MarketplaceDatabase
 import com.juangomez.database.sources.DatabaseCartSourceImpl
 import com.juangomez.database.sources.DatabaseProductsSourceImpl
-import com.juangomez.domain.interactors.AddProductUseCase
-import com.juangomez.marketplace.BuildConfig.BASE_URL
-import com.juangomez.marketplace.BuildConfig.DEBUG
-import com.juangomez.marketplace.common.UiThread
-import com.juangomez.marketplace.viewmodels.ProductsViewModel
+import com.juangomez.domain.executor.PostExecutionThread
+import com.juangomez.domain.executor.ThreadExecutor
+import com.juangomez.domain.interactors.*
+import com.juangomez.domain.models.offer.BulkOffer
+import com.juangomez.domain.models.offer.TwoForOneOffer
+import com.juangomez.domain.repositories.CartRepository
+import com.juangomez.domain.repositories.ProductRepository
+import com.juangomez.presentation.BuildConfig.BASE_URL
+import com.juangomez.presentation.BuildConfig.DEBUG
+import com.juangomez.presentation.common.UiThread
+import com.juangomez.presentation.viewmodels.ProductsViewModel
 import com.juangomez.remote.api.RemoteProductsApi
 import com.juangomez.remote.services.createNetworkClient
 import com.juangomez.remote.sources.RemoteProductsSourceImpl
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.ext.koin.viewModel
+import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import retrofit2.Retrofit
 
@@ -32,6 +41,8 @@ private val DATA_CART_REPOSITORY = "data_cart_repository"
 private val DATA_PRODUCT_REPOSITORY = "data_product_repository"
 private val JOB_EXECUTOR = "job_executor"
 
+private val TWO_FOR_ONE_OFFER = "two_for_one_offer"
+private val BULK_OFFER = "bulk_offer"
 private val ADD_PRODUCT_USE_CASE = "add_product_use_case"
 private val CREATE_CHECKOUT_USE_CASE = "create_checkout_use_case"
 private val DELETE_PRODUCT_USE_CASE = "delete_product_use_case"
@@ -48,7 +59,7 @@ val remoteModules = module {
     }
 
     single(name = REMOTE_PRODUCT_SOURCE) {
-        RemoteProductsSourceImpl(get(API))
+        RemoteProductsSourceImpl(get(API)) as RemoteProductsSource
     }
 }
 
@@ -62,31 +73,39 @@ val databaseModules = module {
     }
 
     single(name = DATABASE_CART_SOURCE) {
-        DatabaseCartSourceImpl(get(DATABASE))
+        DatabaseCartSourceImpl(get(DATABASE)) as DatabaseCartSource
     }
 
     single(name = DATABASE_PRODUCT_SOURCE) {
-        DatabaseProductsSourceImpl(get(DATABASE))
+        DatabaseProductsSourceImpl(get(DATABASE)) as DatabaseProductsSource
     }
 }
 
 val dataModules = module {
     single(DATA_CART_REPOSITORY) {
-        CartRepositoryImpl(get(DATABASE_CART_SOURCE))
+        CartRepositoryImpl(get(DATABASE_CART_SOURCE)) as CartRepository
     }
 
     single(DATA_PRODUCT_REPOSITORY) {
-        ProductRepositoryImpl(get(DATABASE_PRODUCT_SOURCE), get(REMOTE_PRODUCT_SOURCE))
+        ProductRepositoryImpl(get(REMOTE_PRODUCT_SOURCE), get(DATABASE_PRODUCT_SOURCE)) as ProductRepository
     }
 
     single(JOB_EXECUTOR) {
-        JobExecutor()
+        JobExecutor() as ThreadExecutor
     }
 }
 
 val domainModules = module {
     single(UI_THREAD) {
-        UiThread()
+        UiThread() as PostExecutionThread
+    }
+
+    single(TWO_FOR_ONE_OFFER) {
+        TwoForOneOffer()
+    }
+
+    single(BULK_OFFER) {
+        BulkOffer()
     }
 
     factory(ADD_PRODUCT_USE_CASE) {
@@ -94,19 +113,24 @@ val domainModules = module {
     }
 
     factory(CREATE_CHECKOUT_USE_CASE) {
-        AddProductUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+        CreateCheckoutUseCase(
+            get(TWO_FOR_ONE_OFFER),
+            get(BULK_OFFER),
+            get(JOB_EXECUTOR),
+            get(UI_THREAD)
+        )
     }
 
     factory(DELETE_PRODUCT_USE_CASE) {
-        AddProductUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+        DeleteProductUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
     }
 
     factory(GET_CART_USE_CASE) {
-        AddProductUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+        GetCartUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
     }
 
     factory(GET_PRODUCTS_USE_CASE) {
-        AddProductUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+        GetProductsUseCase(get(DATA_PRODUCT_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
     }
 }
 

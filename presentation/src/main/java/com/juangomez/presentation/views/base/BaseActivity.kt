@@ -1,4 +1,4 @@
-package com.juangomez.marketplace.views.base
+package com.juangomez.presentation.views.base
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,6 @@ import androidx.databinding.ViewDataBinding
 abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
 
     abstract val layoutId: Int
-    abstract val toolbarView: Toolbar
 
     protected lateinit var binding: T
 
@@ -19,7 +18,6 @@ abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.setLifecycleOwner(this)
         configureBinding(binding)
-        setSupportActionBar(toolbarView)
         prepare(intent)
     }
 

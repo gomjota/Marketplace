@@ -1,15 +1,15 @@
-package com.juangomez.marketplace.views
+package com.juangomez.presentation.views
 
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.juangomez.marketplace.R
-import com.juangomez.marketplace.databinding.ProductsActivityBinding
-import com.juangomez.marketplace.models.ProductPresentationModel
-import com.juangomez.marketplace.viewmodels.ProductsViewModel
-import com.juangomez.marketplace.views.adapters.ProductsAdapter
-import com.juangomez.marketplace.views.base.BaseActivity
+import com.juangomez.presentation.R
+import com.juangomez.presentation.databinding.ProductsActivityBinding
+import com.juangomez.presentation.models.ProductPresentationModel
+import com.juangomez.presentation.viewmodels.ProductsViewModel
+import com.juangomez.presentation.views.adapters.ProductsAdapter
+import com.juangomez.presentation.views.base.BaseActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 import kotlinx.android.synthetic.main.products_activity.*
 
@@ -17,8 +17,6 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
 
     private val viewModel: ProductsViewModel by viewModel()
     override val layoutId: Int = R.layout.products_activity
-    override val toolbarView: Toolbar
-        get() = toolbar
 
     private lateinit var adapter: ProductsAdapter
 

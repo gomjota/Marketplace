@@ -1,9 +1,9 @@
-package com.juangomez.marketplace.views.adapters
+package com.juangomez.presentation.views.adapters
 
 import androidx.recyclerview.widget.RecyclerView
-import com.juangomez.marketplace.databinding.ProductRowBinding
-import com.juangomez.marketplace.models.ProductPresentationModel
-import com.juangomez.marketplace.viewmodels.ProductsListener
+import com.juangomez.presentation.databinding.ProductRowBinding
+import com.juangomez.presentation.models.ProductPresentationModel
+import com.juangomez.presentation.viewmodels.ProductsListener
 
 class ProductsViewHolder(
     private val binding: ProductRowBinding
