@@ -1,4 +1,4 @@
-package com.juangomez.domain.usecases
+package com.juangomez.domain.interactors
 
 import com.juangomez.domain.executor.PostExecutionThread
 import com.juangomez.domain.executor.ThreadExecutor
@@ -13,14 +13,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class AddProductUseCaseTest {
+class DeleteProductUseCaseTest {
 
-    private lateinit var addProductUseCase: AddProductUseCase
+    private lateinit var deleteProductUseCase: DeleteProductUseCase
 
     @Mock
     private lateinit var mockThreadExecutor: ThreadExecutor
@@ -33,7 +31,7 @@ class AddProductUseCaseTest {
 
     @Before
     fun setUp() {
-        addProductUseCase = AddProductUseCase(
+        deleteProductUseCase = DeleteProductUseCase(
             mockCartRepository,
             mockThreadExecutor,
             mockPostExecutionThread
@@ -50,17 +48,15 @@ class AddProductUseCaseTest {
             )
         )
 
-        val productToAdd = Product("VOUCHER", "Cabify Voucher", 5f)
+        val productToDelete = Product("VOUCHER", "Cabify Voucher", 5f)
 
         stubCartRepositoryGetCart(Flowable.just(cart))
         stubCartRepositorySetCart(cart, Completable.complete())
-        addProductUseCase.buildUseCaseObservable(productToAdd)
+        deleteProductUseCase.buildUseCaseCompletable(productToDelete)
             .test()
-            .assertNoErrors()
             .assertComplete()
 
         verifyNumberOfInvocations(cart)
-
     }
 
     private fun stubCartRepositoryGetCart(single: Flowable<Cart>) {
@@ -74,8 +70,8 @@ class AddProductUseCaseTest {
     }
 
     private fun verifyNumberOfInvocations(cart: Cart) {
-        verify(mockCartRepository, times(1)).getCart()
-        verify(mockCartRepository, times(1)).setCart(cart)
+        Mockito.verify(mockCartRepository, Mockito.times(1)).getCart()
+        Mockito.verify(mockCartRepository, Mockito.times(1)).setCart(cart)
     }
 
 }

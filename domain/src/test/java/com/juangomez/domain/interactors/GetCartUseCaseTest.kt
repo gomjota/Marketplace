@@ -1,4 +1,4 @@
-package com.juangomez.domain.usecases
+package com.juangomez.domain.interactors
 
 import com.juangomez.domain.executor.PostExecutionThread
 import com.juangomez.domain.executor.ThreadExecutor
@@ -39,7 +39,7 @@ class GetCartUseCaseTest {
 
     @Test
     fun buildUseCaseObservableCallsRepository() {
-        getCartUseCase.buildUseCaseObservable(null)
+        getCartUseCase.buildUseCaseFlowable(null)
         verify(mockCartRepository).getCart()
     }
 
@@ -48,7 +48,7 @@ class GetCartUseCaseTest {
         val cart = Cart(mutableListOf())
 
         stubCartRepositoryGetCart(Flowable.just(cart))
-        getCartUseCase.buildUseCaseObservable(null)
+        getCartUseCase.buildUseCaseFlowable(null)
             .test()
             .assertComplete()
     }
@@ -64,7 +64,7 @@ class GetCartUseCaseTest {
         )
 
         stubCartRepositoryGetCart(Flowable.just(cart))
-        getCartUseCase.buildUseCaseObservable(null)
+        getCartUseCase.buildUseCaseFlowable(null)
             .test()
             .assertValue(cart)
     }

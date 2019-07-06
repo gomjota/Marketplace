@@ -1,10 +1,10 @@
-package com.juangomez.domain.usecases
+package com.juangomez.domain.interactors
 
 import com.juangomez.domain.executor.PostExecutionThread
 import com.juangomez.domain.executor.ThreadExecutor
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.CartRepository
-import com.juangomez.domain.usecases.base.CompletableUseCase
+import com.juangomez.domain.interactors.base.CompletableUseCase
 import io.reactivex.Completable
 
 open class DeleteProductUseCase constructor(
@@ -14,7 +14,7 @@ open class DeleteProductUseCase constructor(
 ) :
     CompletableUseCase<Product>(threadExecutor, postExecutionThread) {
 
-    public override fun buildUseCaseObservable(params: Product): Completable {
+    public override fun buildUseCaseCompletable(params: Product): Completable {
         return cartRepository.getCart()
             .map {
                 it.removeProduct(params)

@@ -1,17 +1,34 @@
 buildscript {
     apply from: "${rootProject.projectDir}/dependencies.gradle"
-    addRepos(repositories)
+
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+    }
+
     dependencies {
-        classpath deps.gradle.android_plugin
-        classpath deps.gradle.maven_plugin
-        classpath deps.gradle.bintray_plugin
-        classpath deps.kotlin.plugin
+        classpath configPlugins.androidPlugin
+        classpath configPlugins.mavenPlugin
+        classpath configPlugins.bintrayPlugin
+        classpath configPlugins.kotlinPlugin
     }
 }
 
 allprojects {
-    addRepos(repositories)
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+    }
 
     apply from: "${rootProject.projectDir}/version.gradle"
     apply from: "${rootProject.projectDir}/dependencies.gradle"
+    apply from: "${rootProject.projectDir}/configuration.gradle"
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }

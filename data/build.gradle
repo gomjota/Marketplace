@@ -3,17 +3,17 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     implementation(
-            deps.kotlin.stdlib,
-            deps.kotlin.rx,
-            deps.third.rx_android,
-            deps.third.rxjava2
+            kotlin.stdlib,
+            rx.rxKotlin,
+            rx.rxAndroid,
+            rx.rxJava2
     )
 
     testImplementation(
-            deps.test.junit,
-            deps.third.mock_web_server,
-            deps.test.mockito_core,
-            deps.test.mockito_inline
+            junit.junit,
+            okhttp.mockWebServer,
+            mockito.core,
+            mockito.inline
     )
 
     implementation project(":domain")

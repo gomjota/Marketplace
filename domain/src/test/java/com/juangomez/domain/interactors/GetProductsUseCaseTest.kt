@@ -1,4 +1,4 @@
-package com.juangomez.domain.usecases
+package com.juangomez.domain.interactors
 
 import com.juangomez.domain.executor.PostExecutionThread
 import com.juangomez.domain.executor.ThreadExecutor
@@ -37,7 +37,7 @@ class GetProductsUseCaseTest {
 
     @Test
     fun buildUseCaseObservableCallsRepository() {
-        getProductsUseCase.buildUseCaseObservable(null)
+        getProductsUseCase.buildUseCaseFlowable(null)
         Mockito.verify(mockProductsRepository).getProducts()
     }
 
@@ -46,7 +46,7 @@ class GetProductsUseCaseTest {
         val products = emptyList<Product>()
 
         stubProductsRepositoryGetProducts(Flowable.just(products))
-        getProductsUseCase.buildUseCaseObservable(null)
+        getProductsUseCase.buildUseCaseFlowable(null)
             .test()
             .assertComplete()
     }
@@ -59,7 +59,7 @@ class GetProductsUseCaseTest {
         )
 
         stubProductsRepositoryGetProducts(Flowable.just(products))
-        getProductsUseCase.buildUseCaseObservable(null)
+        getProductsUseCase.buildUseCaseFlowable(null)
             .test()
             .assertValue(products)
     }

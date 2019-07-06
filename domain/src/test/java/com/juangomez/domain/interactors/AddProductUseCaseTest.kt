@@ -1,4 +1,4 @@
-package com.juangomez.domain.usecases
+package com.juangomez.domain.interactors
 
 import com.juangomez.domain.executor.PostExecutionThread
 import com.juangomez.domain.executor.ThreadExecutor
@@ -13,12 +13,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class DeleteProductUseCaseTest {
+class AddProductUseCaseTest {
 
-    private lateinit var deleteProductUseCase: DeleteProductUseCase
+    private lateinit var addProductUseCase: AddProductUseCase
 
     @Mock
     private lateinit var mockThreadExecutor: ThreadExecutor
@@ -31,7 +33,7 @@ class DeleteProductUseCaseTest {
 
     @Before
     fun setUp() {
-        deleteProductUseCase = DeleteProductUseCase(
+        addProductUseCase = AddProductUseCase(
             mockCartRepository,
             mockThreadExecutor,
             mockPostExecutionThread
@@ -48,15 +50,17 @@ class DeleteProductUseCaseTest {
             )
         )
 
-        val productToDelete = Product("VOUCHER", "Cabify Voucher", 5f)
+        val productToAdd = Product("VOUCHER", "Cabify Voucher", 5f)
 
         stubCartRepositoryGetCart(Flowable.just(cart))
         stubCartRepositorySetCart(cart, Completable.complete())
-        deleteProductUseCase.buildUseCaseObservable(productToDelete)
+        addProductUseCase.buildUseCaseCompletable(productToAdd)
             .test()
+            .assertNoErrors()
             .assertComplete()
 
         verifyNumberOfInvocations(cart)
+
     }
 
     private fun stubCartRepositoryGetCart(single: Flowable<Cart>) {
@@ -70,8 +74,8 @@ class DeleteProductUseCaseTest {
     }
 
     private fun verifyNumberOfInvocations(cart: Cart) {
-        Mockito.verify(mockCartRepository, Mockito.times(1)).getCart()
-        Mockito.verify(mockCartRepository, Mockito.times(1)).setCart(cart)
+        verify(mockCartRepository, times(1)).getCart()
+        verify(mockCartRepository, times(1)).setCart(cart)
     }
 
 }

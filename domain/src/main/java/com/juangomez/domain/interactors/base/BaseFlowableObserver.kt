@@ -1,4 +1,4 @@
-package com.juangomez.domain.usecases.base
+package com.juangomez.domain.interactors.base
 
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable

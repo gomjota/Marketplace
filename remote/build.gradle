@@ -3,19 +3,19 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     implementation(
-            deps.kotlin.stdlib,
-            deps.kotlin.rx,
-            deps.third.rx_android,
-            deps.third.rxjava2,
-            deps.retrofit.rx,
-            deps.retrofit.gson,
-            deps.third.loggin_interceptor
+            kotlin.stdlib,
+            rx.rxKotlin,
+            rx.rxAndroid,
+            rx.rxJava2,
+            retrofit.rx,
+            retrofit.gson,
+            okhttp.interceptor
     )
 
     testImplementation(
-            deps.test.junit,
-            deps.third.mock_web_server,
-            deps.test.mockito_core
+            junit.junit,
+            okhttp.mockWebServer,
+            mockito.core
     )
 
     implementation project(":data")

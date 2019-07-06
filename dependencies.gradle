@@ -1,101 +1,103 @@
-static def addRepos(RepositoryHandler handler) {
-    handler.google()
-    handler.jcenter()
-    handler.maven { url 'https://jitpack.io' }
-    handler.maven { url 'https://maven.fabric.io/public' }
+ext {
+    def androidPluginVersion = "3.2.0"
+    def mavenPluginVersion = "2.0"
+    def bintrayPluginVersion = "1.8.4"
+
+    def kotlinVersion = "1.3.40"
+
+    def retrofitVersion = "2.6.0"
+
+    def roomVersion = "2.1.0"
+
+    def mockitoVersion = "2.28.2"
+
+    def androidxTestVersion = "1.2.0"
+
+    def okhttpVersion = "3.12.0"
+
+    def rxJava2Version = "2.2.8"
+    def rxKotlinVersion = "2.3.0"
+    def rxAndroidVersion = "2.1.0"
+
+    def gsonVersion = "2.8.5"
+
+    def junitVersion = "4.12"
+    def junitXVersion = "1.1.0"
+
+    def robolectricVersion = "3.1.1"
+
+    def archVersion = "2.0.0"
+
+    def appCompatVersion = "1.1.0"
+
+    configPlugins = [
+            androidPlugin: "com.android.tools.build:gradle:${androidPluginVersion}",
+            mavenPlugin  : "com.github.dcendents:android-maven-gradle-plugin:${mavenPluginVersion}",
+            bintrayPlugin: "com.jfrog.bintray.gradle:gradle-bintray-plugin:${bintrayPluginVersion}",
+            kotlinPlugin : "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+    ]
+
+    kotlin = [
+            stdlib: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}"
+    ]
+
+    retrofit = [
+            runtime: "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            gson   : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            rx     : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
+            mock   : "com.squareup.retrofit2:retrofit-mock:${retrofitVersion}"
+    ]
+
+    room = [
+            runtime : "androidx.room:room-runtime:${roomVersion}",
+            ktx     : "androidx.room:room-ktx:${roomVersion}",
+            compiler: "androidx.room:room-compiler:${roomVersion}",
+            rxjava  : "androidx.room:room-rxjava2:${roomVersion}",
+            testing : "androidx.room:room-testing:${roomVersion}"
+    ]
+
+    mockito = [
+            core   : "org.mockito:mockito-core:${mockitoVersion}",
+            android: "org.mockito:mockito-android:${mockitoVersion}",
+            inline : "org.mockito:mockito-inline:${mockitoVersion}"
+    ]
+
+    androidxTest = [
+            runner: "androidx.test:runner:${androidxTestVersion}",
+            rules : "androidx.test:rules:${androidxTestVersion}",
+            core  : "androidx.test:core:${androidxTestVersion}"
+    ]
+
+    okhttp = [
+            okhttp       : "com.squareup.okhttp3:okhttp:${okhttpVersion}",
+            interceptor  : "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}",
+            mockWebServer: "com.squareup.okhttp3:mockwebserver:${okhttpVersion}"
+    ]
+
+    rx = [
+            rxJava2  : "io.reactivex.rxjava2:rxjava:${rxJava2Version}",
+            rxAndroid: "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
+            rxKotlin : "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}"
+    ]
+
+    gson = [
+            gson: "com.google.code.gson:gson:${gsonVersion}"
+    ]
+
+    junit = [
+            junit : "junit:junit:${junitVersion}",
+            junitX: "androidx.test.ext:junit:${junitXVersion}"
+    ]
+
+    robolectric = [
+            robolectric: "org.robolectric:robolectric:${robolectricVersion}"
+    ]
+
+    arch = [
+            arch: "androidx.arch.core:core-testing:${archVersion}"
+    ]
+
+    support = [
+            app_compat: "androidx.appcompat:appcompat:${appCompatVersion}"
+    ]
 }
-
-ext.addRepos = this.&addRepos
-
-def build_versions = [:]
-build_versions.min_sdk = 26
-build_versions.target_sdk = 28
-build_versions.build_tools = "28.0.2"
-build_versions.compile_sdk = 28
-ext.build_versions = build_versions
-
-def versions = [:]
-ext.deps = [:]
-def deps = [:]
-
-def gradle = [:]
-versions.android_plugin = "3.2.0"
-versions.maven_plugin = "2.0"
-versions.bintray_plugin = "1.8.4"
-gradle.android_plugin = "com.android.tools.build:gradle:$versions.android_plugin"
-gradle.maven_plugin = "com.github.dcendents:android-maven-gradle-plugin:$versions.maven_plugin"
-gradle.bintray_plugin = "com.jfrog.bintray.gradle:gradle-bintray-plugin:$versions.bintray_plugin"
-deps.gradle = gradle
-
-def kotlin = [:]
-versions.kotlin = "1.3.40"
-versions.rx_kotlin = "2.3.0"
-kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
-kotlin.rx = "io.reactivex.rxjava2:rxkotlin:$versions.rx_kotlin"
-deps.kotlin = kotlin
-
-def support = [:]
-versions.androidx = "1.2.0"
-versions.test_junit = "1.1.0"
-support.app_compat = "androidx.appcompat:appcompat:$versions.androidx"
-support.test_runner = "androidx.test:runner:$versions.androidx"
-support.test_rules = "androidx.test:rules:$versions.androidx"
-support.test_core = "androidx.test:core:$versions.androidx"
-support.test_junit = "androidx.test.ext:junit:$versions.test_junit"
-deps.support = support
-
-def ui = [:]
-versions.constraint_layout = "2.0.0-alpha2"
-versions.lottie = "2.8.0"
-ui.constraint_layout = "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
-ui.lottie = "com.airbnb.android:lottie:$versions.lottie"
-deps.ui = ui
-
-def test = [:]
-versions.jUnitVersion = "4.12"
-versions.roboelectric = "3.1.1"
-versions.mockito = "2.28.2"
-versions.arch = "2.0.0"
-test.junit="junit:junit:$versions.jUnitVersion"
-test.roboelectric="org.robolectric:robolectric:$versions.roboelectric"
-test.mockito_core = "org.mockito:mockito-core:$versions.mockito"
-test.mockito_android = "org.mockito:mockito-android:$versions.mockito"
-test.mockito_inline = "org.mockito:mockito-inline:$versions.mockito"
-test.arch = "androidx.arch.core:core-testing:$versions.arch"
-deps.test = test
-
-def retrofit = [:]
-versions.retrofit = "2.6.0"
-retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
-retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
-retrofit.rx = "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit"
-retrofit.mock = "com.squareup.retrofit2:retrofit-mock:$versions.retrofit"
-retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
-retrofit.rx = "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit"
-deps.retrofit = retrofit
-
-def room = [:]
-versions.room = "2.1.0"
-room.runtime = "androidx.room:room-runtime:$versions.room"
-room.ktx = "androidx.room:room-ktx:$versions.room"
-room.compiler = "androidx.room:room-compiler:$versions.room"
-room.rxjava = "androidx.room:room-rxjava2:$versions.room"
-room.testing = "androidx.room:room-testing:$versions.room"
-deps.room = room
-
-def third = [:]
-versions.rxjava2 = "2.2.4"
-versions.rx_android = "2.1.0"
-versions.ok_http = "3.12.0"
-versions.gson = "2.8.5"
-third.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
-third.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
-third.ok_http = "com.squareup.okhttp3:okhttp:$versions.ok_http"
-third.loggin_interceptor = "com.squareup.okhttp3:logging-interceptor:$versions.ok_http"
-third.mock_web_server = "com.squareup.okhttp3:mockwebserver:$versions.ok_http"
-third.gson = "com.google.code.gson:gson:$versions.gson"
-deps.third = third
-
-
-ext.deps = deps

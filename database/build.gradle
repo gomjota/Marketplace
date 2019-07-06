@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: "kotlin-kapt"
 
 android {
-    compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
+    compileSdkVersion androidConfiguration.compileSDK
+    buildToolsVersion androidConfiguration.buildTools
 
     defaultConfig {
-        minSdkVersion build_versions.min_sdk
-        targetSdkVersion build_versions.target_sdk
+        minSdkVersion androidConfiguration.minSDK
+        targetSdkVersion androidConfiguration.targetSDK
 
         versionCode getVersionCodeFromProperties()
         versionName getVersionNameFromProperties()
@@ -26,28 +26,28 @@ android {
 
 dependencies {
     implementation(
-            deps.kotlin.stdlib,
-            deps.kotlin.rx,
-            deps.room.runtime,
-            deps.room.ktx,
-            deps.room.rxjava,
-            deps.third.gson
+            kotlin.stdlib,
+            rx.rxKotlin,
+            room.runtime,
+            room.ktx,
+            room.rxjava,
+            gson.gson
     )
 
-    kapt deps.room.compiler
+    kapt room.compiler
 
     testImplementation(
-            deps.test.junit,
-            deps.test.roboelectric
+            junit.junit,
+            robolectric.robolectric
     )
 
     androidTestImplementation(
-            deps.support.test_runner,
-            deps.support.test_rules,
-            deps.support.test_core,
-            deps.support.test_junit,
-            deps.room.testing,
-            deps.test.arch
+            androidxTest.runner,
+            androidxTest.rules,
+            androidxTest.core,
+            junit.junitX,
+            room.testing,
+            arch.arch
     )
 
 

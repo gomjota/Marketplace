@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
+    compileSdkVersion androidConfiguration.targetSDK
+    buildToolsVersion androidConfiguration.buildTools
 
     defaultConfig {
-        minSdkVersion build_versions.min_sdk
-        targetSdkVersion build_versions.target_sdk
+        minSdkVersion androidConfiguration.minSDK
+        targetSdkVersion androidConfiguration.targetSDK
 
         versionCode getVersionCodeFromProperties()
         versionName getVersionNameFromProperties()
@@ -23,13 +23,13 @@ android {
 
 dependencies {
     implementation(
-            deps.kotlin.stdlib,
-            deps.kotlin.rx
+            kotlin.stdlib,
+            rx.rxKotlin
     )
 
     testImplementation(
-            deps.test.junit,
-            deps.test.roboelectric,
+            junit.junit,
+            robolectric.robolectric
     )
 
     implementation project(":domain")
