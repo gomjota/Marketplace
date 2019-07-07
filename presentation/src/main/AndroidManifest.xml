@@ -27,6 +27,7 @@
 
         <activity
                 android:name="com.juangomez.presentation.views.CheckoutActivity"
+                android:label="@string/checkout_activity_title"
                 android:screenOrientation="portrait"/>
 
     </application>

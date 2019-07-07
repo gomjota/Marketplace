@@ -22,7 +22,11 @@ open class DeleteProductUseCase constructor(
             .map {
                 it.removeProduct(params!!)
             }.flatMapCompletable {
-                cartRepository.setCart(it)
+                if (it.items.isEmpty()) {
+                    cartRepository.deleteCart()
+                } else {
+                    cartRepository.setCart(it)
+                }
             }
     }
 

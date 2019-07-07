@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.juangomez.presentation.R
 import com.juangomez.presentation.databinding.CheckoutActivityBinding
 import com.juangomez.presentation.models.CheckoutPresentationModel
+import com.juangomez.presentation.viewmodels.CheckoutListener
 import com.juangomez.presentation.viewmodels.CheckoutViewModel
 import com.juangomez.presentation.views.adapters.CheckoutAdapter
 import com.juangomez.presentation.views.base.BaseActivity
@@ -39,6 +40,7 @@ class CheckoutActivity : BaseActivity<CheckoutActivityBinding>() {
 
     override fun configureBinding(binding: CheckoutActivityBinding) {
         binding.viewModel = viewModel
+        binding.listener = viewModel as CheckoutListener
     }
 
     private fun initializeAdapter() {

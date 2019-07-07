@@ -12,6 +12,10 @@
                 name="viewModel"
                 type="CheckoutViewModel"/>
 
+        <variable
+                name="listener"
+                type="com.juangomez.presentation.viewmodels.CheckoutListener"/>
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,6 +47,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible"/>
+
+        <View
+                android:id="@+id/checkout_view"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+                android:id="@+id/pay_text"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@id/checkout_view"
+                app:layout_constraintEnd_toEndOf="@id/checkout_view"
+                app:layout_constraintStart_toStartOf="@id/checkout_view"
+                android:textColor="@android:color/white"
+                android:text="@{String.format(@string/checkout_pay, viewModel.checkoutPrice)}"
+                android:textSize="18sp"
+                android:onClick="@{ () -> listener.onPayClicked() }"
+                android:clickable="true"
+                app:layout_constraintTop_toTopOf="@id/checkout_view"/>
+
+        <androidx.constraintlayout.widget.Group
+                android:id="@+id/cart_group"
+                android:layout_width="wrap_content"
+                android:visibility="@{ viewModel.checkoutPrice > 0f ? View.VISIBLE : View.GONE }"
+                app:constraint_referenced_ids="checkout_view, pay_text"
+                android:layout_height="wrap_content"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

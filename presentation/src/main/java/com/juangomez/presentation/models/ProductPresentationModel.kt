@@ -1,6 +1,7 @@
 package com.juangomez.presentation.models
 
 import com.juangomez.presentation.R
+import java.text.DecimalFormat
 
 class ProductPresentationModel(
     val code: String,
@@ -8,7 +9,7 @@ class ProductPresentationModel(
     price: String
 ) {
     val price: String = price
-        get() = "${field}€"
+        get() = DecimalFormat("0.#").format(field.toFloat()) + "€"
 
     val image: Int = (when (code) {
         "VOUCHER" -> R.drawable.voucher

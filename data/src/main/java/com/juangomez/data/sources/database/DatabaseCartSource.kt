@@ -11,5 +11,7 @@ interface DatabaseCartSource {
 
     fun insertCart(cart: CartEntity): Completable
 
+    fun updateCart(cart: CartEntity): Completable
+
     fun deleteCart(): Completable
 }

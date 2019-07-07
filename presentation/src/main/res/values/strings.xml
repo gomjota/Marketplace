@@ -3,4 +3,6 @@
     <string name="cart_purchase">Cart (%d items)</string>
     <string name="checkout_add_product">Add</string>
     <string name="checkout_delete_product">Delete</string>
+    <string name="checkout_pay">Pay %.1f€</string>
+    <string name="checkout_activity_title">Cart</string>
 </resources>

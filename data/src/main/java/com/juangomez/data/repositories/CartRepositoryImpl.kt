@@ -17,7 +17,10 @@ class CartRepositoryImpl constructor(
     }
 
     override fun setCart(cart: Cart): Completable {
+        return database.insertCart(cart.toEntity())
+    }
+
+    override fun deleteCart(): Completable {
         return database.deleteCart()
-            .andThen(database.insertCart(cart.toEntity()))
     }
 }

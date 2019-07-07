@@ -17,12 +17,16 @@ class DatabaseCartSourceImpl(private val database: MarketplaceDatabase) : Databa
     override fun getCart(): Flowable<CartEntity> {
         return cartDao.getCart().map {
             if (it.isEmpty()) CartEntity(emptyList())
-            else it[0].toEntity()
+            else it.last().toEntity()
         }
     }
 
     override fun insertCart(cart: CartEntity): Completable {
         return cartDao.insertCart(cart.toDatabaseEntity())
+    }
+
+    override fun updateCart(cart: CartEntity): Completable {
+        return cartDao.updateCart(cart.toDatabaseEntity())
     }
 
     override fun deleteCart(): Completable {

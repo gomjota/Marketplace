@@ -4,4 +4,6 @@
     <string name="cart_purchase">Cesta (%d productos)</string>
     <string name="checkout_add_product">Añadir</string>
     <string name="checkout_delete_product">Eliminar</string>
+    <string name="checkout_pay">Pagar %.1f€</string>
+    <string name="checkout_activity_title">Cesta</string>
 </resources>

@@ -9,4 +9,6 @@ interface CartRepository {
     fun getCart(): Flowable<Cart>
 
     fun setCart(cart: Cart): Completable
+
+    fun deleteCart(): Completable
 }

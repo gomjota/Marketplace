@@ -26,6 +26,7 @@ class CheckoutViewModel(
 ) : BaseViewModel(), CheckoutListener {
 
     val isShowingEmptyCase = MutableLiveData<Boolean>()
+    val checkoutPrice = MutableLiveData<Float>()
     val checkoutProductsToShow = MediatorLiveData<List<CheckoutPresentationModel>>()
 
     private lateinit var cart: Cart
@@ -52,6 +53,10 @@ class CheckoutViewModel(
         addDisposable(deleteProductDisposable)
     }
 
+    override fun onPayClicked() {
+
+    }
+
     inner class CreateCheckoutSubscriber : DisposableSubscriber<Checkout>() {
 
         override fun onComplete() {
@@ -62,6 +67,7 @@ class CheckoutViewModel(
             cart = t!!.checkoutCart
             checkoutProductsToShow.postValue(t.toPresentationModel())
             isShowingEmptyCase.postValue(t.checkoutCart.items.isEmpty())
+            checkoutPrice.postValue(t.checkoutCart.totalPrice)
             Log.d("OLE!", "OLE!")
         }
 
@@ -101,4 +107,6 @@ interface CheckoutListener {
     fun onAddProductClicked(code: String)
 
     fun onDeleteProductClicked(code: String)
+
+    fun onPayClicked()
 }
