@@ -69,7 +69,10 @@ val databaseModules = module {
             androidApplication(),
             MarketplaceDatabase::class.java,
             "marketplace"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
     }
 
     single(name = DATABASE_CART_SOURCE) {
@@ -136,6 +139,6 @@ val domainModules = module {
 
 val presentationModules = module {
     viewModel {
-        ProductsViewModel(get(GET_PRODUCTS_USE_CASE))
+        ProductsViewModel(get(GET_PRODUCTS_USE_CASE), get(ADD_PRODUCT_USE_CASE), get(GET_CART_USE_CASE))
     }
 }

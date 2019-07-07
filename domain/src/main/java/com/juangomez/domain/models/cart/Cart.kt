@@ -8,11 +8,13 @@ data class Cart(var items: MutableList<CartItem>) {
     val totalPrice: Float
         get() = items.sumByDouble { it.cartPrice.toDouble() }.toFloat()
 
-    fun addProduct(product: Product) {
+    fun addProduct(product: Product): Cart {
         items.add(product.toCartItemModel())
+        return this
     }
 
-    fun removeProduct(product: Product) {
+    fun removeProduct(product: Product): Cart {
         items.dropLastWhile { it.product.code == product.code }
+        return this
     }
 }

@@ -8,13 +8,17 @@ import com.juangomez.database.mappers.toDatabaseEntity
 import com.juangomez.database.mappers.toEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 class DatabaseCartSourceImpl(private val database: MarketplaceDatabase) : DatabaseCartSource {
 
     private val cartDao: CartDao = database.cartDao()
 
     override fun getCart(): Flowable<CartEntity> {
-        return cartDao.getCart().toEntity()
+        return cartDao.getCart().map {
+            if (it.isEmpty()) CartEntity(emptyList())
+            else it[0].toEntity()
+        }
     }
 
     override fun insertCart(cart: CartEntity): Completable {

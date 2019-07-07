@@ -3,6 +3,7 @@ package com.juangomez.data.sources.database
 import com.juangomez.data.entities.CartEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 interface DatabaseCartSource {
 

@@ -7,12 +7,13 @@ import androidx.room.Query
 import com.juangomez.database.entities.DatabaseCartEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 @Dao
 interface CartDao {
 
     @Query("SELECT * FROM cart")
-    fun getCart(): Flowable<DatabaseCartEntity>
+    fun getCart(): Flowable<List<DatabaseCartEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCart(cart: DatabaseCartEntity): Completable

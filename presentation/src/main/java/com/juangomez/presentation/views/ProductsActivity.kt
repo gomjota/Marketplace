@@ -24,7 +24,7 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
         super.onCreate(savedInstanceState)
         initializeAdapter()
         initializeRecyclerView()
-        viewModel.products.observe(this, Observer { showProducts(it) })
+        viewModel.productsToShow.observe(this, Observer { showProducts(it) })
         viewModel.prepare()
     }
 
