@@ -24,6 +24,7 @@ class ProductsViewModel(
 
     val isLoading = MutableLiveData<Boolean>()
     val isShowingEmptyCase = MutableLiveData<Boolean>()
+    val productsInCart = MutableLiveData<Int>()
     val productsToShow = MediatorLiveData<List<ProductPresentationModel>>()
 
     private var products: List<Product> = emptyList()
@@ -35,9 +36,9 @@ class ProductsViewModel(
         getProductsUseCase.execute(getProductsDisposable)
         addDisposable(getProductsDisposable)
 
-        //val getCartDisposable = GetCartSubscriber()
-        //getCartUseCase.execute(getCartDisposable)
-        //addDisposable(getCartDisposable)
+        val getCartDisposable = GetCartSubscriber()
+        getCartUseCase.execute(getCartDisposable)
+        addDisposable(getCartDisposable)
     }
 
     override fun onProductClicked(code: String) {
@@ -80,6 +81,7 @@ class ProductsViewModel(
 
         override fun onNext(t: Cart) {
             Log.d("OLE!", "PRODUCTO ANADIDO!")
+            productsInCart.postValue(t.items.size)
         }
 
         override fun onError(t: Throwable?) {

@@ -8,5 +8,5 @@ fun List<Product>.toPresentationModel(): List<ProductPresentationModel> {
 }
 
 fun Product.toPresentationModel(): ProductPresentationModel {
-    return ProductPresentationModel(code, name, "${price}€")
+    return ProductPresentationModel(code, name, price.toString())
 }
