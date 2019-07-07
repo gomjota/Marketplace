@@ -66,16 +66,17 @@
 
         <TextView
                 android:id="@+id/cart_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="@id/cart_view"
                 app:layout_constraintEnd_toEndOf="@id/cart_view"
+                app:layout_constraintStart_toStartOf="@id/cart_view"
                 android:textColor="@android:color/white"
                 android:text="@{String.format(@string/cart_purchase, viewModel.productsInCart)}"
                 android:textSize="18sp"
                 android:onClick="@{ () -> listener.onCheckoutClicked() }"
                 android:clickable="true"
-                app:layout_constraintStart_toStartOf="@id/cart_view"
                 app:layout_constraintTop_toTopOf="@id/cart_view"/>
 
         <androidx.constraintlayout.widget.Group
