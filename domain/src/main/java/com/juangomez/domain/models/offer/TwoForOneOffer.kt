@@ -18,14 +18,13 @@ class TwoForOneOffer : Offer() {
 
         cartAfterOffer.items
             .filter { it.product.code == CODE }
-            .takeIf { it.count() % 2 == 0 }
-            ?.mapIndexed { index, item ->
+            .mapIndexed { index, item ->
                 if (index % 2 == 0) {
                     item.cartPrice = 0f
                 }
                 item
             }
-            ?.toMutableList()
+            .toMutableList()
 
         return cartAfterOffer
     }

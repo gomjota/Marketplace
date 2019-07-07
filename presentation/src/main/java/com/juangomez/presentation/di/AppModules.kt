@@ -20,6 +20,7 @@ import com.juangomez.domain.repositories.ProductRepository
 import com.juangomez.presentation.BuildConfig.BASE_URL
 import com.juangomez.presentation.BuildConfig.DEBUG
 import com.juangomez.presentation.common.UiThread
+import com.juangomez.presentation.viewmodels.CheckoutViewModel
 import com.juangomez.presentation.viewmodels.ProductsViewModel
 import com.juangomez.remote.api.RemoteProductsApi
 import com.juangomez.remote.services.createNetworkClient
@@ -117,6 +118,7 @@ val domainModules = module {
 
     factory(CREATE_CHECKOUT_USE_CASE) {
         CreateCheckoutUseCase(
+            get(DATA_CART_REPOSITORY),
             get(TWO_FOR_ONE_OFFER),
             get(BULK_OFFER),
             get(JOB_EXECUTOR),
@@ -140,5 +142,9 @@ val domainModules = module {
 val presentationModules = module {
     viewModel {
         ProductsViewModel(get(GET_PRODUCTS_USE_CASE), get(ADD_PRODUCT_USE_CASE), get(GET_CART_USE_CASE))
+    }
+
+    viewModel {
+        CheckoutViewModel(get(ADD_PRODUCT_USE_CASE), get(DELETE_PRODUCT_USE_CASE), get(CREATE_CHECKOUT_USE_CASE))
     }
 }

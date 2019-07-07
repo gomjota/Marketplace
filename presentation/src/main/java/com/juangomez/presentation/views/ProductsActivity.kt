@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.juangomez.presentation.R
 import com.juangomez.presentation.databinding.ProductsActivityBinding
 import com.juangomez.presentation.models.ProductPresentationModel
+import com.juangomez.presentation.viewmodels.ProductsListener
 import com.juangomez.presentation.viewmodels.ProductsViewModel
 import com.juangomez.presentation.views.adapters.ProductsAdapter
 import com.juangomez.presentation.views.base.BaseActivity
@@ -25,11 +26,13 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
         initializeAdapter()
         initializeRecyclerView()
         viewModel.productsToShow.observe(this, Observer { showProducts(it) })
+        viewModel.checkoutOpen.observe(this, Observer { openCheckout() })
         viewModel.prepare()
     }
 
     override fun configureBinding(binding: ProductsActivityBinding) {
         binding.viewModel = viewModel
+        binding.listener = viewModel as ProductsListener
     }
 
     private fun initializeAdapter() {
@@ -46,5 +49,11 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
         adapter.clear()
         adapter.addAll(products)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun openCheckout() = runOnUiThread {
+        CheckoutActivity.open(
+            activity = this
+        )
     }
 }

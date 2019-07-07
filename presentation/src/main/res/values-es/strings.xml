@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Marketplace</string>
-    <string name="cart_purchase">Comprar (%d productos)</string>
+    <string name="cart_purchase">Cesta (%d productos)</string>
+    <string name="checkout_add_product">Añadir</string>
+    <string name="checkout_delete_product">Eliminar</string>
 </resources>

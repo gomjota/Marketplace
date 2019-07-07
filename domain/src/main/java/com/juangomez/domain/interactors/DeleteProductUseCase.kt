@@ -18,6 +18,7 @@ open class DeleteProductUseCase constructor(
 
     public override fun buildUseCaseCompletable(params: Product?): Completable {
         return cartRepository.getCart()
+            .take(1)
             .map {
                 it.removeProduct(params!!)
             }.flatMapCompletable {

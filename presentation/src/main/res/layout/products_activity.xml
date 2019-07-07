@@ -12,6 +12,10 @@
                 name="viewModel"
                 type="ProductsViewModel"/>
 
+        <variable
+                name="listener"
+                type="com.juangomez.presentation.viewmodels.ProductsListener"/>
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +27,8 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:paddingBottom="90dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:listitem="@layout/product_row"
                 tools:showIn="@layout/products_activity"/>
@@ -39,7 +45,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-                android:id="@+id/tv_empty_case"
+                android:id="@+id/empty_case"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -67,6 +73,8 @@
                 android:textColor="@android:color/white"
                 android:text="@{String.format(@string/cart_purchase, viewModel.productsInCart)}"
                 android:textSize="18sp"
+                android:onClick="@{ () -> listener.onCheckoutClicked() }"
+                android:clickable="true"
                 app:layout_constraintStart_toStartOf="@id/cart_view"
                 app:layout_constraintTop_toTopOf="@id/cart_view"/>
 

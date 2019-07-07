@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View"/>
+        <import type="com.juangomez.presentation.viewmodels.CheckoutViewModel"/>
+
+        <variable
+                name="viewModel"
+                type="CheckoutViewModel"/>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.juangomez.presentation.views.CheckoutActivity">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:paddingBottom="90dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:listitem="@layout/checkout_row"
+                tools:showIn="@layout/checkout_activity"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

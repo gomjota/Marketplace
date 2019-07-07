@@ -8,6 +8,7 @@ import com.juangomez.domain.interactors.GetCartUseCase
 import com.juangomez.domain.interactors.GetProductsUseCase
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.product.Product
+import com.juangomez.presentation.common.SingleLiveEvent
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
@@ -26,6 +27,7 @@ class ProductsViewModel(
     val isShowingEmptyCase = MutableLiveData<Boolean>()
     val productsInCart = MutableLiveData<Int>()
     val productsToShow = MediatorLiveData<List<ProductPresentationModel>>()
+    val checkoutOpen = SingleLiveEvent<Void>()
 
     private var products: List<Product> = emptyList()
 
@@ -45,6 +47,10 @@ class ProductsViewModel(
         val addProductDisposable = AddProductSubscriber()
         addProductUseCase.execute(addProductDisposable, products.find { it.code == code }!!)
         addDisposable(addProductDisposable)
+    }
+
+    override fun onCheckoutClicked() {
+        checkoutOpen.postValue(null)
     }
 
     inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
@@ -93,4 +99,6 @@ class ProductsViewModel(
 
 interface ProductsListener {
     fun onProductClicked(code: String)
+
+    fun onCheckoutClicked()
 }

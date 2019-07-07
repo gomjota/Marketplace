@@ -14,7 +14,7 @@ data class Cart(var items: MutableList<CartItem>) {
     }
 
     fun removeProduct(product: Product): Cart {
-        items.dropLastWhile { it.product.code == product.code }
+        this.items = items.apply { remove(product.toCartItemModel()) }
         return this
     }
 }
