@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.juangomez.presentation.R
 import com.juangomez.presentation.databinding.CheckoutActivityBinding
 import com.juangomez.presentation.models.CheckoutPresentationModel

@@ -19,12 +19,12 @@ class TwoForOneOffer : Offer() {
         cartAfterOffer.items
             .filter { it.product.code == CODE }
             .mapIndexed { index, item ->
-                if (index % 2 == 0) {
+                if ((index + 1) % 2 == 0) {
                     item.cartPrice = 0f
                 }
                 item
             }
-            .toMutableList()
+            ?.toMutableList()
 
         return cartAfterOffer
     }

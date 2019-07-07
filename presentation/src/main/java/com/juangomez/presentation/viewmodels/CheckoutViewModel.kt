@@ -2,6 +2,7 @@ package com.juangomez.presentation.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.juangomez.data.mappers.toEntity
 import com.juangomez.data.mappers.toModel
 import com.juangomez.domain.interactors.AddProductUseCase
@@ -24,6 +25,7 @@ class CheckoutViewModel(
     private val createCheckoutUseCase: CreateCheckoutUseCase
 ) : BaseViewModel(), CheckoutListener {
 
+    val isShowingEmptyCase = MutableLiveData<Boolean>()
     val checkoutProductsToShow = MediatorLiveData<List<CheckoutPresentationModel>>()
 
     private lateinit var cart: Cart
@@ -59,6 +61,7 @@ class CheckoutViewModel(
         override fun onNext(t: Checkout?) {
             cart = t!!.checkoutCart
             checkoutProductsToShow.postValue(t.toPresentationModel())
+            isShowingEmptyCase.postValue(t.checkoutCart.items.isEmpty())
             Log.d("OLE!", "OLE!")
         }
 

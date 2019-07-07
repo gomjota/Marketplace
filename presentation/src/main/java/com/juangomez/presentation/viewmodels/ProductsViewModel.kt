@@ -37,7 +37,9 @@ class ProductsViewModel(
         val getProductsDisposable = GetProductsSubscriber()
         getProductsUseCase.execute(getProductsDisposable)
         addDisposable(getProductsDisposable)
+    }
 
+    fun initCartSubscriber() {
         val getCartDisposable = GetCartSubscriber()
         getCartUseCase.execute(getCartDisposable)
         addDisposable(getCartDisposable)

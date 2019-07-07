@@ -1,6 +1,8 @@
 package com.juangomez.presentation.views
 
 import android.os.Bundle
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +30,11 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
         viewModel.productsToShow.observe(this, Observer { showProducts(it) })
         viewModel.checkoutOpen.observe(this, Observer { openCheckout() })
         viewModel.prepare()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.initCartSubscriber()
     }
 
     override fun configureBinding(binding: ProductsActivityBinding) {
