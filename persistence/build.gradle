@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: "kotlin-kapt"
+
+android {
+    compileSdkVersion androidConfiguration.compileSDK
+    buildToolsVersion androidConfiguration.buildTools
+
+    defaultConfig {
+        minSdkVersion androidConfiguration.minSDK
+        targetSdkVersion androidConfiguration.targetSDK
+
+        versionCode getVersionCodeFromProperties()
+        versionName getVersionNameFromProperties()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation(
+            kotlin.stdlib,
+            rx.rxKotlin,
+            room.runtime,
+            room.ktx,
+            room.rxjava,
+            gson.gson
+    )
+
+    kapt room.compiler
+
+    testImplementation(
+            junit.junit,
+            robolectric.robolectric
+    )
+
+    androidTestImplementation(
+            androidxTest.runner,
+            androidxTest.rules,
+            androidxTest.core,
+            junit.junitX,
+            room.testing,
+            arch.arch
+    )
+
+
+    implementation project(":data")
+}
+

@@ -8,6 +8,4 @@ import io.reactivex.Single
 interface ProductRepository {
 
     fun getProducts(): Single<List<Product>>
-
-    fun setProducts(products: List<Product>): Completable
 }

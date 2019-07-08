@@ -5,6 +5,7 @@ import java.time.LocalDate
 
 class TwoForOneOffer : Offer() {
 
+    private val OFFER_CODE = "TWO FOR ONE"
     private val EXPIRATION = LocalDate.parse("2020-01-01")
     private val CODE = "VOUCHER"
 
@@ -21,10 +22,11 @@ class TwoForOneOffer : Offer() {
             .mapIndexed { index, item ->
                 if ((index + 1) % 2 == 0) {
                     item.cartPrice = 0f
+                    item.offerApplied = OFFER_CODE
                 }
                 item
             }
-            ?.toMutableList()
+            .toMutableList()
 
         return cartAfterOffer
     }

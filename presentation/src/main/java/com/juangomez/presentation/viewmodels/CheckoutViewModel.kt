@@ -7,10 +7,12 @@ import com.juangomez.data.mappers.toEntity
 import com.juangomez.data.mappers.toModel
 import com.juangomez.domain.interactors.AddProductUseCase
 import com.juangomez.domain.interactors.CreateCheckoutUseCase
+import com.juangomez.domain.interactors.DeleteCartUseCase
 import com.juangomez.domain.interactors.DeleteProductUseCase
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.checkout.Checkout
 import com.juangomez.domain.models.product.Product
+import com.juangomez.presentation.common.SingleLiveEvent
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
 import com.juangomez.presentation.models.ProductPresentationModel
@@ -22,11 +24,18 @@ import io.reactivex.subscribers.DisposableSubscriber
 class CheckoutViewModel(
     private val addProductUseCase: AddProductUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
+    private val deleteCartUseCase: DeleteCartUseCase,
     private val createCheckoutUseCase: CreateCheckoutUseCase
 ) : BaseViewModel(), CheckoutListener {
 
-    val isShowingEmptyCase = MutableLiveData<Boolean>()
+    companion object {
+        val TAG = "CHECKOUT_VIEWMODEL"
+    }
+
     val checkoutPrice = MutableLiveData<Float>()
+    val paymentDone = SingleLiveEvent<Void>()
+    val cartEmpty = SingleLiveEvent<Void>()
+    val error = SingleLiveEvent<Void>()
     val checkoutProductsToShow = MediatorLiveData<List<CheckoutPresentationModel>>()
 
     private lateinit var cart: Cart
@@ -53,26 +62,33 @@ class CheckoutViewModel(
         addDisposable(deleteProductDisposable)
     }
 
-    override fun onPayClicked() {
+    private fun deleteCart() {
+        val deleteCartDisposable = DeleteCartSubscriber()
+        deleteCartUseCase.execute(deleteCartDisposable)
+        addDisposable(deleteCartDisposable)
+    }
 
+    override fun onPayClicked() {
+        deleteCart()
     }
 
     inner class CreateCheckoutSubscriber : DisposableSubscriber<Checkout>() {
 
         override fun onComplete() {
-
+            Log.d(TAG, "CREATE CHECKOUT COMPLETED")
         }
 
         override fun onNext(t: Checkout?) {
+            Log.d(TAG, "CREATE CHECKOUT NEXT")
             cart = t!!.checkoutCart
             checkoutProductsToShow.postValue(t.toPresentationModel())
-            isShowingEmptyCase.postValue(t.checkoutCart.items.isEmpty())
+            if(t.checkoutCart.items.isEmpty()) cartEmpty.postValue(null)
             checkoutPrice.postValue(t.checkoutCart.totalPrice)
-            Log.d("OLE!", "OLE!")
         }
 
         override fun onError(e: Throwable) {
-            Log.d("ERROR!", "ERROR!")
+            Log.d(TAG, "ERROR CREATING CHECKOUT")
+            error.postValue(null)
         }
 
     }
@@ -80,11 +96,12 @@ class CheckoutViewModel(
     inner class AddProductSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Log.d("COMPLETADO!", "COMPLETADO!")
+            Log.d(TAG, "ADD PRODUCT COMPLETED")
         }
 
         override fun onError(e: Throwable) {
-            Log.d("ERROR!", "ERROR!")
+            Log.d(TAG, "ERROR ADDING PRODUCT")
+            error.postValue(null)
         }
 
     }
@@ -92,11 +109,25 @@ class CheckoutViewModel(
     inner class DeleteProductSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Log.d("COMPLETADO!", "COMPLETADO!")
+            Log.d(TAG, "DELETE PRODUCT COMPLETED")
         }
 
         override fun onError(e: Throwable) {
-            Log.d("ERROR!", "ERROR!")
+            Log.d(TAG, "ERROR DELETING PRODUCT")
+            error.postValue(null)
+        }
+    }
+
+    inner class DeleteCartSubscriber : DisposableCompletableObserver() {
+
+        override fun onComplete() {
+            Log.d(TAG, "DELETE CART COMPLETED")
+            paymentDone.postValue(null)
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d(TAG, "ERROR DELETING CART")
+            error.postValue(null)
         }
 
     }

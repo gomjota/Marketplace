@@ -5,4 +5,10 @@
     <string name="checkout_delete_product">Delete</string>
     <string name="checkout_pay">Pay %.1f€</string>
     <string name="checkout_activity_title">Cart</string>
+    <string name="two_for_one_offer">2x1 offer!</string>
+    <string name="bulk_offer">Bulk offer!</string>
+    <string name="empty">No offer</string>
+    <string name="empty_case">¯\_(ツ)_/¯</string>
+    <string name="purchase_completed">Pago completado. Gracias :)</string>
+    <string name="generic_error">Ups! Something wrong :(</string>
 </resources>

@@ -33,21 +33,6 @@
                 tools:listitem="@layout/checkout_row"
                 tools:showIn="@layout/checkout_activity"/>
 
-        <TextView
-                android:id="@+id/empty_case"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="¯\\_(ツ)_/¯"
-                android:textColor="@color/colorAccent"
-                android:textSize="40sp"
-                android:visibility="@{ viewModel.isShowingEmptyCase ? View.VISIBLE : View.GONE }"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible"/>
-
         <View
                 android:id="@+id/checkout_view"
                 android:layout_width="match_parent"
@@ -65,7 +50,7 @@
                 app:layout_constraintStart_toStartOf="@id/checkout_view"
                 android:textColor="@android:color/white"
                 android:text="@{String.format(@string/checkout_pay, viewModel.checkoutPrice)}"
-                android:textSize="18sp"
+                android:textAppearance="@style/BodyAppearance"
                 android:onClick="@{ () -> listener.onPayClicked() }"
                 android:clickable="true"
                 app:layout_constraintTop_toTopOf="@id/checkout_view"/>

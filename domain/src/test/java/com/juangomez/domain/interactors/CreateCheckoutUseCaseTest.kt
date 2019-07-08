@@ -7,6 +7,8 @@ import com.juangomez.domain.models.cart.CartItem
 import com.juangomez.domain.models.offer.BulkOffer
 import com.juangomez.domain.models.offer.TwoForOneOffer
 import com.juangomez.domain.models.product.Product
+import com.juangomez.domain.repositories.CartRepository
+import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +29,9 @@ class CreateCheckoutUseCaseTest {
     private lateinit var bulkOffer: BulkOffer
 
     @Mock
+    private lateinit var mockCartRepository: CartRepository
+
+    @Mock
     private lateinit var mockThreadExecutor: ThreadExecutor
 
     @Mock
@@ -35,6 +40,7 @@ class CreateCheckoutUseCaseTest {
     @Before
     fun setUp() {
         createCheckoutUseCase = CreateCheckoutUseCase(
+            mockCartRepository,
             twoForOneOffer,
             bulkOffer,
             mockThreadExecutor,
@@ -43,7 +49,7 @@ class CreateCheckoutUseCaseTest {
     }
 
     @Test
-    fun buildUseCaseCompletes() {
+    fun buildUseCaseNoErrors() {
         val cart = Cart(
             mutableListOf(
                 CartItem(
@@ -52,13 +58,19 @@ class CreateCheckoutUseCaseTest {
             )
         )
 
-        Mockito.`when`(twoForOneOffer.applyOffer(cart))
-            .thenReturn(any())
+        Mockito.`when`(mockCartRepository.getCart())
+            .thenReturn(Flowable.just(cart))
 
-        createCheckoutUseCase.buildUseCaseSingle(cart)
+        Mockito.`when`(twoForOneOffer.applyOffer(cart))
+            .thenReturn(cart)
+
+        createCheckoutUseCase.buildUseCaseFlowable()
             .test()
             .assertNoErrors()
-            .assertComplete()
+
+        Mockito.verify(mockCartRepository, Mockito.times(1)).getCart()
+        Mockito.verify(twoForOneOffer, Mockito.times(1)).applyOffer(cart)
+
     }
 
 }

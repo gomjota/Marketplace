@@ -50,28 +50,29 @@ class DeleteProductUseCaseTest {
 
         val productToDelete = Product("VOUCHER", "Cabify Voucher", 5f)
 
-        stubCartRepositoryGetCart(Flowable.just(cart))
-        stubCartRepositorySetCart(cart, Completable.complete())
+        stubCartRepositoryGetCart(cart)
+        stubCartRepositoryDeleteCart(Completable.complete())
         deleteProductUseCase.buildUseCaseCompletable(productToDelete)
             .test()
+            .assertNoErrors()
             .assertComplete()
 
-        verifyNumberOfInvocations(cart)
+        verifyNumberOfInvocations()
     }
 
-    private fun stubCartRepositoryGetCart(single: Flowable<Cart>) {
+    private fun stubCartRepositoryGetCart(cart: Cart) {
         Mockito.`when`(mockCartRepository.getCart())
-            .thenReturn(single)
+            .thenReturn(Flowable.just(cart))
     }
 
-    private fun stubCartRepositorySetCart(cart: Cart, completable: Completable) {
-        Mockito.`when`(mockCartRepository.setCart(cart))
+    private fun stubCartRepositoryDeleteCart(completable: Completable) {
+        Mockito.`when`(mockCartRepository.deleteCart())
             .thenReturn(completable)
     }
 
-    private fun verifyNumberOfInvocations(cart: Cart) {
+    private fun verifyNumberOfInvocations() {
         Mockito.verify(mockCartRepository, Mockito.times(1)).getCart()
-        Mockito.verify(mockCartRepository, Mockito.times(1)).setCart(cart)
+        Mockito.verify(mockCartRepository, Mockito.times(1)).deleteCart()
     }
 
 }

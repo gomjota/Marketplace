@@ -2,8 +2,7 @@ package com.juangomez.data.repositories
 
 import com.juangomez.data.entities.CartEntity
 import com.juangomez.data.entities.ProductEntity
-import com.juangomez.data.repositories.CartRepositoryImpl
-import com.juangomez.data.sources.database.DatabaseCartSource
+import com.juangomez.data.sources.persistence.DatabaseCartSource
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.cart.CartItem
 import com.juangomez.domain.models.product.Product
@@ -70,8 +69,6 @@ class CartRepositoryImplTest {
     private fun stubDatabaseCartSourceInsertCart(cartEntity: CartEntity, completable: Completable) {
         Mockito.`when`(mockDatabaseCartSource.insertCart(cartEntity))
             .thenReturn(completable)
-        Mockito.`when`(mockDatabaseCartSource.deleteCart())
-            .thenReturn(completable)
     }
 
     private fun verifyNumberOfInvocationsWhenGetCart() {
@@ -79,7 +76,6 @@ class CartRepositoryImplTest {
     }
 
     private fun verifyNumberOfInvocationsWhenInsertCart(cartEntity: CartEntity) {
-        Mockito.verify(mockDatabaseCartSource, Mockito.times(1)).deleteCart()
         Mockito.verify(mockDatabaseCartSource, Mockito.times(1)).insertCart(cartEntity)
     }
 

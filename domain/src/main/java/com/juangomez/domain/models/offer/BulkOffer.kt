@@ -5,8 +5,9 @@ import java.time.LocalDate
 
 class BulkOffer : Offer() {
 
+    private val OFFER_CODE = "BULK"
     private val EXPIRATION = LocalDate.parse("2020-01-01")
-    private val CODE = "TSHIRT"
+    private val PRODUCT_CODE = "TSHIRT"
     private val PRICE_PER_UNIT = 19f
 
     override fun applyOffer(cart: Cart): Cart {
@@ -18,10 +19,11 @@ class BulkOffer : Offer() {
             .toMutableList()
 
         cartAfterOffer.items
-            .filter { it.product.code == CODE }
+            .filter { it.product.code == PRODUCT_CODE }
             .takeIf { it.count() >= 3 }
             ?.map {
                 it.cartPrice = PRICE_PER_UNIT
+                it.offerApplied = OFFER_CODE
                 it
             }
             ?.union(cart.items)

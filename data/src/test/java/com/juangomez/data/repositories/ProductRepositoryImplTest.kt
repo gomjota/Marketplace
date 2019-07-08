@@ -1,12 +1,10 @@
 package com.juangomez.data.repositories
 
 import com.juangomez.data.entities.ProductEntity
-import com.juangomez.data.sources.database.DatabaseProductsSource
 import com.juangomez.data.sources.remote.RemoteProductsSource
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.ProductRepository
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -22,80 +20,28 @@ class ProductRepositoryImplTest {
     private lateinit var productRepository: ProductRepository
 
     @Mock
-    private lateinit var mockDatabaseProductSource: DatabaseProductsSource
-
-    @Mock
     private lateinit var mockRemoteProductSource: RemoteProductsSource
 
     @Before
     fun setup() {
         productRepository = ProductRepositoryImpl(
-            mockRemoteProductSource,
-            mockDatabaseProductSource
+            mockRemoteProductSource
         )
     }
 
     @Test
-    fun `should get products from remote if database is empty`() {
+    fun `should get products from remote`() {
         val products = listOf(
             ProductEntity("VOUCHER", "Cabify Voucher", 5f)
         )
-
-        Mockito.`when`(mockDatabaseProductSource.getProducts())
-            .thenReturn(Single.error(Exception()))
 
         Mockito.`when`(mockRemoteProductSource.getProducts())
             .thenReturn(Single.just(products))
 
         productRepository.getProducts()
             .test()
-            .assertNotComplete()
+            .assertComplete()
 
-        Mockito.verify(mockDatabaseProductSource, Mockito.times(1)).getProducts()
         Mockito.verify(mockRemoteProductSource, Mockito.times(1)).getProducts()
     }
-
-    @Test
-    fun `should get products from database if database have data`() {
-        val products = listOf(
-            ProductEntity("VOUCHER", "Cabify Voucher", 5f)
-        )
-
-        Mockito.`when`(mockDatabaseProductSource.getProducts())
-            .thenReturn(Single.just(products))
-
-        Mockito.`when`(mockRemoteProductSource.getProducts())
-            .thenReturn(Single.just(products))
-
-        productRepository.getProducts()
-            .test()
-            .assertNoErrors()
-            .assertComplete()
-
-        Mockito.verify(mockDatabaseProductSource, Mockito.times(1)).getProducts()
-        Mockito.verify(mockRemoteProductSource, Mockito.times(0)).getProducts()
-    }
-
-    @Test
-    fun `should insert product in database`() {
-        val products = listOf(
-            Product("VOUCHER", "Cabify Voucher", 5f)
-        )
-
-        val productEntities = listOf(
-            ProductEntity("VOUCHER", "Cabify Voucher", 5f)
-        )
-
-        Mockito.`when`(mockDatabaseProductSource.insertProducts(productEntities))
-            .thenReturn(Completable.complete())
-
-        productRepository.setProducts(products)
-            .test()
-            .assertNoErrors()
-            .assertComplete()
-
-        Mockito.verify(mockDatabaseProductSource, Mockito.times(1))
-            .insertProducts(productEntities)
-    }
-
 }

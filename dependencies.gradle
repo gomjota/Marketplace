@@ -36,6 +36,8 @@ ext {
 
     def koinVersion = "1.0.1"
 
+    def espressoVersion = "3.1.0"
+
     configPlugins = [
             androidPlugin: "com.android.tools.build:gradle:${androidPluginVersion}",
             mavenPlugin  : "com.github.dcendents:android-maven-gradle-plugin:${mavenPluginVersion}",
@@ -116,5 +118,9 @@ ext {
             viewModel: "org.koin:koin-android-viewmodel:${koinVersion}",
             android  : "org.koin:koin-android:${koinVersion}",
             core     : "org.koin:koin-core:${koinVersion}"
+    ]
+
+    espresso = [
+            core: "androidx.test.espresso:espresso-core:${espressoVersion}"
     ]
 }

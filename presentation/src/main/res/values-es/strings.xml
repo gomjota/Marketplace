@@ -6,4 +6,10 @@
     <string name="checkout_delete_product">Eliminar</string>
     <string name="checkout_pay">Pagar %.1f€</string>
     <string name="checkout_activity_title">Cesta</string>
+    <string name="two_for_one_offer">¡Oferta 2x1!</string>
+    <string name="bulk_offer">¡Oferta por cantidad!</string>
+    <string name="empty">Sin oferta</string>
+    <string name="empty_case">¯\_(ツ)_/¯</string>
+    <string name="purchase_completed">Payment done. Thanks :)</string>
+    <string name="generic_error">¡Ups! Se ha producido un error</string>
 </resources>

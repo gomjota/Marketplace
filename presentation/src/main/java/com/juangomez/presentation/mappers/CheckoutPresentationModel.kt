@@ -11,7 +11,8 @@ fun Checkout.toPresentationModel(): List<CheckoutPresentationModel> {
                 it.key,
                 it.value[0].product.name,
                 it.value.sumByDouble { it.cartPrice.toDouble() }.toString(),
-                it.value.size.toString()
+                it.value.size.toString(),
+                it.value.find { it.offerApplied != null }?.offerApplied
             )
         }.sortedBy { it.code }
 }

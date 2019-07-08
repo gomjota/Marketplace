@@ -2,7 +2,7 @@ package com.juangomez.data.repositories
 
 import com.juangomez.data.mappers.toEntity
 import com.juangomez.data.mappers.toModel
-import com.juangomez.data.sources.database.DatabaseCartSource
+import com.juangomez.data.sources.persistence.DatabaseCartSource
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.repositories.CartRepository
 import io.reactivex.Completable

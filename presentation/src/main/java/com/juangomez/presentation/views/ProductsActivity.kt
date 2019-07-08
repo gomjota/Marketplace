@@ -29,6 +29,7 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
         initializeRecyclerView()
         viewModel.productsToShow.observe(this, Observer { showProducts(it) })
         viewModel.checkoutOpen.observe(this, Observer { openCheckout() })
+        viewModel.error.observe(this, Observer { showError() })
         viewModel.prepare()
     }
 

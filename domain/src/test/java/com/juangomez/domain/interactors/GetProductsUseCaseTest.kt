@@ -5,6 +5,7 @@ import com.juangomez.domain.executor.ThreadExecutor
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.ProductRepository
 import io.reactivex.Flowable
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +38,7 @@ class GetProductsUseCaseTest {
 
     @Test
     fun buildUseCaseCallsRepository() {
-        getProductsUseCase.buildUseCaseFlowable(null)
+        getProductsUseCase.buildUseCaseSingle(null)
         Mockito.verify(mockProductsRepository).getProducts()
     }
 
@@ -45,8 +46,8 @@ class GetProductsUseCaseTest {
     fun buildUseCaseCompletes() {
         val products = emptyList<Product>()
 
-        stubProductsRepositoryGetProducts(Flowable.just(products))
-        getProductsUseCase.buildUseCaseFlowable(null)
+        stubProductsRepositoryGetProducts(Single.just(products))
+        getProductsUseCase.buildUseCaseSingle(null)
             .test()
             .assertComplete()
     }
@@ -58,13 +59,13 @@ class GetProductsUseCaseTest {
             Product("TSHIRT", "Cabify Tshirt", 20f)
         )
 
-        stubProductsRepositoryGetProducts(Flowable.just(products))
-        getProductsUseCase.buildUseCaseFlowable(null)
+        stubProductsRepositoryGetProducts(Single.just(products))
+        getProductsUseCase.buildUseCaseSingle(null)
             .test()
             .assertValue(products)
     }
 
-    private fun stubProductsRepositoryGetProducts(single: Flowable<List<Product>>) {
+    private fun stubProductsRepositoryGetProducts(single: Single<List<Product>>) {
         Mockito.`when`(mockProductsRepository.getProducts())
             .thenReturn(single)
     }

@@ -23,11 +23,16 @@ class ProductsViewModel(
     private val getCartUseCase: GetCartUseCase
 ) : BaseViewModel(), ProductsListener {
 
+    companion object {
+        val TAG = "PRODUCTS_VIEWMODEL"
+    }
+
     val isLoading = MutableLiveData<Boolean>()
     val isShowingEmptyCase = MutableLiveData<Boolean>()
     val productsInCart = MutableLiveData<Int>()
     val productsToShow = MediatorLiveData<List<ProductPresentationModel>>()
     val checkoutOpen = SingleLiveEvent<Void>()
+    val error = SingleLiveEvent<Void>()
 
     private var products: List<Product> = emptyList()
 
@@ -57,13 +62,16 @@ class ProductsViewModel(
 
     inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
         override fun onSuccess(t: List<Product>) {
+            Log.d(TAG, "GET PRODUCTS SUCCESS")
             isLoading.postValue(false)
             products = t
             productsToShow.postValue(t.toPresentationModel())
         }
 
         override fun onError(exception: Throwable) {
+            Log.d(TAG, "ERROR GETTING PRODUCTS")
             isLoading.postValue(false)
+            error.postValue(null)
             isShowingEmptyCase.postValue(true)
         }
 
@@ -72,11 +80,12 @@ class ProductsViewModel(
     inner class AddProductSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Log.d("COMPLETADO!", "COMPLETADO!")
+            Log.d(TAG, "ADD PRODUCT COMPLETED")
         }
 
         override fun onError(e: Throwable) {
-            Log.d("ERROR!", "ERROR!")
+            Log.d(TAG, "ERROR ADDING PRODUCT")
+            error.postValue(null)
         }
 
     }
@@ -84,16 +93,17 @@ class ProductsViewModel(
     inner class GetCartSubscriber : DisposableSubscriber<Cart>() {
 
         override fun onComplete() {
-
+            Log.d(TAG, "GET CART COMPLETED")
         }
 
         override fun onNext(t: Cart) {
-            Log.d("OLE!", "PRODUCTO ANADIDO!")
+            Log.d(TAG, "GET CART NEXT")
             productsInCart.postValue(t.items.size)
         }
 
         override fun onError(t: Throwable?) {
-
+            Log.d(TAG, "ERROR GETTING CART")
+            error.postValue(null)
         }
     }
 

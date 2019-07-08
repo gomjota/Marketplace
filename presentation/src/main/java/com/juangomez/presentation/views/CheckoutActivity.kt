@@ -3,6 +3,7 @@ package com.juangomez.presentation.views
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -35,6 +36,9 @@ class CheckoutActivity : BaseActivity<CheckoutActivityBinding>() {
         initializeAdapter()
         initializeRecyclerView()
         viewModel.checkoutProductsToShow.observe(this, Observer { showCheckoutProducts(it) })
+        viewModel.paymentDone.observe(this, Observer { showPaymentCompleted() })
+        viewModel.cartEmpty.observe(this, Observer { finishActivity() })
+        viewModel.error.observe(this, Observer { showError() })
         viewModel.prepare()
     }
 
@@ -57,5 +61,17 @@ class CheckoutActivity : BaseActivity<CheckoutActivityBinding>() {
         adapter.clear()
         adapter.addAll(checkout)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun showPaymentCompleted() = runOnUiThread {
+        Toast.makeText(
+            this,
+            getString(R.string.purchase_completed),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun finishActivity() = runOnUiThread {
+        this.finish()
     }
 }
