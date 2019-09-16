@@ -1,4 +1,4 @@
-# Cabify Marketplace
+# Marketplace
 
 This project shows the implementation of a marketplace in Kotlin using Rx.
 
