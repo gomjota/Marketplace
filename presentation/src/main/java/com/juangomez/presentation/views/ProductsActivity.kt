@@ -1,5 +1,7 @@
 package com.juangomez.presentation.views
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -22,6 +24,13 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
     override val layoutId: Int = R.layout.products_activity
 
     private lateinit var adapter: ProductsAdapter
+
+    companion object {
+        fun open(activity: Activity) {
+            val intent = Intent(activity, ProductsActivity::class.java)
+            activity.startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +69,6 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
     }
 
     private fun openCheckout() = runOnUiThread {
-        CheckoutActivity.open(
-            activity = this
-        )
+        CheckoutActivity.open(this)
     }
 }

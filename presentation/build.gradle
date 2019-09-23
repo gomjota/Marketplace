@@ -36,6 +36,8 @@ dependencies {
             kotlin.stdlib,
             rx.rxKotlin,
             rx.rxAndroid,
+            coroutines.core,
+            coroutines.android,
             support.appCompat,
             support.constraintlayout,
             support.recyclerview,

@@ -20,6 +20,7 @@ import com.juangomez.presentation.BuildConfig.DEBUG
 import com.juangomez.presentation.common.UiThread
 import com.juangomez.presentation.viewmodels.CheckoutViewModel
 import com.juangomez.presentation.viewmodels.ProductsViewModel
+import com.juangomez.presentation.viewmodels.SplashViewModel
 import com.juangomez.remote.api.RemoteProductsApi
 import com.juangomez.remote.services.createNetworkClient
 import com.juangomez.remote.sources.RemoteProductsSourceImpl
@@ -139,6 +140,10 @@ val domainModules = module {
 }
 
 val presentationModules = module {
+    viewModel {
+        SplashViewModel()
+    }
+
     viewModel {
         ProductsViewModel(get(GET_PRODUCTS_USE_CASE), get(ADD_PRODUCT_USE_CASE), get(GET_CART_USE_CASE))
     }

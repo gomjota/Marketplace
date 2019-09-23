@@ -2,7 +2,7 @@ ext {
 
     def minSDKVersion = 26
     def targetSDKVersion = 28
-    def buildToolsVersion = "28.0.2"
+    def buildToolsVersion = "28.0.3"
     def compileSDKVersion = 28
 
     androidConfiguration = [
