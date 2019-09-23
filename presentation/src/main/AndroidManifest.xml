@@ -18,8 +18,9 @@
 
         <activity
                 android:name="com.juangomez.presentation.views.SplashActivity"
-                android:theme="@style/AppTheme.SplashScreen"
-                android:screenOrientation="portrait">
+                android:noHistory="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
