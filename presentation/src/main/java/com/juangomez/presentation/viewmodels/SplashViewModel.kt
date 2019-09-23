@@ -1,5 +1,6 @@
 package com.juangomez.presentation.viewmodels
 
+import com.juangomez.presentation.BuildConfig
 import com.juangomez.presentation.common.SingleLiveEvent
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
 import kotlinx.coroutines.GlobalScope
@@ -12,7 +13,7 @@ class SplashViewModel : BaseViewModel() {
 
     init {
         GlobalScope.launch {
-            delay(3000)
+            delay(BuildConfig.DEFAULT_SPLASH_TIME)
             nextView.postValue(SplashState.MainActivity)
         }
     }

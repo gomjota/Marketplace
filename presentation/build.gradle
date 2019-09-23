@@ -15,6 +15,7 @@ android {
         versionName getVersionNameFromProperties()
 
         buildConfigField "String", "BASE_URL", '"https://api.myjson.com"'
+        buildConfigField "Long", "DEFAULT_SPLASH_TIME", '3000'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
