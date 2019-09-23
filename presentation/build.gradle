@@ -39,6 +39,7 @@ dependencies {
             rx.rxAndroid,
             coroutines.core,
             coroutines.android,
+            timber.timber,
             support.appCompat,
             support.constraintlayout,
             support.recyclerview,

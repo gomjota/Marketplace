@@ -1,6 +1,5 @@
 package com.juangomez.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.juangomez.domain.interactors.AddProductUseCase
@@ -13,19 +12,15 @@ import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
 import io.reactivex.observers.DisposableCompletableObserver
-import io.reactivex.observers.DisposableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.subscribers.DisposableSubscriber
+import timber.log.Timber
 
 class ProductsViewModel(
     private val getProductsUseCase: GetProductsUseCase,
     private val addProductUseCase: AddProductUseCase,
     private val getCartUseCase: GetCartUseCase
 ) : BaseViewModel(), ProductsListener {
-
-    companion object {
-        val TAG = "PRODUCTS_VIEWMODEL"
-    }
 
     val isLoading = MutableLiveData<Boolean>()
     val isShowingEmptyCase = MutableLiveData<Boolean>()
@@ -62,14 +57,14 @@ class ProductsViewModel(
 
     inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
         override fun onSuccess(t: List<Product>) {
-            Log.d(TAG, "GET PRODUCTS SUCCESS")
+            Timber.d("GET PRODUCTS SUCCESS")
             isLoading.postValue(false)
             products = t
             productsToShow.postValue(t.toPresentationModel())
         }
 
         override fun onError(exception: Throwable) {
-            Log.d(TAG, "ERROR GETTING PRODUCTS")
+            Timber.d("ERROR GETTING PRODUCTS")
             isLoading.postValue(false)
             error.postValue(null)
             isShowingEmptyCase.postValue(true)
@@ -80,11 +75,11 @@ class ProductsViewModel(
     inner class AddProductSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Log.d(TAG, "ADD PRODUCT COMPLETED")
+            Timber.d("ADD PRODUCT COMPLETED")
         }
 
         override fun onError(e: Throwable) {
-            Log.d(TAG, "ERROR ADDING PRODUCT")
+            Timber.d("ERROR ADDING PRODUCT")
             error.postValue(null)
         }
 
@@ -93,16 +88,16 @@ class ProductsViewModel(
     inner class GetCartSubscriber : DisposableSubscriber<Cart>() {
 
         override fun onComplete() {
-            Log.d(TAG, "GET CART COMPLETED")
+            Timber.d("GET CART COMPLETED")
         }
 
         override fun onNext(t: Cart) {
-            Log.d(TAG, "GET CART NEXT")
+            Timber.d("GET CART NEXT")
             productsInCart.postValue(t.items.size)
         }
 
         override fun onError(t: Throwable?) {
-            Log.d(TAG, "ERROR GETTING CART")
+            Timber.d("ERROR GETTING CART")
             error.postValue(null)
         }
     }
