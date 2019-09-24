@@ -15,7 +15,7 @@ android {
         versionName getVersionNameFromProperties()
 
         buildConfigField "String", "BASE_URL", '"https://api.myjson.com"'
-        buildConfigField "Long", "DEFAULT_SPLASH_TIME", '3000'
+        buildConfigField "long", "DEFAULT_SPLASH_TIME", '3000L'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -55,6 +55,7 @@ dependencies {
 
     androidTestImplementation(
             espresso.core,
+            espresso.intents,
             androidxTest.runner,
             androidxTest.rules,
             androidxTest.core,

@@ -134,6 +134,7 @@ ext {
     ]
 
     espresso = [
-            core: "androidx.test.espresso:espresso-core:${espressoVersion}"
+            core: "androidx.test.espresso:espresso-core:${espressoVersion}",
+            intents: "androidx.test.espresso:espresso-intents:${espressoVersion}"
     ]
 }
