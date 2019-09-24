@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
-class SplashScreenTest {
+class SplashActivityTest {
 
     @Before
     fun setup() {
@@ -38,6 +38,7 @@ class SplashScreenTest {
     fun shouldKeepSplashThenNavigateToProducts() {
         activityTestRule.launchActivity(null)
         val idlingResource = ElapsedTimeIdlingResource(BuildConfig.DEFAULT_SPLASH_TIME)
+
         IdlingRegistry.getInstance().register(idlingResource)
         intended(hasComponent(ProductsActivity::class.java.name))
         IdlingRegistry.getInstance().unregister(idlingResource)

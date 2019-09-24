@@ -16,7 +16,7 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.subscribers.DisposableSubscriber
 import timber.log.Timber
 
-class ProductsViewModel(
+open class ProductsViewModel(
     private val getProductsUseCase: GetProductsUseCase,
     private val addProductUseCase: AddProductUseCase,
     private val getCartUseCase: GetCartUseCase

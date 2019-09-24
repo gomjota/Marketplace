@@ -13,7 +13,11 @@ ext {
 
     def roomVersion = "2.1.0"
 
-    def mockitoVersion = "2.28.2"
+    def mockitoVersion = "3.0.0"
+
+    def mockkVersion = "1.9.3.kotlin12"
+
+    def mockitoKotlinVersion = "2.2.0"
 
     def androidxTestVersion = "1.2.0"
 
@@ -80,7 +84,12 @@ ext {
     mockito = [
             core   : "org.mockito:mockito-core:${mockitoVersion}",
             android: "org.mockito:mockito-android:${mockitoVersion}",
-            inline : "org.mockito:mockito-inline:${mockitoVersion}"
+            inline : "org.mockito:mockito-inline:${mockitoVersion}",
+            kotlin : "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
+    ]
+
+    mockk = [
+            mockk: "io.mockk:mockk-android:${mockkVersion}"
     ]
 
     androidxTest = [
@@ -130,7 +139,8 @@ ext {
     koin = [
             viewModel: "org.koin:koin-android-viewmodel:${koinVersion}",
             android  : "org.koin:koin-android:${koinVersion}",
-            core     : "org.koin:koin-core:${koinVersion}"
+            core     : "org.koin:koin-core:${koinVersion}",
+            test     : "org.koin:koin-test:${koinVersion}"
     ]
 
     espresso = [
