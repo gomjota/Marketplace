@@ -124,7 +124,7 @@ ext {
     ]
 
     arch = [
-            arch: "androidx.arch.core:core-testing:${archVersion}"
+            test: "androidx.arch.core:core-testing:${archVersion}"
     ]
 
     support = [
@@ -145,6 +145,7 @@ ext {
 
     espresso = [
             core: "androidx.test.espresso:espresso-core:${espressoVersion}",
-            intents: "androidx.test.espresso:espresso-intents:${espressoVersion}"
+            intents: "androidx.test.espresso:espresso-intents:${espressoVersion}",
+            contrib: "androidx.test.espresso:espresso-contrib:${espressoVersion}"
     ]
 }

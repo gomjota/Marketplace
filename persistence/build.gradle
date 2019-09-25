@@ -47,7 +47,7 @@ dependencies {
             androidxTest.core,
             junit.junitX,
             room.testing,
-            arch.arch
+            arch.test
     )
 
 

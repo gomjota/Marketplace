@@ -56,11 +56,13 @@ dependencies {
     androidTestImplementation(
             espresso.core,
             espresso.intents,
+            espresso.contrib,
             koin.android,
             mockk.mockk,
             androidxTest.runner,
             androidxTest.rules,
             androidxTest.core,
+            arch.test,
             junit.junitX
     )
 
