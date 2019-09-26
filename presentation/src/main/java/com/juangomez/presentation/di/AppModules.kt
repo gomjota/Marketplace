@@ -29,43 +29,21 @@ import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import retrofit2.Retrofit
 
-private val RETROFIT_INSTANCE = "retrofit_instance"
-private val API = "api"
-private val REMOTE_PRODUCT_SOURCE = "remote_product_source"
-
-private val DATABASE = "database"
-private val DATABASE_CART_SOURCE = "database_cart_source"
-private val DATABASE_PRODUCT_SOURCE = "database_product_source"
-
-private val DATA_CART_REPOSITORY = "data_cart_repository"
-private val DATA_PRODUCT_REPOSITORY = "data_product_repository"
-private val JOB_EXECUTOR = "job_executor"
-
-private val TWO_FOR_ONE_OFFER = "two_for_one_offer"
-private val BULK_OFFER = "bulk_offer"
-private val ADD_PRODUCT_USE_CASE = "add_product_use_case"
-private val CREATE_CHECKOUT_USE_CASE = "create_checkout_use_case"
-private val DELETE_PRODUCT_USE_CASE = "delete_product_use_case"
-private val GET_CART_USE_CASE = "get_cart_use_case"
-private val DELETE_CART_USE_CASE = "delete_cart_use_case"
-private val GET_PRODUCTS_USE_CASE = "get_products_use_case"
-
-private val UI_THREAD = "ui_thread"
 
 val remoteModules = module {
-    single(name = RETROFIT_INSTANCE) { createNetworkClient(BASE_URL, DEBUG) }
+    single { createNetworkClient(BASE_URL, DEBUG) }
 
-    single(name = API) {
-        (get(RETROFIT_INSTANCE) as Retrofit).create(RemoteProductsApi::class.java)
+    single {
+        (get() as Retrofit).create(RemoteProductsApi::class.java)
     }
 
-    single(name = REMOTE_PRODUCT_SOURCE) {
-        RemoteProductsSourceImpl(get(API)) as RemoteProductsSource
+    single {
+        RemoteProductsSourceImpl(get()) as RemoteProductsSource
     }
 }
 
 val databaseModules = module {
-    single(name = DATABASE) {
+    single  {
         Room.databaseBuilder(
             androidApplication(),
             MarketplaceDatabase::class.java,
@@ -76,66 +54,66 @@ val databaseModules = module {
             .build()
     }
 
-    single(name = DATABASE_CART_SOURCE) {
-        DatabaseCartSourceImpl(get(DATABASE)) as DatabaseCartSource
+    single {
+        DatabaseCartSourceImpl(get()) as DatabaseCartSource
     }
 }
 
 val dataModules = module {
-    single(DATA_CART_REPOSITORY) {
-        CartRepositoryImpl(get(DATABASE_CART_SOURCE)) as CartRepository
+    single {
+        CartRepositoryImpl(get()) as CartRepository
     }
 
-    single(DATA_PRODUCT_REPOSITORY) {
-        ProductRepositoryImpl(get(REMOTE_PRODUCT_SOURCE)) as ProductRepository
+    single {
+        ProductRepositoryImpl(get()) as ProductRepository
     }
 
-    single(JOB_EXECUTOR) {
+    single {
         JobExecutor() as ThreadExecutor
     }
 }
 
 val domainModules = module {
-    single(UI_THREAD) {
+    single {
         UiThread() as PostExecutionThread
     }
 
-    single(TWO_FOR_ONE_OFFER) {
+    single {
         TwoForOneOffer()
     }
 
-    single(BULK_OFFER) {
+    single {
         BulkOffer()
     }
 
-    factory(ADD_PRODUCT_USE_CASE) {
-        AddProductUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+    factory {
+        AddProductUseCase(get(), get(), get())
     }
 
-    factory(CREATE_CHECKOUT_USE_CASE) {
+    factory {
         CreateCheckoutUseCase(
-            get(DATA_CART_REPOSITORY),
-            get(TWO_FOR_ONE_OFFER),
-            get(BULK_OFFER),
-            get(JOB_EXECUTOR),
-            get(UI_THREAD)
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
 
-    factory(DELETE_PRODUCT_USE_CASE) {
-        DeleteProductUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+    factory {
+        DeleteProductUseCase(get(), get(), get())
     }
 
-    factory(GET_CART_USE_CASE) {
-        GetCartUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+    factory {
+        GetCartUseCase(get(), get(), get())
     }
 
-    factory(DELETE_CART_USE_CASE) {
-        DeleteCartUseCase(get(DATA_CART_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+    factory {
+        DeleteCartUseCase(get(), get(), get())
     }
 
-    factory(GET_PRODUCTS_USE_CASE) {
-        GetProductsUseCase(get(DATA_PRODUCT_REPOSITORY), get(JOB_EXECUTOR), get(UI_THREAD))
+    factory {
+        GetProductsUseCase(get(), get(), get())
     }
 }
 
@@ -145,10 +123,10 @@ val presentationModules = module {
     }
 
     viewModel {
-        ProductsViewModel(get(GET_PRODUCTS_USE_CASE), get(ADD_PRODUCT_USE_CASE), get(GET_CART_USE_CASE))
+        ProductsViewModel(get(), get(), get())
     }
 
     viewModel {
-        CheckoutViewModel(get(ADD_PRODUCT_USE_CASE), get(DELETE_PRODUCT_USE_CASE), get(DELETE_CART_USE_CASE), get(CREATE_CHECKOUT_USE_CASE))
+        CheckoutViewModel(get(), get(), get(), get())
     }
 }

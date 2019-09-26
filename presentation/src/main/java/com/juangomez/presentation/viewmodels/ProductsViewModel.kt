@@ -60,7 +60,11 @@ open class ProductsViewModel(
             Timber.d("GET PRODUCTS SUCCESS")
             isLoading.postValue(false)
             products = t
-            productsToShow.postValue(t.toPresentationModel())
+            if (products.isNotEmpty()) {
+                productsToShow.postValue(t.toPresentationModel())
+            } else {
+                isShowingEmptyCase.postValue(true)
+            }
         }
 
         override fun onError(exception: Throwable) {

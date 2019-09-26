@@ -58,7 +58,7 @@ ext {
     ]
 
     coroutines = [
-            core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}",
+            core   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}",
             android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${coroutinesVersion}"
     ]
 
@@ -93,9 +93,10 @@ ext {
     ]
 
     androidxTest = [
-            runner: "androidx.test:runner:${androidxTestVersion}",
-            rules : "androidx.test:rules:${androidxTestVersion}",
-            core  : "androidx.test:core:${androidxTestVersion}"
+            runner      : "androidx.test:runner:${androidxTestVersion}",
+            rules       : "androidx.test:rules:${androidxTestVersion}",
+            core        : "androidx.test:core:${androidxTestVersion}",
+            orchestrator: "androidx.test:orchestrator:${androidxTestVersion}"
     ]
 
     okhttp = [
@@ -144,7 +145,7 @@ ext {
     ]
 
     espresso = [
-            core: "androidx.test.espresso:espresso-core:${espressoVersion}",
+            core   : "androidx.test.espresso:espresso-core:${espressoVersion}",
             intents: "androidx.test.espresso:espresso-intents:${espressoVersion}",
             contrib: "androidx.test.espresso:espresso-contrib:${espressoVersion}"
     ]

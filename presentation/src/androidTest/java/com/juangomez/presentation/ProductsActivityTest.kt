@@ -1,48 +1,40 @@
 package com.juangomez.presentation
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
-import com.juangomez.presentation.common.SingleLiveEvent
-import com.juangomez.presentation.idling.DataBindingIdlingResourceRule
-import com.juangomez.presentation.models.ProductPresentationModel
-import com.juangomez.presentation.viewmodels.ProductsViewModel
-import com.juangomez.presentation.views.ProductsActivity
-import io.mockk.MockKAnnotations
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.just
-import org.hamcrest.Matchers.not
-import org.junit.*
-import org.junit.runner.RunWith
-import org.koin.android.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext.loadKoinModules
-import androidx.test.espresso.NoMatchingViewException
-import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
 import android.view.View
-import androidx.arch.core.executor.testing.CountingTaskExecutorRule
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import com.juangomez.domain.models.product.Product
+import com.juangomez.domain.repositories.ProductRepository
+import com.juangomez.presentation.idling.DataBindingIdlingResourceRule
 import com.juangomez.presentation.idling.ViewVisibilityIdlingResource
-import com.juangomez.presentation.viewmodels.CheckoutViewModel
-import com.juangomez.presentation.views.CheckoutActivity
-import org.hamcrest.Matchers.any
-import java.util.concurrent.TimeUnit
+import com.juangomez.presentation.mappers.toPresentationModel
+import com.juangomez.presentation.models.ProductPresentationModel
+import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
+import com.juangomez.presentation.recyclerview.matcher.RecyclerViewItemsCountMatcher.Companion.recyclerViewHasItemCount
+import com.juangomez.presentation.util.minDelay
+import com.juangomez.presentation.views.ProductsActivity
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.reactivex.Single
+import org.hamcrest.Matchers.not
+import org.junit.AfterClass
+import org.junit.BeforeClass
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.koin.dsl.module.module
+import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.koin.standalone.StandAloneContext.stopKoin
 
 
 @RunWith(AndroidJUnit4::class)
@@ -51,35 +43,26 @@ class ProductsActivityTest {
     companion object {
 
         private const val DEFAULT_LIST_SIZE = 10
+        private const val DEFAULT_MILLISECONDS_TO_LOAD_PRODUCTS_DELAY = 2000L
 
-        @RelaxedMockK
-        lateinit var productsViewModel: ProductsViewModel
-
-        private val productsToShow = MediatorLiveData<List<ProductPresentationModel>>()
-        private val checkoutOpen = SingleLiveEvent<Void>()
-        private val error = SingleLiveEvent<Void>()
-        private val isLoading = MutableLiveData<Boolean>()
-        private val isShowingEmptyCase = MutableLiveData<Boolean>()
-        private val productsInCart = MutableLiveData<Int>()
+        @MockK
+        lateinit var productRepository: ProductRepository
 
         @BeforeClass
         @JvmStatic
         fun setup() {
             MockKAnnotations.init(this)
+
             loadKoinModules(module {
-                viewModel {
-                    productsViewModel
+                single(override = true) {
+                    productRepository
                 }
             })
+        }
 
-            every { productsViewModel.productsToShow } returns productsToShow
-            every { productsViewModel.checkoutOpen } returns checkoutOpen
-            every { productsViewModel.error } returns error
-            every { productsViewModel.isLoading } returns isLoading
-            every { productsViewModel.isShowingEmptyCase } returns isShowingEmptyCase
-            every { productsViewModel.productsInCart } returns productsInCart
-            every { productsViewModel.prepare() } answers { isLoading.postValue(true) }
-            every { productsViewModel.initCartSubscriber() } just Runs
+        @AfterClass
+        fun tearDown() {
+            stopKoin()
         }
     }
 
@@ -92,32 +75,26 @@ class ProductsActivityTest {
     @get:Rule
     val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
 
-    @get:Rule
-    val countingTaskExecutorRule = CountingTaskExecutorRule()
-
     @Test
     @Throws(InterruptedException::class)
-    fun onlyLoadingShouldBeVisibleAtLaunch() {
-        activityTestRule.launchActivity(null)
-        onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
-        onView(withId(R.id.cart_group)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.empty_case)).check(matches(not(isDisplayed())))
+    fun shouldShowEmptyCaseIfThereAreNoProducts() {
+        givenThereAreNoProducts()
+
+        startActivity()
+
+        onView(withId(R.id.empty_case)).check(matches(isDisplayed()))
     }
 
     @Test
     @Throws(InterruptedException::class)
-    fun shouldMatchList() {
-        val productsList = generateProductsList(DEFAULT_LIST_SIZE)
-        activityTestRule.launchActivity(null)
+    fun shouldShowProductsIfThereAreProducts() {
+        val products = givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
+        val productsPresentation = products.toPresentationModel()
 
-        productsToShow.postValue(productsList)
-        drain()
-
-        isLoading.postValue(false)
-        drain()
+        startActivity()
 
         RecyclerViewInteraction.onRecyclerView<ProductPresentationModel>(withId(R.id.recycler_view))
-            .withItems(productsList)
+            .withItems(productsPresentation)
             .check(object : RecyclerViewInteraction.ItemViewAssertion<ProductPresentationModel> {
                 override fun check(
                     item: ProductPresentationModel,
@@ -132,22 +109,53 @@ class ProductsActivityTest {
 
     @Test
     @Throws(InterruptedException::class)
-    fun shouldShowCartWhenProductIsClicked() {
-        val productsList = generateProductsList(DEFAULT_LIST_SIZE)
+    fun shouldHideEmptyCaseIfThereAreProducts() {
+        givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
+
+        startActivity()
+
+        onView(withId(R.id.empty_case)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    @Throws(InterruptedException::class)
+    fun shouldHideLoadingIfThereAreProducts() {
+        givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
+
+        startActivity()
+
+        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    @Throws(InterruptedException::class)
+    fun shouldShowLoadingIfProductsAreLoading() {
+        givenThereAreNoProducts(DEFAULT_MILLISECONDS_TO_LOAD_PRODUCTS_DELAY)
+
+        startActivity()
+
+        onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @Throws(InterruptedException::class)
+    fun shouldShowTheExactNumberOfProducts() {
+        givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
+
+        startActivity()
+
+        onView(withId(R.id.recycler_view)).check(
+            matches(recyclerViewHasItemCount(DEFAULT_LIST_SIZE))
+        )
+    }
+
+    @Test
+    @Throws(InterruptedException::class)
+    fun shouldAddProductToCartOnRecyclerViewItemTapped() {
+        givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
         val productIndex = 0
-        activityTestRule.launchActivity(null)
 
-        productsToShow.postValue(productsList)
-        drain()
-
-        isLoading.postValue(false)
-        drain()
-
-        every { productsViewModel.onProductClicked(productsList[productIndex].code) } answers {
-            productsInCart.postValue(
-                1
-            )
-        }
+        startActivity()
 
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -164,21 +172,29 @@ class ProductsActivityTest {
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
-    private fun generateProductsList(amount: Int): List<ProductPresentationModel> {
-        val defaultCode = "CODE"
-        val defaultProduct = "PRODUCT"
-        val defaultPrice = 100
-
-        return (1..amount).map {
-            ProductPresentationModel(
-                "$defaultCode$it",
-                "$defaultProduct$it",
-                (defaultPrice + it).toString()
-            )
-        }
+    private fun startActivity() {
+        activityTestRule.launchActivity(null)
     }
 
-    private fun drain() {
-        countingTaskExecutorRule.drainTasks(5, TimeUnit.SECONDS)
+    private fun givenThereAreNoProducts(delay: Long = 0) {
+        every { productRepository.getProducts() } returns Single.just(emptyList<Product>()).minDelay(delay)
+    }
+
+    private fun givenThereAreDifferentProducts(amount: Int): List<Product> {
+        val defaultCode = "CODE"
+        val defaultProduct = "PRODUCT"
+        val defaultPrice = 100f
+
+        val products = (1..amount).map {
+            Product(
+                "$defaultCode$it",
+                "$defaultProduct$it",
+                defaultPrice
+            )
+        }
+
+        every { productRepository.getProducts() } returns Single.just(products)
+
+        return products
     }
 }

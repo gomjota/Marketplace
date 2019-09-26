@@ -30,8 +30,28 @@
                 android:clipToPadding="false"
                 android:paddingBottom="90dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:layout_editor_absoluteX="0dp"
                 tools:listitem="@layout/product_row"
-                tools:showIn="@layout/products_activity"/>
+                tools:showIn="@layout/products_activity" >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+                android:id="@+id/empty_case"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/empty_case"
+                android:textColor="@color/colorPrimary"
+                android:visibility="@{ viewModel.isShowingEmptyCase ? View.VISIBLE : View.GONE }"
+                tools:visibility="visible" />
 
         <androidx.core.widget.ContentLoadingProgressBar
                 android:id="@+id/progress_bar"
@@ -44,19 +64,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
-                android:id="@+id/empty_case"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/empty_case"
-                android:textColor="@android:color/white"
-                android:visibility="@{ viewModel.isShowingEmptyCase ? View.VISIBLE : View.GONE }"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible"/>
         <View
                 android:id="@+id/cart_view"
                 android:layout_width="match_parent"
