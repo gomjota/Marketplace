@@ -12,7 +12,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.juangomez.domain.models.cart.Cart
+import com.juangomez.domain.models.cart.CartItem
 import com.juangomez.domain.models.product.Product
+import com.juangomez.domain.repositories.CartRepository
 import com.juangomez.domain.repositories.ProductRepository
 import com.juangomez.presentation.idling.DataBindingIdlingResourceRule
 import com.juangomez.presentation.idling.ViewVisibilityIdlingResource
@@ -25,12 +28,12 @@ import com.juangomez.presentation.views.ProductsActivity
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
+import org.hamcrest.Matchers.any
 import org.hamcrest.Matchers.not
-import org.junit.AfterClass
-import org.junit.BeforeClass
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.loadKoinModules
@@ -48,6 +51,9 @@ class ProductsActivityTest {
         @MockK
         lateinit var productRepository: ProductRepository
 
+        @MockK
+        lateinit var cartRepository: CartRepository
+
         @BeforeClass
         @JvmStatic
         fun setup() {
@@ -57,13 +63,22 @@ class ProductsActivityTest {
                 single(override = true) {
                     productRepository
                 }
+                single(override = true) {
+                    cartRepository
+                }
             })
+
         }
 
         @AfterClass
         fun tearDown() {
             stopKoin()
         }
+    }
+
+    @Before
+    fun setupBefore() {
+        setupDefaultCartRepositoryMock()
     }
 
     @get:Rule
@@ -152,8 +167,11 @@ class ProductsActivityTest {
     @Test
     @Throws(InterruptedException::class)
     fun shouldAddProductToCartOnRecyclerViewItemTapped() {
-        givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
+        val products = givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
         val productIndex = 0
+        val cart = Cart(mutableListOf(CartItem(products[productIndex])))
+
+        every { cartRepository.getCart() } answers { Flowable.just(cart) }
 
         startActivity()
 
@@ -172,12 +190,49 @@ class ProductsActivityTest {
         IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
+    @Test
+    @Throws(InterruptedException::class)
+    fun shouldShowCountOfItemsAddedToCart() {
+        val products = givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
+        val productIndex = 0
+        val cart = Cart(mutableListOf(CartItem(products[productIndex])))
+
+        every { cartRepository.getCart() } answers { Flowable.just(cart) }
+
+        startActivity()
+
+        val textToShow =
+            String.format(activityTestRule.activity.getString(R.string.cart_purchase), 1)
+
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                productIndex,
+                click()
+            )
+        )
+
+        val cartGroup: Group = activityTestRule.activity.findViewById(R.id.cart_group)
+        val idlingResource = ViewVisibilityIdlingResource(cartGroup, View.VISIBLE)
+
+        IdlingRegistry.getInstance().register(idlingResource)
+        onView(withId(R.id.cart_text)).check(matches(withText(textToShow)))
+        IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
+    private fun setupDefaultCartRepositoryMock() {
+        every { cartRepository.getCart() } answers { Flowable.just(Cart(mutableListOf())) }
+        every { cartRepository.setCart(any()) } answers { Completable.complete() }
+        every { cartRepository.deleteCart() } answers { Completable.complete() }
+    }
+
     private fun startActivity() {
         activityTestRule.launchActivity(null)
     }
 
     private fun givenThereAreNoProducts(delay: Long = 0) {
-        every { productRepository.getProducts() } returns Single.just(emptyList<Product>()).minDelay(delay)
+        every { productRepository.getProducts() } returns Single.just(emptyList<Product>()).minDelay(
+            delay
+        )
     }
 
     private fun givenThereAreDifferentProducts(amount: Int): List<Product> {
