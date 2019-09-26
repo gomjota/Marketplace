@@ -28,10 +28,20 @@ import androidx.test.espresso.NoMatchingViewException
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
 import android.view.View
 import androidx.arch.core.executor.testing.CountingTaskExecutorRule
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.juangomez.presentation.idling.ViewVisibilityIdlingResource
+import com.juangomez.presentation.viewmodels.CheckoutViewModel
+import com.juangomez.presentation.views.CheckoutActivity
+import org.hamcrest.Matchers.any
 import java.util.concurrent.TimeUnit
 
 
@@ -46,15 +56,10 @@ class ProductsActivityTest {
         lateinit var productsViewModel: ProductsViewModel
 
         private val productsToShow = MediatorLiveData<List<ProductPresentationModel>>()
-
         private val checkoutOpen = SingleLiveEvent<Void>()
-
         private val error = SingleLiveEvent<Void>()
-
         private val isLoading = MutableLiveData<Boolean>()
-
         private val isShowingEmptyCase = MutableLiveData<Boolean>()
-
         private val productsInCart = MutableLiveData<Int>()
 
         @BeforeClass
@@ -151,9 +156,12 @@ class ProductsActivityTest {
             )
         )
 
-        drain()
+        val cartGroup: Group = activityTestRule.activity.findViewById(R.id.cart_group)
+        val idlingResource = ViewVisibilityIdlingResource(cartGroup, View.VISIBLE)
 
-        onView(withId(R.id.cart_view)).check(matches(isDisplayed()))
+        IdlingRegistry.getInstance().register(idlingResource)
+        onView(withId(R.id.cart_group)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     private fun generateProductsList(amount: Int): List<ProductPresentationModel> {

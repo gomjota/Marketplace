@@ -16,9 +16,13 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
 
-    @Before
-    fun setup() {
-        Intents.init()
+    companion object {
+
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
+            Intents.init()
+        }
     }
 
 

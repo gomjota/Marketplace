@@ -1,9 +1,11 @@
 package com.juangomez.presentation.idling
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
 import androidx.test.rule.ActivityTestRule
 import java.util.UUID
@@ -30,7 +32,7 @@ class DataBindingIdlingResource(
     override fun getName() = "DataBinding $id"
 
     override fun isIdleNow(): Boolean {
-        val idle = !getBindings().any { it.hasPendingBindings() }
+        val idle = !getBindings().union(getActivtyBinding()).any { it.hasPendingBindings() }
         @Suppress("LiftReturnOrAssignment")
         if (idle) {
             if (wasNotIdle) {
@@ -47,6 +49,7 @@ class DataBindingIdlingResource(
         }
         return idle
     }
+
 
     override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback) {
         idlingCallbacks.add(callback)
@@ -66,5 +69,23 @@ class DataBindingIdlingResource(
                     )
                 }
             } ?: emptyList()
+    }
+
+    private fun getActivtyBinding(): List<ViewDataBinding> {
+        val decorView = activityTestRule.activity.window.decorView
+        val contentView = decorView.findViewById(android.R.id.content) as ViewGroup
+
+        val childs = contentView.childCount
+        val childBindings = ArrayList<ViewDataBinding>(childs)
+        for (i in 0 until childs) {
+            val childAt = contentView.getChildAt(i)
+            //Bind all childs of the content view e.g. all child views of the activity
+            val binding = DataBindingUtil.getBinding<ViewDataBinding>(childAt)
+            if (binding != null) {
+                childBindings.add(binding)
+            }
+        }
+
+        return childBindings.toList()
     }
 }
