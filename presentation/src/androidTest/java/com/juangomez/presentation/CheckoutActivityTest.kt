@@ -2,17 +2,17 @@ package com.juangomez.presentation
 
 import android.view.View
 import androidx.arch.core.executor.testing.CountingTaskExecutorRule
-import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.juangomez.domain.models.cart.Cart
@@ -23,20 +23,18 @@ import com.juangomez.domain.models.offer.TwoForOneOffer
 import com.juangomez.domain.models.product.Product
 import com.juangomez.presentation.common.SingleLiveEvent
 import com.juangomez.presentation.idling.DataBindingIdlingResourceRule
-import com.juangomez.presentation.idling.ViewVisibilityIdlingResource
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
-import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
+import com.juangomez.presentation.recyclerview.viewaction.ChildViewAction
 import com.juangomez.presentation.viewmodels.CheckoutViewModel
 import com.juangomez.presentation.views.CheckoutActivity
-import com.juangomez.presentation.views.ProductsActivity
 import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
-import org.hamcrest.Matchers
+import junit.framework.Assert.assertTrue
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -103,7 +101,7 @@ class CheckoutActivityTest {
         checkoutProductsToShow.postValue(checkoutPresentationModel)
         drain()
 
-        RecyclerViewInteraction.onRecyclerView<CheckoutPresentationModel>(ViewMatchers.withId(R.id.recycler_view))
+        RecyclerViewInteraction.onRecyclerView<CheckoutPresentationModel>(withId(R.id.recycler_view))
             .withItems(checkoutPresentationModel)
             .check(object : RecyclerViewInteraction.ItemViewAssertion<CheckoutPresentationModel> {
                 override fun check(
@@ -111,12 +109,23 @@ class CheckoutActivityTest {
                     view: View,
                     e: NoMatchingViewException?
                 ) {
-                    ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText(item.name)))
+                    ViewAssertions.matches(hasDescendant(withText(item.name)))
                         .check(view, e)
-                    ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withText(item.price)))
+                    ViewAssertions.matches(hasDescendant(withText(item.price)))
                         .check(view, e)
                 }
             })
+    }
+
+    @Test
+    @Throws(InterruptedException::class)
+    fun shouldFinishIfCartEmpty() {
+        activityTestRule.launchActivity(null)
+
+        cartEmpty.postValue(null)
+        drain()
+
+        assertTrue(activityTestRule.activity.isFinishing)
     }
 
     private fun generateBaseCheckout(): Checkout {
