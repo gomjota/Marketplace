@@ -16,25 +16,15 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
 
-    companion object {
-
-        @BeforeClass
-        @JvmStatic
-        fun setup() {
-            Intents.init()
-        }
-    }
-
-
     @get:Rule
     var activityTestRule = ActivityTestRule(
         SplashActivity::class.java, true,
         false
     )
 
-    @After
-    fun tearDown() {
-        Intents.release()
+    @Before
+    fun setup() {
+        Intents.init()
     }
 
     @Test
@@ -46,5 +36,10 @@ class SplashActivityTest {
         IdlingRegistry.getInstance().register(idlingResource)
         intended(hasComponent(ProductsActivity::class.java.name))
         IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
     }
 }

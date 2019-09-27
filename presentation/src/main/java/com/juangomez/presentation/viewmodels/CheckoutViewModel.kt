@@ -1,24 +1,18 @@
 package com.juangomez.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.juangomez.data.mappers.toEntity
-import com.juangomez.data.mappers.toModel
 import com.juangomez.domain.interactors.AddProductUseCase
 import com.juangomez.domain.interactors.CreateCheckoutUseCase
 import com.juangomez.domain.interactors.DeleteCartUseCase
 import com.juangomez.domain.interactors.DeleteProductUseCase
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.checkout.Checkout
-import com.juangomez.domain.models.product.Product
 import com.juangomez.presentation.common.SingleLiveEvent
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
-import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
 import io.reactivex.observers.DisposableCompletableObserver
-import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.subscribers.DisposableSubscriber
 import timber.log.Timber
 
@@ -85,8 +79,9 @@ class CheckoutViewModel(
             Timber.d("CREATE CHECKOUT NEXT")
             cart = t!!.checkoutCart
             checkoutProductsToShow.postValue(t.toPresentationModel())
-            if (t.checkoutCart.items.isEmpty()) cartEmpty.postValue(null)
-            checkoutPrice.postValue(t.checkoutCart.totalPrice)
+            if (t.checkoutCart.items.isEmpty()) cartEmpty.postValue(null) else checkoutPrice.postValue(
+                t.checkoutCart.totalPrice
+            )
         }
 
         override fun onError(e: Throwable) {

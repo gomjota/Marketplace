@@ -63,6 +63,7 @@ dependencies {
             androidxTest.runner,
             androidxTest.rules,
             androidxTest.core,
+            androidxTest.truth,
             arch.test,
             junit.junitX
     )

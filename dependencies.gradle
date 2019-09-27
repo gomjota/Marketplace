@@ -96,7 +96,8 @@ ext {
             runner      : "androidx.test:runner:${androidxTestVersion}",
             rules       : "androidx.test:rules:${androidxTestVersion}",
             core        : "androidx.test:core:${androidxTestVersion}",
-            orchestrator: "androidx.test:orchestrator:${androidxTestVersion}"
+            orchestrator: "androidx.test:orchestrator:${androidxTestVersion}",
+            truth       : "androidx.test.ext:truth:${androidxTestVersion}",
     ]
 
     okhttp = [

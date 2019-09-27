@@ -9,6 +9,9 @@ import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -24,6 +27,7 @@ import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
 import com.juangomez.presentation.recyclerview.matcher.RecyclerViewItemsCountMatcher.Companion.recyclerViewHasItemCount
 import com.juangomez.presentation.util.minDelay
+import com.juangomez.presentation.views.CheckoutActivity
 import com.juangomez.presentation.views.ProductsActivity
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -31,7 +35,6 @@ import io.mockk.impl.annotations.MockK
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import org.hamcrest.Matchers.any
 import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
@@ -67,7 +70,6 @@ class ProductsActivityTest {
                     cartRepository
                 }
             })
-
         }
 
         @AfterClass
@@ -79,6 +81,7 @@ class ProductsActivityTest {
     @Before
     fun setupBefore() {
         setupDefaultCartRepositoryMock()
+        Intents.init()
     }
 
     @get:Rule
@@ -217,6 +220,11 @@ class ProductsActivityTest {
         IdlingRegistry.getInstance().register(idlingResource)
         onView(withId(R.id.cart_text)).check(matches(withText(textToShow)))
         IdlingRegistry.getInstance().unregister(idlingResource)
+    }
+
+    @After
+    fun tearDownAfter() {
+        Intents.release()
     }
 
     private fun setupDefaultCartRepositoryMock() {

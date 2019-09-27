@@ -1,5 +1,7 @@
 package com.juangomez.presentation.util
 
+import android.app.Activity
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction

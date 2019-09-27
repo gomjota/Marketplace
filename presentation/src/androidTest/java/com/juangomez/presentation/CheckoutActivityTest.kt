@@ -1,17 +1,12 @@
 package com.juangomez.presentation
 
 import android.view.View
-import androidx.arch.core.executor.testing.CountingTaskExecutorRule
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -21,28 +16,25 @@ import com.juangomez.domain.models.checkout.Checkout
 import com.juangomez.domain.models.offer.BulkOffer
 import com.juangomez.domain.models.offer.TwoForOneOffer
 import com.juangomez.domain.models.product.Product
-import com.juangomez.presentation.common.SingleLiveEvent
+import com.juangomez.domain.repositories.CartRepository
+import com.juangomez.domain.repositories.ProductRepository
 import com.juangomez.presentation.idling.DataBindingIdlingResourceRule
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
 import com.juangomez.presentation.recyclerview.viewaction.ChildViewAction
-import com.juangomez.presentation.viewmodels.CheckoutViewModel
 import com.juangomez.presentation.views.CheckoutActivity
 import io.mockk.MockKAnnotations
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.just
-import junit.framework.Assert.assertTrue
-import org.junit.BeforeClass
-import org.junit.Rule
-import org.junit.Test
+import io.mockk.impl.annotations.MockK
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import org.hamcrest.Matchers.allOf
+import org.junit.*
 import org.junit.runner.RunWith
-import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext
-import java.util.concurrent.TimeUnit
+import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.koin.standalone.StandAloneContext.stopKoin
 
 
 @RunWith(AndroidJUnit4::class)
@@ -50,32 +42,38 @@ class CheckoutActivityTest {
 
     companion object {
 
-        @RelaxedMockK
-        lateinit var checkoutViewModel: CheckoutViewModel
+        private const val DEFAULT_PRODUCT_COUNT = 10
 
-        private val checkoutProductsToShow = MediatorLiveData<List<CheckoutPresentationModel>>()
-        private val paymentDone = SingleLiveEvent<Void>()
-        private val cartEmpty = SingleLiveEvent<Void>()
-        private val error = SingleLiveEvent<Void>()
-        private val checkoutPrice = MutableLiveData<Float>()
+        @MockK
+        lateinit var productRepository: ProductRepository
+
+        @MockK
+        lateinit var cartRepository: CartRepository
 
         @BeforeClass
         @JvmStatic
         fun setup() {
             MockKAnnotations.init(this)
-            StandAloneContext.loadKoinModules(module {
-                viewModel {
-                    checkoutViewModel
+
+            loadKoinModules(module {
+                single(override = true) {
+                    productRepository
+                }
+                single(override = true) {
+                    cartRepository
                 }
             })
-
-            every { checkoutViewModel.checkoutProductsToShow } returns checkoutProductsToShow
-            every { checkoutViewModel.paymentDone } returns paymentDone
-            every { checkoutViewModel.error } returns error
-            every { checkoutViewModel.cartEmpty } returns cartEmpty
-            every { checkoutViewModel.checkoutPrice } returns checkoutPrice
-            every { checkoutViewModel.prepare() } just Runs
         }
+
+        @AfterClass
+        fun tearDown() {
+            stopKoin()
+        }
+    }
+
+    @Before
+    fun setupBefore() {
+        setupDefaultCartRepositoryMock()
     }
 
     @get:Rule
@@ -87,59 +85,141 @@ class CheckoutActivityTest {
     @get:Rule
     val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
 
-    @get:Rule
-    val countingTaskExecutorRule = CountingTaskExecutorRule()
-
     @Test
     @Throws(InterruptedException::class)
-    fun shouldMatchList() {
-        activityTestRule.launchActivity(null)
+    fun shouldShowCountOfProductsInCart() {
+        val checkout = givenThereAreTheSameProductsInCartWithNoOffer(DEFAULT_PRODUCT_COUNT)
+        val checkoutPresentation = checkout.toPresentationModel()
 
-        val checkout = generateBaseCheckout()
-        val checkoutPresentationModel = checkout.toPresentationModel()
-
-        checkoutProductsToShow.postValue(checkoutPresentationModel)
-        drain()
+        startActivity()
 
         RecyclerViewInteraction.onRecyclerView<CheckoutPresentationModel>(withId(R.id.recycler_view))
-            .withItems(checkoutPresentationModel)
+            .withItems(checkoutPresentation)
             .check(object : RecyclerViewInteraction.ItemViewAssertion<CheckoutPresentationModel> {
                 override fun check(
                     item: CheckoutPresentationModel,
                     view: View,
                     e: NoMatchingViewException?
                 ) {
-                    ViewAssertions.matches(hasDescendant(withText(item.name)))
-                        .check(view, e)
-                    ViewAssertions.matches(hasDescendant(withText(item.price)))
-                        .check(view, e)
+                    matches(
+                        hasDescendant(
+                            allOf(
+                                withId(R.id.checkout_product_quantity),
+                                withText("x$DEFAULT_PRODUCT_COUNT")
+                            )
+                        )
+                    ).check(view, e)
                 }
             })
     }
 
     @Test
     @Throws(InterruptedException::class)
-    fun shouldFinishIfCartEmpty() {
-        activityTestRule.launchActivity(null)
+    fun shouldAddTheSameProductShowingCountOfProductsInCart() {
+        val checkout = givenThereAreTheSameProductsInCartWithNoOffer(DEFAULT_PRODUCT_COUNT)
+        val productIndex = 0
+        val productsAfterAddOne = DEFAULT_PRODUCT_COUNT + 1
 
-        cartEmpty.postValue(null)
-        drain()
+        checkout.checkoutCart.items.add(checkout.checkoutCart.items.last())
+        val checkoutPresentation = checkout.toPresentationModel()
 
-        assertTrue(activityTestRule.activity.isFinishing)
+        every { cartRepository.getCart() } answers { Flowable.just(checkout.checkoutCart) }
+
+        startActivity()
+
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                productIndex,
+                ChildViewAction.clickChildViewWithId(R.id.checkout_product_add)
+            )
+        )
+
+        RecyclerViewInteraction.onRecyclerView<CheckoutPresentationModel>(withId(R.id.recycler_view))
+            .withItems(checkoutPresentation)
+            .check(object : RecyclerViewInteraction.ItemViewAssertion<CheckoutPresentationModel> {
+                override fun check(
+                    item: CheckoutPresentationModel,
+                    view: View,
+                    e: NoMatchingViewException?
+                ) {
+                    matches(
+                        hasDescendant(
+                            allOf(
+                                withId(R.id.checkout_product_quantity),
+                                withText("x$productsAfterAddOne")
+                            )
+                        )
+                    ).check(view, e)
+                }
+            })
     }
 
-    private fun generateBaseCheckout(): Checkout {
-        val defaultCode = "VOUCHER"
-        val defaultName = "Voucher"
+    @Test
+    @Throws(InterruptedException::class)
+    fun shouldDeleteTheSameProductShowingCountOfProductsInCart() {
+        val checkout = givenThereAreTheSameProductsInCartWithNoOffer(DEFAULT_PRODUCT_COUNT)
+        val productIndex = 0
+        val productsAfterDeleteOne = DEFAULT_PRODUCT_COUNT - 1
+
+        checkout.checkoutCart.items.removeAt(productIndex)
+        val checkoutPresentation = checkout.toPresentationModel()
+
+        every { cartRepository.getCart() } answers { Flowable.just(checkout.checkoutCart) }
+
+        startActivity()
+
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                productIndex,
+                ChildViewAction.clickChildViewWithId(R.id.checkout_product_add)
+            )
+        )
+
+        RecyclerViewInteraction.onRecyclerView<CheckoutPresentationModel>(withId(R.id.recycler_view))
+            .withItems(checkoutPresentation)
+            .check(object : RecyclerViewInteraction.ItemViewAssertion<CheckoutPresentationModel> {
+                override fun check(
+                    item: CheckoutPresentationModel,
+                    view: View,
+                    e: NoMatchingViewException?
+                ) {
+                    matches(
+                        hasDescendant(
+                            allOf(
+                                withId(R.id.checkout_product_quantity),
+                                withText("x$productsAfterDeleteOne")
+                            )
+                        )
+                    ).check(view, e)
+                }
+            })
+    }
+
+    private fun setupDefaultCartRepositoryMock() {
+        every { cartRepository.getCart() } answers { Flowable.just(Cart(mutableListOf())) }
+        every { cartRepository.setCart(any()) } answers { Completable.complete() }
+        every { cartRepository.deleteCart() } answers { Completable.complete() }
+    }
+
+    private fun startActivity() {
+        activityTestRule.launchActivity(null)
+    }
+
+    private fun givenThereAreTheSameProductsInCartWithNoOffer(amount: Int): Checkout {
+        val defaultCode = "CODE"
+        val defaultProduct = "PRODUCT"
         val defaultPrice = 100f
 
-        val product = Product(defaultCode, defaultName, defaultPrice)
-        val cartItem = CartItem(product)
-        val cart = Cart(mutableListOf(cartItem))
-        return Checkout(cart, TwoForOneOffer(), BulkOffer())
-    }
+        val cartItems = (1..amount).map {
+            Product(
+                defaultCode,
+                defaultProduct,
+                defaultPrice
+            )
+        }.map { CartItem(it) }.toMutableList()
 
-    private fun drain() {
-        countingTaskExecutorRule.drainTasks(5, TimeUnit.SECONDS)
+        val cart = Cart(cartItems)
+        every { cartRepository.getCart() } answers { Flowable.just(cart) }
+        return Checkout(cart, TwoForOneOffer(), BulkOffer())
     }
 }
