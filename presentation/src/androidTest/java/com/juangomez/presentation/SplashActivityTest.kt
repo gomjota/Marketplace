@@ -1,5 +1,6 @@
 package com.juangomez.presentation
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -8,6 +9,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.juangomez.presentation.views.SplashActivity
 import androidx.test.rule.ActivityTestRule
 import com.juangomez.presentation.idling.ElapsedTimeIdlingResource
+import com.juangomez.presentation.rule.DataBindingIdlingResourceRule
+import com.juangomez.presentation.rule.RxSchedulerRule
 import com.juangomez.presentation.views.ProductsActivity
 import org.junit.*
 import org.junit.runner.RunWith
@@ -21,6 +24,15 @@ class SplashActivityTest {
         SplashActivity::class.java, true,
         false
     )
+
+    @get:Rule
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
+
+    @get:Rule
+    val taskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rxSchedulerRule = RxSchedulerRule()
 
     @Before
     fun setup() {

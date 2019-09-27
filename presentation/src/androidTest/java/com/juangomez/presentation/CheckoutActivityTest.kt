@@ -1,6 +1,7 @@
 package com.juangomez.presentation
 
 import android.view.View
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
@@ -21,6 +22,8 @@ import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
 import com.juangomez.presentation.recyclerview.viewaction.ChildViewAction
+import com.juangomez.presentation.rule.DataBindingIdlingResourceRule
+import com.juangomez.presentation.rule.RxSchedulerRule
 import com.juangomez.presentation.views.CheckoutActivity
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -74,12 +77,20 @@ class CheckoutActivityTest {
         setupDefaultCartRepositoryMock()
     }
 
-    @Rule
-    @JvmField
+    @get:Rule
     var activityTestRule = ActivityTestRule(
         CheckoutActivity::class.java, true,
         false
     )
+
+    @get:Rule
+    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
+
+    @get:Rule
+    val rxSchedulerRule = RxSchedulerRule()
+
+    @get:Rule
+    val taskExecutorRule = InstantTaskExecutorRule()
 
     @Test
     @Throws(InterruptedException::class)

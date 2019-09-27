@@ -17,7 +17,7 @@ android {
         buildConfigField "String", "BASE_URL", '"https://api.myjson.com"'
         buildConfigField "long", "DEFAULT_SPLASH_TIME", '3000L'
 
-        testInstrumentationRunner "com.juangomez.presentation.runner.TestRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
 
@@ -64,7 +64,6 @@ dependencies {
             androidxTest.rules,
             androidxTest.core,
             androidxTest.truth,
-            rx.rxIdler,
             arch.test,
             junit.junitX
     )
