@@ -6,7 +6,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
@@ -18,7 +17,6 @@ import com.juangomez.domain.models.offer.TwoForOneOffer
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.CartRepository
 import com.juangomez.domain.repositories.ProductRepository
-import com.juangomez.presentation.idling.DataBindingIdlingResourceRule
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
@@ -76,14 +74,12 @@ class CheckoutActivityTest {
         setupDefaultCartRepositoryMock()
     }
 
-    @get:Rule
+    @Rule
+    @JvmField
     var activityTestRule = ActivityTestRule(
         CheckoutActivity::class.java, true,
         false
     )
-
-    @get:Rule
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
 
     @Test
     @Throws(InterruptedException::class)

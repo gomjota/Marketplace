@@ -26,6 +26,7 @@ ext {
     def rxJava2Version = "2.2.8"
     def rxKotlinVersion = "2.3.0"
     def rxAndroidVersion = "2.1.0"
+    def rxIdlerVersion = "0.9.1"
 
     def gsonVersion = "2.8.5"
 
@@ -109,7 +110,8 @@ ext {
     rx = [
             rxJava2  : "io.reactivex.rxjava2:rxjava:${rxJava2Version}",
             rxAndroid: "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
-            rxKotlin : "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}"
+            rxKotlin : "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}",
+            rxIdler: "com.squareup.rx.idler:rx2-idler:${rxIdlerVersion}"
     ]
 
     gson = [

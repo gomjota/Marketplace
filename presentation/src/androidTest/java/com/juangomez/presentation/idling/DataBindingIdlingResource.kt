@@ -7,6 +7,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import java.util.UUID
 
@@ -32,7 +33,7 @@ class DataBindingIdlingResource(
     override fun getName() = "DataBinding $id"
 
     override fun isIdleNow(): Boolean {
-        val idle = !getBindings().union(getActivtyBinding()).any { it.hasPendingBindings() }
+        val idle = !getBindings().union(getActivityBinding()).any { it.hasPendingBindings() }
         @Suppress("LiftReturnOrAssignment")
         if (idle) {
             if (wasNotIdle) {
@@ -71,7 +72,7 @@ class DataBindingIdlingResource(
             } ?: emptyList()
     }
 
-    private fun getActivtyBinding(): List<ViewDataBinding> {
+    private fun getActivityBinding(): List<ViewDataBinding> {
         val decorView = activityTestRule.activity.window.decorView
         val contentView = decorView.findViewById(android.R.id.content) as ViewGroup
 

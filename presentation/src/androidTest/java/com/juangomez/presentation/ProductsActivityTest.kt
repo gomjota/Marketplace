@@ -90,9 +90,6 @@ class ProductsActivityTest {
         false
     )
 
-    @get:Rule
-    val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
-
     @Test
     @Throws(InterruptedException::class)
     fun shouldShowEmptyCaseIfThereAreNoProducts() {
