@@ -1,6 +1,5 @@
 package com.juangomez.presentation.viewmodels
 
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.juangomez.domain.interactors.AddProductUseCase
 import com.juangomez.domain.interactors.CreateCheckoutUseCase
@@ -8,7 +7,6 @@ import com.juangomez.domain.interactors.DeleteCartUseCase
 import com.juangomez.domain.interactors.DeleteProductUseCase
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.checkout.Checkout
-import com.juangomez.presentation.common.SingleLiveEvent
 import com.juangomez.presentation.logger.Logger
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
@@ -23,11 +21,15 @@ class CheckoutViewModel(
     private val createCheckoutUseCase: CreateCheckoutUseCase
 ) : BaseViewModel(), CheckoutListener {
 
-    val checkoutPrice = MutableLiveData<Float>()
-    val paymentDone = SingleLiveEvent<Void>()
-    val cartEmpty = SingleLiveEvent<Void>()
-    val error = SingleLiveEvent<Void>()
-    val checkoutProductsToShow = MediatorLiveData<List<CheckoutPresentationModel>>()
+    sealed class CheckoutState {
+        object Complete : CheckoutState()
+        object Empty : CheckoutState()
+        object Error : CheckoutState()
+        data class Cart(val products: List<CheckoutPresentationModel>, val price: Float) :
+            CheckoutState()
+    }
+
+    val state = MutableLiveData<CheckoutState>()
 
     lateinit var createCheckoutDisposable: CreateCheckoutSubscriber
     lateinit var addProductDisposable: AddProductSubscriber
@@ -83,17 +85,17 @@ class CheckoutViewModel(
         override fun onNext(t: Checkout?) {
             Logger.createCheckoutNext()
             cart = t!!.checkoutCart
-            if (t.checkoutCart.items.isEmpty()) {
-                cartEmpty.call()
-            } else {
-                checkoutProductsToShow.postValue(t.toPresentationModel())
-                checkoutPrice.postValue(t.checkoutCart.totalPrice)
+
+            when {
+                t.checkoutCart.items.isEmpty() -> state.value = CheckoutState.Empty
+                t.checkoutCart.items.isNotEmpty() -> state.value =
+                    CheckoutState.Cart(t.toPresentationModel(), t.checkoutCart.totalPrice)
             }
         }
 
         override fun onError(e: Throwable) {
             Logger.createCheckoutError()
-            error.call()
+            state.value = CheckoutState.Error
         }
 
     }
@@ -106,7 +108,7 @@ class CheckoutViewModel(
 
         override fun onError(e: Throwable) {
             Logger.addProductError()
-            error.call()
+            state.value = CheckoutState.Error
         }
 
     }
@@ -119,7 +121,7 @@ class CheckoutViewModel(
 
         override fun onError(e: Throwable) {
             Logger.deleteProductError()
-            error.call()
+            state.value = CheckoutState.Error
         }
     }
 
@@ -127,12 +129,12 @@ class CheckoutViewModel(
 
         override fun onComplete() {
             Logger.deleteCartCompleted()
-            paymentDone.call()
+            state.value = CheckoutState.Complete
         }
 
         override fun onError(e: Throwable) {
             Logger.deleteCartError()
-            error.call()
+            state.value = CheckoutState.Error
         }
     }
 }

@@ -9,10 +9,6 @@
         <import type="com.juangomez.presentation.viewmodels.CheckoutViewModel"/>
 
         <variable
-                name="viewModel"
-                type="CheckoutViewModel"/>
-
-        <variable
                 name="listener"
                 type="com.juangomez.presentation.viewmodels.CheckoutListener"/>
 
@@ -49,7 +45,6 @@
                 app:layout_constraintEnd_toEndOf="@id/checkout_view"
                 app:layout_constraintStart_toStartOf="@id/checkout_view"
                 android:textColor="@android:color/white"
-                android:text="@{String.format(@string/checkout_pay, viewModel.checkoutPrice)}"
                 android:textAppearance="@style/BodyAppearance"
                 android:onClick="@{ () -> listener.onPayClicked() }"
                 android:clickable="true"
@@ -58,7 +53,6 @@
         <androidx.constraintlayout.widget.Group
                 android:id="@+id/cart_group"
                 android:layout_width="wrap_content"
-                android:visibility="@{ viewModel.checkoutPrice > 0f ? View.VISIBLE : View.GONE }"
                 app:constraint_referenced_ids="checkout_view, pay_text"
                 android:layout_height="wrap_content"/>
 

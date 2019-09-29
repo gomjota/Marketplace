@@ -9,6 +9,10 @@ import kotlinx.coroutines.launch
 
 class SplashViewModel : BaseViewModel() {
 
+    sealed class SplashState {
+        object MainActivity : SplashState()
+    }
+
     val nextView = SingleLiveEvent<SplashState>()
 
     fun prepare() {
@@ -17,8 +21,4 @@ class SplashViewModel : BaseViewModel() {
             nextView.postValue(SplashState.MainActivity)
         }
     }
-}
-
-sealed class SplashState {
-    object MainActivity : SplashState()
 }

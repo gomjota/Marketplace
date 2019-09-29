@@ -3,20 +3,19 @@ package com.juangomez.presentation.views
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.juangomez.presentation.R
+import com.juangomez.presentation.common.gone
+import com.juangomez.presentation.common.visible
 import com.juangomez.presentation.databinding.ProductsActivityBinding
 import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.viewmodels.ProductsListener
 import com.juangomez.presentation.viewmodels.ProductsViewModel
 import com.juangomez.presentation.views.adapters.ProductsAdapter
 import com.juangomez.presentation.views.base.BaseActivity
-import org.koin.android.viewmodel.ext.android.viewModel
 import kotlinx.android.synthetic.main.products_activity.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
 
@@ -34,11 +33,10 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.state.observe(this, Observer { onProductsStateChange(it) })
+
         initializeAdapter()
         initializeRecyclerView()
-        viewModel.productsToShow.observe(this, Observer { showProducts(it) })
-        viewModel.checkoutOpen.observe(this, Observer { openCheckout() })
-        viewModel.error.observe(this, Observer { showError() })
         viewModel.prepare()
     }
 
@@ -47,8 +45,61 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
         viewModel.initCartSubscriber()
     }
 
+    private fun onProductsStateChange(state: ProductsViewModel.ProductsState?) {
+        when (val productsState = state!!) {
+            is ProductsViewModel.ProductsState.Loading -> {
+                showLoading()
+                hideEmptyState()
+            }
+            is ProductsViewModel.ProductsState.Empty -> {
+                hideLoading()
+                showEmptyState()
+            }
+            is ProductsViewModel.ProductsState.Products -> {
+                showProducts(productsState.products)
+                hideLoading()
+                hideEmptyState()
+            }
+            is ProductsViewModel.ProductsState.Cart -> {
+                setCartText(productsState.productsInCart)
+                manageCartResume(productsState.productsInCart)
+            }
+            is ProductsViewModel.ProductsState.Checkout -> {
+                openCheckout()
+            }
+            is ProductsViewModel.ProductsState.Error -> {
+                hideLoading()
+                hideEmptyState()
+                showError()
+            }
+        }
+    }
+
+    private fun showLoading() {
+        progress_bar.show()
+    }
+
+    private fun hideLoading() {
+        progress_bar.hide()
+    }
+
+    private fun showEmptyState() {
+        empty_case.visible()
+    }
+
+    private fun hideEmptyState() {
+        empty_case.gone()
+    }
+
+    private fun manageCartResume(productsInCart: Int) {
+        if (productsInCart > 0) cart_group.visible() else cart_group.gone()
+    }
+
+    private fun setCartText(amountOfProductsInCart: Int) {
+        cart_text.text = String.format(getString(R.string.cart_purchase), amountOfProductsInCart)
+    }
+
     override fun configureBinding(binding: ProductsActivityBinding) {
-        binding.viewModel = viewModel
         binding.listener = viewModel as ProductsListener
     }
 

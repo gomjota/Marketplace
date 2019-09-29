@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.juangomez.presentation.R
+import com.juangomez.presentation.common.toast
 import com.juangomez.presentation.views.CheckoutActivity
 
 abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
@@ -29,10 +30,6 @@ abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
     open fun prepare(intent: Intent?) {}
 
     open fun showError() = runOnUiThread {
-        Toast.makeText(
-            this,
-            getString(R.string.generic_error),
-            Toast.LENGTH_SHORT
-        ).show()
+        getString(R.string.generic_error).toast(this)
     }
 }

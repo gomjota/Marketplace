@@ -9,10 +9,6 @@
         <import type="com.juangomez.presentation.viewmodels.ProductsViewModel"/>
 
         <variable
-                name="viewModel"
-                type="ProductsViewModel"/>
-
-        <variable
                 name="listener"
                 type="com.juangomez.presentation.viewmodels.ProductsListener"/>
 
@@ -50,7 +46,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/empty_case"
                 android:textColor="@color/colorPrimary"
-                android:visibility="@{ viewModel.isShowingEmptyCase ? View.VISIBLE : View.GONE }"
                 tools:visibility="visible" />
 
         <androidx.core.widget.ContentLoadingProgressBar
@@ -58,7 +53,6 @@
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="@{ viewModel.isLoading ? View.VISIBLE : View.GONE }"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +74,6 @@
                 app:layout_constraintEnd_toEndOf="@id/cart_view"
                 app:layout_constraintStart_toStartOf="@id/cart_view"
                 android:textColor="@android:color/white"
-                android:text="@{String.format(@string/cart_purchase, viewModel.productsInCart)}"
                 android:textAppearance="@style/BodyAppearance"
                 android:onClick="@{ () -> listener.onCheckoutClicked() }"
                 android:clickable="true"
@@ -89,7 +82,6 @@
         <androidx.constraintlayout.widget.Group
                 android:id="@+id/cart_group"
                 android:layout_width="wrap_content"
-                android:visibility="@{ viewModel.productsInCart > 0 ? View.VISIBLE : View.GONE }"
                 app:constraint_referenced_ids="cart_view, cart_text"
                 android:layout_height="wrap_content"/>
 
