@@ -17,6 +17,7 @@ import com.juangomez.domain.models.product.Product
 import com.juangomez.presentation.common.SingleLiveEvent
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
+import com.juangomez.presentation.util.any
 import com.juangomez.presentation.util.mock
 import com.juangomez.presentation.viewmodels.CheckoutViewModel
 import org.junit.Before
@@ -24,6 +25,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -102,11 +104,6 @@ class CheckoutViewModelTest {
         deleteProductDisposable = viewModel.DeleteProductSubscriber()
         deleteCartDisposable = viewModel.DeleteCartSubscriber()
         createCheckoutDisposable = viewModel.CreateCheckoutSubscriber()
-
-        viewModel.addProductDisposable = addProductDisposable
-        viewModel.deleteProductDisposable = deleteProductDisposable
-        viewModel.deleteCartDisposable = deleteCartDisposable
-        viewModel.createCheckoutDisposable = createCheckoutDisposable
     }
 
     @Test
@@ -114,7 +111,7 @@ class CheckoutViewModelTest {
         val observer: Observer<List<CheckoutPresentationModel>> = mock()
         val checkout = generateCheckoutWithProducts(DEFAULT_LIST_SIZE)
 
-        `when`(createCheckoutUseCase.execute(createCheckoutDisposable, null)).thenAnswer {
+        `when`(createCheckoutUseCase.execute(any(), eq(null))).thenAnswer {
             createCheckoutDisposable.onNext(
                 checkout
             )
@@ -131,7 +128,7 @@ class CheckoutViewModelTest {
         val observer: Observer<Float> = mock()
         val checkout = generateCheckoutWithProducts(DEFAULT_LIST_SIZE)
 
-        `when`(createCheckoutUseCase.execute(createCheckoutDisposable, null)).thenAnswer {
+        `when`(createCheckoutUseCase.execute(any(), eq(null))).thenAnswer {
             createCheckoutDisposable.onNext(
                 checkout
             )
@@ -148,7 +145,7 @@ class CheckoutViewModelTest {
         val observer: Observer<Void> = mock()
         val checkout = generateCheckoutWithProducts(0)
 
-        `when`(createCheckoutUseCase.execute(createCheckoutDisposable, null)).thenAnswer {
+        `when`(createCheckoutUseCase.execute(any(), eq(null))).thenAnswer {
             createCheckoutDisposable.onNext(
                 checkout
             )
@@ -164,7 +161,7 @@ class CheckoutViewModelTest {
     fun `should post value error if error creating checkout cart`() {
         val observer: Observer<Void> = mock()
 
-        `when`(createCheckoutUseCase.execute(createCheckoutDisposable, null)).thenAnswer {
+        `when`(createCheckoutUseCase.execute(any(), eq(null))).thenAnswer {
             createCheckoutDisposable.onError(
                 throwable
             )
@@ -184,7 +181,7 @@ class CheckoutViewModelTest {
 
         viewModel.cart = cart
 
-        `when`(addProductUseCase.execute(addProductDisposable, product)).thenAnswer {
+        `when`(addProductUseCase.execute(any(), eq(product))).thenAnswer {
             addProductDisposable.onError(
                 throwable
             )
@@ -204,7 +201,7 @@ class CheckoutViewModelTest {
 
         viewModel.cart = cart
 
-        `when`(deleteProductUseCase.execute(deleteProductDisposable, product)).thenAnswer {
+        `when`(deleteProductUseCase.execute(any(), eq(product))).thenAnswer {
             deleteProductDisposable.onError(
                 throwable
             )
@@ -220,7 +217,7 @@ class CheckoutViewModelTest {
     fun `should post value payment done after delete cart when transaction finish`() {
         val observer: Observer<Void> = mock()
 
-        `when`(deleteCartUseCase.execute(deleteCartDisposable, null)).thenAnswer {
+        `when`(deleteCartUseCase.execute(any(), eq(null))).thenAnswer {
             deleteCartDisposable.onComplete()
         }
 
@@ -234,7 +231,7 @@ class CheckoutViewModelTest {
     fun `should post value payment done error after delete cart when transaction finish`() {
         val observer: Observer<Void> = mock()
 
-        `when`(deleteCartUseCase.execute(deleteCartDisposable, null)).thenAnswer {
+        `when`(deleteCartUseCase.execute(any(), eq(null))).thenAnswer {
             deleteCartDisposable.onError(throwable)
         }
 

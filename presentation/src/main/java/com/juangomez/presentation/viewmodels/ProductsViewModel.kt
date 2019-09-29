@@ -30,25 +30,28 @@ open class ProductsViewModel(
     val checkoutOpen = SingleLiveEvent<Void>()
     val error = SingleLiveEvent<Void>()
 
-    var getProductsDisposable = GetProductsSubscriber()
-    var getCartDisposable = GetCartSubscriber()
-    var addProductDisposable = AddProductSubscriber()
+    lateinit var getProductsDisposable: GetProductsSubscriber
+    lateinit var getCartDisposable: GetCartSubscriber
+    lateinit var addProductDisposable: AddProductSubscriber
 
     var products: List<Product> = emptyList()
 
     fun prepare() {
         isLoading.postValue(true)
 
+        getProductsDisposable = GetProductsSubscriber()
         getProductsUseCase.execute(getProductsDisposable)
         addDisposable(getProductsDisposable)
     }
 
     fun initCartSubscriber() {
+        getCartDisposable = GetCartSubscriber()
         getCartUseCase.execute(getCartDisposable)
         addDisposable(getCartDisposable)
     }
 
     override fun onProductClicked(code: String) {
+        addProductDisposable = AddProductSubscriber()
         addProductUseCase.execute(addProductDisposable, products.find { it.code == code }!!)
         addDisposable(addProductDisposable)
     }
@@ -58,6 +61,7 @@ open class ProductsViewModel(
     }
 
     inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
+
         override fun onSuccess(t: List<Product>) {
             Logger.getProductsCompleted()
             isLoading.postValue(false)
