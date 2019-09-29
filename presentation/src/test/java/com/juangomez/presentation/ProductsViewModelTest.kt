@@ -82,10 +82,6 @@ class ProductsViewModelTest {
         getProductsDisposable = viewModel.GetProductsSubscriber()
         getCartDisposable = viewModel.GetCartSubscriber()
         addProductDisposable = viewModel.AddProductSubscriber()
-
-        viewModel.getProductsDisposable = getProductsDisposable
-        viewModel.getCartDisposable = getCartDisposable
-        viewModel.addProductDisposable = addProductDisposable
     }
 
     @Test
@@ -101,7 +97,7 @@ class ProductsViewModelTest {
         val observer: Observer<Boolean> = mock()
         val products = generateEmptyProductList()
 
-        `when`(getProductsUseCase.execute(getProductsDisposable, null)).thenAnswer {
+        `when`(getProductsUseCase.execute(any(), eq(null))).thenAnswer {
             getProductsDisposable.onSuccess(
                 products
             )
@@ -118,7 +114,7 @@ class ProductsViewModelTest {
         val observer: Observer<Boolean> = mock()
         val products = generateEmptyProductList()
 
-        `when`(getProductsUseCase.execute(getProductsDisposable, null)).thenAnswer {
+        `when`(getProductsUseCase.execute(any(), eq(null))).thenAnswer {
             getProductsDisposable.onSuccess(
                 products
             )
@@ -134,7 +130,7 @@ class ProductsViewModelTest {
     fun `should post value to stop loading if error getting products`() {
         val observer: Observer<Boolean> = mock()
 
-        `when`(getProductsUseCase.execute(getProductsDisposable, null)).thenAnswer {
+        `when`(getProductsUseCase.execute(any(), eq(null))).thenAnswer {
             getProductsDisposable.onError(
                 throwable
             )
@@ -150,7 +146,7 @@ class ProductsViewModelTest {
     fun `should post value to show empty case if error getting products`() {
         val observer: Observer<Boolean> = mock()
 
-        `when`(getProductsUseCase.execute(getProductsDisposable, null)).thenAnswer {
+        `when`(getProductsUseCase.execute(any(), eq(null))).thenAnswer {
             getProductsDisposable.onError(
                 throwable
             )
@@ -166,7 +162,7 @@ class ProductsViewModelTest {
     fun `should post value to show error if error getting products`() {
         val observer: Observer<Void> = mock()
 
-        `when`(getProductsUseCase.execute(getProductsDisposable, null)).thenAnswer {
+        `when`(getProductsUseCase.execute(any(), eq(null))).thenAnswer {
             getProductsDisposable.onError(
                 throwable
             )
@@ -183,7 +179,7 @@ class ProductsViewModelTest {
         val observer: Observer<List<ProductPresentationModel>> = mock()
         val products = generateProductList(DEFAULT_LIST_SIZE)
 
-        `when`(getProductsUseCase.execute(getProductsDisposable, null)).thenAnswer {
+        `when`(getProductsUseCase.execute(any(), eq(null))).thenAnswer {
             getProductsDisposable.onSuccess(
                 products
             )
@@ -200,7 +196,7 @@ class ProductsViewModelTest {
         val observer: Observer<Int> = mock()
         val cart = generateCartWithProducts(DEFAULT_LIST_SIZE)
 
-        `when`(getCartUseCase.execute(getCartDisposable, null)).thenAnswer {
+        `when`(getCartUseCase.execute(any(), eq(null))).thenAnswer {
             getCartDisposable.onNext(
                 cart
             )
@@ -220,7 +216,7 @@ class ProductsViewModelTest {
 
         viewModel.products = products
 
-        `when`(addProductUseCase.execute(addProductDisposable, productToAdd)).thenAnswer {
+        `when`(addProductUseCase.execute(any(), eq(productToAdd))).thenAnswer {
             addProductDisposable.onError(Throwable())
         }
 

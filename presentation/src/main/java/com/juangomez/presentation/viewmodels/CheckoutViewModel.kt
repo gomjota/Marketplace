@@ -29,10 +29,10 @@ class CheckoutViewModel(
     val error = SingleLiveEvent<Void>()
     val checkoutProductsToShow = MediatorLiveData<List<CheckoutPresentationModel>>()
 
-    var createCheckoutDisposable = CreateCheckoutSubscriber()
-    var addProductDisposable = AddProductSubscriber()
-    var deleteProductDisposable = DeleteProductSubscriber()
-    var deleteCartDisposable = DeleteCartSubscriber()
+    lateinit var createCheckoutDisposable: CreateCheckoutSubscriber
+    lateinit var addProductDisposable: AddProductSubscriber
+    lateinit var deleteProductDisposable: DeleteProductSubscriber
+    lateinit var deleteCartDisposable: DeleteCartSubscriber
 
     lateinit var cart: Cart
 
@@ -41,11 +41,13 @@ class CheckoutViewModel(
     }
 
     private fun createCheckout() {
+        createCheckoutDisposable = CreateCheckoutSubscriber()
         createCheckoutUseCase.execute(createCheckoutDisposable)
         addDisposable(createCheckoutDisposable)
     }
 
     override fun onAddProductClicked(code: String) {
+        addProductDisposable = AddProductSubscriber()
         addProductUseCase.execute(
             addProductDisposable,
             cart.items.find { it.product.code == code }!!.product
@@ -54,6 +56,7 @@ class CheckoutViewModel(
     }
 
     override fun onDeleteProductClicked(code: String) {
+        deleteProductDisposable = DeleteProductSubscriber()
         deleteProductUseCase.execute(
             deleteProductDisposable,
             cart.items.find { it.product.code == code }!!.product
@@ -62,6 +65,7 @@ class CheckoutViewModel(
     }
 
     private fun deleteCart() {
+        deleteCartDisposable = DeleteCartSubscriber()
         deleteCartUseCase.execute(deleteCartDisposable)
         addDisposable(deleteCartDisposable)
     }
