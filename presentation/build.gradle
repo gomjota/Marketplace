@@ -16,6 +16,8 @@ android {
 
         buildConfigField "String", "BASE_URL", '"https://api.myjson.com"'
         buildConfigField "long", "DEFAULT_SPLASH_TIME", '3000L'
+        buildConfigField "String", "DEFAULT_CURRENCY", '"€"'
+        buildConfigField "String", "DEFAULT_PRICE_PATTERN", '"0.#"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -69,7 +71,8 @@ dependencies {
     )
 
     testImplementation(
-            junit.junit,
+            junit.junitX,
+            arch.test,
             robolectric.robolectric
     )
 

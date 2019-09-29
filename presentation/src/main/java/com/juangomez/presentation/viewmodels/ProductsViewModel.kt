@@ -29,30 +29,31 @@ open class ProductsViewModel(
     val checkoutOpen = SingleLiveEvent<Void>()
     val error = SingleLiveEvent<Void>()
 
-    private var products: List<Product> = emptyList()
+    var getProductsDisposable = GetProductsSubscriber()
+    var getCartDisposable = GetCartSubscriber()
+    var addProductDisposable = AddProductSubscriber()
+
+    var products: List<Product> = emptyList()
 
     fun prepare() {
         isLoading.postValue(true)
 
-        val getProductsDisposable = GetProductsSubscriber()
         getProductsUseCase.execute(getProductsDisposable)
         addDisposable(getProductsDisposable)
     }
 
     fun initCartSubscriber() {
-        val getCartDisposable = GetCartSubscriber()
         getCartUseCase.execute(getCartDisposable)
         addDisposable(getCartDisposable)
     }
 
     override fun onProductClicked(code: String) {
-        val addProductDisposable = AddProductSubscriber()
         addProductUseCase.execute(addProductDisposable, products.find { it.code == code }!!)
         addDisposable(addProductDisposable)
     }
 
     override fun onCheckoutClicked() {
-        checkoutOpen.postValue(null)
+        checkoutOpen.call()
     }
 
     inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
@@ -70,7 +71,7 @@ open class ProductsViewModel(
         override fun onError(exception: Throwable) {
             Timber.d("ERROR GETTING PRODUCTS")
             isLoading.postValue(false)
-            error.postValue(null)
+            error.call()
             isShowingEmptyCase.postValue(true)
         }
 
@@ -84,7 +85,7 @@ open class ProductsViewModel(
 
         override fun onError(e: Throwable) {
             Timber.d("ERROR ADDING PRODUCT")
-            error.postValue(null)
+            error.call()
         }
 
     }
@@ -102,7 +103,7 @@ open class ProductsViewModel(
 
         override fun onError(t: Throwable?) {
             Timber.d("ERROR GETTING CART")
-            error.postValue(null)
+            error.call()
         }
     }
 

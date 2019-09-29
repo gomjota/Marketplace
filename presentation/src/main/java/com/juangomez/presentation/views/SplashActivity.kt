@@ -18,6 +18,7 @@ class SplashActivity : BaseActivity<SplashActivityBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.nextView.observe(this, Observer { goToNextView(it) })
+        viewModel.prepare()
     }
 
     override fun configureBinding(binding: SplashActivityBinding) {

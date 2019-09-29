@@ -11,7 +11,7 @@ class SplashViewModel : BaseViewModel() {
 
     val nextView = SingleLiveEvent<SplashState>()
 
-    init {
+    fun prepare() {
         GlobalScope.launch {
             delay(BuildConfig.DEFAULT_SPLASH_TIME)
             nextView.postValue(SplashState.MainActivity)

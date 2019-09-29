@@ -1,6 +1,6 @@
 package com.juangomez.presentation.models
 
-import android.content.res.Resources
+import com.juangomez.presentation.BuildConfig
 import com.juangomez.presentation.R
 import java.text.DecimalFormat
 
@@ -12,7 +12,8 @@ class CheckoutPresentationModel(
     offer: String?
 ) {
     val price: String = price
-        get() = DecimalFormat("0.#").format(field.toFloat()) + "€"
+        get() = DecimalFormat(BuildConfig.DEFAULT_PRICE_PATTERN)
+            .format(field.toFloat()) + BuildConfig.DEFAULT_CURRENCY
 
     val quantity: String = quantity
         get() = "x${field}"

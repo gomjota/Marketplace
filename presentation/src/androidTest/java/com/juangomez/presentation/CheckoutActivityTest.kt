@@ -28,8 +28,10 @@ import com.juangomez.presentation.views.CheckoutActivity
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import junit.framework.Assert.assertTrue
 import org.hamcrest.Matchers.allOf
 import org.junit.*
 import org.junit.runner.RunWith
@@ -50,6 +52,12 @@ class CheckoutActivityTest {
 
         @MockK
         lateinit var cartRepository: CartRepository
+
+        @RelaxedMockK
+        lateinit var twoForOneOffer: TwoForOneOffer
+
+        @RelaxedMockK
+        lateinit var bulkOffer: BulkOffer
 
         @BeforeClass
         @JvmStatic
@@ -94,6 +102,16 @@ class CheckoutActivityTest {
 
     @Test
     @Throws(InterruptedException::class)
+    fun shouldFinishIfCartEmpty() {
+        givenCartEmpty()
+
+        startActivity()
+
+        assertTrue(activityTestRule.activity.isFinishing)
+    }
+
+    @Test
+    @Throws(InterruptedException::class)
     fun shouldShowCountOfProductsInCart() {
         val checkout = givenThereAreTheSameProductsInCartWithNoOffer(DEFAULT_PRODUCT_COUNT)
         val checkoutPresentation = checkout.toPresentationModel()
@@ -127,12 +145,12 @@ class CheckoutActivityTest {
         val productIndex = 0
         val productsAfterAddOne = DEFAULT_PRODUCT_COUNT + 1
 
+        startActivity()
+
         checkout.checkoutCart.items.add(checkout.checkoutCart.items.last())
         val checkoutPresentation = checkout.toPresentationModel()
 
         every { cartRepository.getCart() } answers { Flowable.just(checkout.checkoutCart) }
-
-        startActivity()
 
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -168,12 +186,12 @@ class CheckoutActivityTest {
         val productIndex = 0
         val productsAfterDeleteOne = DEFAULT_PRODUCT_COUNT - 1
 
+        startActivity()
+
         checkout.checkoutCart.items.removeAt(productIndex)
         val checkoutPresentation = checkout.toPresentationModel()
 
         every { cartRepository.getCart() } answers { Flowable.just(checkout.checkoutCart) }
-
-        startActivity()
 
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -212,6 +230,12 @@ class CheckoutActivityTest {
         activityTestRule.launchActivity(null)
     }
 
+    private fun givenCartEmpty(): Checkout {
+        val cart = Cart(mutableListOf())
+        every { cartRepository.getCart() } answers { Flowable.just(cart) }
+        return Checkout(cart, twoForOneOffer, bulkOffer)
+    }
+
     private fun givenThereAreTheSameProductsInCartWithNoOffer(amount: Int): Checkout {
         val defaultCode = "CODE"
         val defaultProduct = "PRODUCT"
@@ -227,6 +251,6 @@ class CheckoutActivityTest {
 
         val cart = Cart(cartItems)
         every { cartRepository.getCart() } answers { Flowable.just(cart) }
-        return Checkout(cart, TwoForOneOffer(), BulkOffer())
+        return Checkout(cart, twoForOneOffer, bulkOffer)
     }
 }
