@@ -32,7 +32,7 @@ class ProductRepositoryImplTest {
     @Test
     fun `should get products from remote`() {
         val products = listOf(
-            ProductEntity("VOUCHER", "Cabify Voucher", 5f)
+            ProductEntity("COPPER", "COPPER", 5f)
         )
 
         Mockito.`when`(mockRemoteProductSource.getProducts())

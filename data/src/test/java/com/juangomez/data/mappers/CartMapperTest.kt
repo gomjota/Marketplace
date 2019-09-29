@@ -14,7 +14,7 @@ class CartMapperTest {
 
     @Test
     fun `cartItem and productEntity should have the same attributes`() {
-        val product = Product("VOUCHER", "Cabify Voucher", 5f)
+        val product = Product("COPPER", "COPPER", 5f)
         val cartItem = CartItem(product = product)
         val productEntity = ProductEntity(product.code, product.name, product.price)
 
@@ -23,7 +23,7 @@ class CartMapperTest {
 
     @Test
     fun `productEntity and cartItem productEntity should have the same attributes`() {
-        val product = Product("VOUCHER", "Cabify Voucher", 5f)
+        val product = Product("COPPER", "COPPER", 5f)
         val cartItem = CartItem(product = product)
         val productEntity = ProductEntity(product.code, product.name, product.price)
 
@@ -32,7 +32,7 @@ class CartMapperTest {
 
     @Test
     fun `cart and cartEntity should have the same attributes`() {
-        val product = Product("VOUCHER", "Cabify Voucher", 5f)
+        val product = Product("COPPER", "COPPER", 5f)
         val cartItem = CartItem(product = product)
         val productEntity = ProductEntity(product.code, product.name, product.price)
         val cart = Cart(mutableListOf(cartItem))
@@ -43,7 +43,7 @@ class CartMapperTest {
 
     @Test
     fun `cartEntity and cart should have the same attributes`() {
-        val product = Product("VOUCHER", "Cabify Voucher", 5f)
+        val product = Product("COPPER", "COPPER", 5f)
         val cartItem = CartItem(product = product)
         val productEntity = ProductEntity(product.code, product.name, product.price)
         val cart = Cart(mutableListOf(cartItem))

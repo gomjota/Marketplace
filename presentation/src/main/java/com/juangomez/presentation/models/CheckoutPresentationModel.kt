@@ -19,9 +19,9 @@ class CheckoutPresentationModel(
         get() = "x${field}"
 
     val image: Int = (when (code) {
-        "VOUCHER" -> R.drawable.voucher
-        "TSHIRT" -> R.drawable.tshirt
-        "MUG" -> R.drawable.mug
+        "COPPER" -> R.drawable.copper
+        "COMMANDER2" -> R.drawable.commander
+        "PULSAR" -> R.drawable.pulsar
         else -> R.drawable.generic_code
     })
 

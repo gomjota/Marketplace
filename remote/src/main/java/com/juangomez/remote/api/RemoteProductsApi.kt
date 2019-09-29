@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface RemoteProductsApi {
 
-    @GET("bins/4bwec")
+    @GET("bins/mujjd")
     fun getProducts(): Single<GetProductsResponse>
 }

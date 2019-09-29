@@ -37,7 +37,7 @@
                     android:layout_marginEnd="16dp"
                     android:textAppearance="@style/HeadlineAppearance"
                     android:text="@{ checkout.name }"
-                    tools:text="Cabify T-Shirt"
+                    tools:text="T-Shirt"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/checkout_product_image"/>

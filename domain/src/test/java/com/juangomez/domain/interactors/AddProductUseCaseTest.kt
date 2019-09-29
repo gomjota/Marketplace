@@ -45,12 +45,12 @@ class AddProductUseCaseTest {
         val cart = Cart(
             mutableListOf(
                 CartItem(
-                    Product("VOUCHER", "Cabify Voucher", 5f)
+                    Product("COPPER", "COPPER", 5f)
                 )
             )
         )
 
-        val productToAdd = Product("VOUCHER", "Cabify Voucher", 5f)
+        val productToAdd = Product("COPPER", "COPPER", 5f)
 
         stubCartRepositoryGetCart(Flowable.just(cart))
         stubCartRepositorySetCart(cart, Completable.complete())

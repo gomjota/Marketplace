@@ -31,18 +31,18 @@ class ProductsRoomTest {
     fun shouldInsertTheSameAmountOfProducts() {
         val productsToSave = listOf(
             DatabaseProductEntity(
-                code = "VOUCHER",
-                name = "Cabify Voucher",
+                code = "COPPER",
+                name = "COPPER",
                 price = 5f
             ),
             DatabaseProductEntity(
-                code = "TSHIRT",
-                name = "Cabify T-Shirt",
+                code = "COMMANDER2",
+                name = "T-Shirt",
                 price = 10f
             ),
             DatabaseProductEntity(
-                code = "Mug",
-                name = "Cabify Mug",
+                code = "PULSAR",
+                name = "PULSAR",
                 price = 15f
             )
         )
@@ -61,18 +61,18 @@ class ProductsRoomTest {
     fun shouldDeleteAllProducts() {
         val productsToSave = listOf(
             DatabaseProductEntity(
-                code = "VOUCHER",
-                name = "Cabify Voucher",
+                code = "COPPER",
+                name = "COPPER",
                 price = 5f
             ),
             DatabaseProductEntity(
-                code = "TSHIRT",
-                name = "Cabify T-Shirt",
+                code = "COMMANDER2",
+                name = "T-Shirt",
                 price = 20f
             ),
             DatabaseProductEntity(
-                code = "MUG",
-                name = "Cabify Coffee Mug",
+                code = "PULSAR",
+                name = "Coffee PULSAR",
                 price = 7.5f
             )
         )

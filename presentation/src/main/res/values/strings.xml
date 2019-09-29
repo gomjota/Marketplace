@@ -9,6 +9,6 @@
     <string name="bulk_offer">Bulk offer!</string>
     <string name="empty">No offer</string>
     <string name="empty_case">¯\_(ツ)_/¯</string>
-    <string name="purchase_completed">Pago completado. Gracias :)</string>
+    <string name="purchase_completed">Payment done. Thanks :)</string>
     <string name="generic_error">Ups! Something wrong :(</string>
 </resources>

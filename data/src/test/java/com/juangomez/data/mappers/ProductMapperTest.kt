@@ -10,7 +10,7 @@ class ProductMapperTest {
 
     @Test
     fun `product and productEntity should have the same attributes`() {
-        val product = Product("VOUCHER", "Cabify Voucher", 5f)
+        val product = Product("COPPER", "COPPER", 5f)
         val productEntity = ProductEntity(product.code, product.name, product.price)
 
         assert(product.toEntity() == productEntity)
@@ -18,7 +18,7 @@ class ProductMapperTest {
 
     @Test
     fun `productEntity and product should have the same attributes`() {
-        val product = Product("VOUCHER", "Cabify Voucher", 5f)
+        val product = Product("COPPER", "COPPER", 5f)
         val productEntity = ProductEntity(product.code, product.name, product.price)
 
         assert(productEntity.toModel() == product)

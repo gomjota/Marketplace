@@ -9,16 +9,16 @@ class ProductMapperTest {
 
     @Test
     fun `should have the same attributes`() {
-        val remoteProductEntity = RemoteProductEntity("VOUCHER", "Cabify Voucher", 5f)
-        val productEntity = ProductEntity("VOUCHER", "Cabify Voucher", 5f)
+        val remoteProductEntity = RemoteProductEntity("COPPER", "COPPER", 5f)
+        val productEntity = ProductEntity("COPPER", "COPPER", 5f)
 
         assert(remoteProductEntity.toEntity() == productEntity)
     }
 
     @Test
     fun `should have different attributes`() {
-        val remoteProductEntity = RemoteProductEntity("VOUCHER", "Cabify Voucher", 5f)
-        val productEntity = ProductEntity("VOUCHERs", "Cabify Vouchers", 5f)
+        val remoteProductEntity = RemoteProductEntity("COPPER", "COPPER", 5f)
+        val productEntity = ProductEntity("COPPERs", "COPPERs", 5f)
 
         assert(remoteProductEntity.toEntity() != productEntity)
     }

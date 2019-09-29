@@ -55,8 +55,8 @@ class GetProductsUseCaseTest {
     @Test
     fun buildUseCaseReturnsData() {
         val products = listOf(
-            Product("VOUCHER", "Cabify Voucher", 5f),
-            Product("TSHIRT", "Cabify Tshirt", 20f)
+            Product("COPPER", "COPPER", 5f),
+            Product("COMMANDER2", "COMMANDER2", 20f)
         )
 
         stubProductsRepositoryGetProducts(Single.just(products))

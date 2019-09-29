@@ -53,7 +53,7 @@ class CreateCheckoutUseCaseTest {
         val cart = Cart(
             mutableListOf(
                 CartItem(
-                    Product("VOUCHER", "Cabify Voucher", 5f)
+                    Product("COPPER", "COPPER", 5f)
                 )
             )
         )

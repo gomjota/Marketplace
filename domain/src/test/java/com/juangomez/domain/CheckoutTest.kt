@@ -13,9 +13,9 @@ class CheckoutTest {
     @Test
     fun `should be the same cart with no offers`() {
         val products = mutableListOf(
-            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+            CartItem(Product("COPPER", "COPPER", 5f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
         )
 
         val cart = Cart(products)
@@ -32,11 +32,11 @@ class CheckoutTest {
     @Test
     fun `should be different carts with bulk offer`() {
         val products = mutableListOf(
-            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+            CartItem(Product("COPPER", "COPPER", 5f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
         )
 
         val cart = Cart(products)
@@ -54,10 +54,10 @@ class CheckoutTest {
     @Test
     fun `should be different carts with two for one offer`() {
         val products = mutableListOf(
-            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
-            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+            CartItem(Product("COPPER", "COPPER", 5f)),
+            CartItem(Product("COPPER", "COPPER", 5f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
         )
 
         val cart = Cart(products)
@@ -75,13 +75,13 @@ class CheckoutTest {
     @Test
     fun `should be different carts with both offers`() {
         val products = mutableListOf(
-            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
-            CartItem(Product("VOUCHER", "Cabify Voucher", 5f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("TSHIRT", "Cabify T-Shirt", 20f)),
-            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f)),
-            CartItem(Product("MUG", "Cabify Coffee Mug", 7.5f))
+            CartItem(Product("COPPER", "COPPER", 5f)),
+            CartItem(Product("COPPER", "COPPER", 5f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
+            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f)),
+            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
         )
 
         val cart = Cart(products)

@@ -7,7 +7,7 @@ class TwoForOneOffer : Offer() {
 
     private val OFFER_CODE = "TWO FOR ONE"
     private val EXPIRATION = LocalDate.parse("2020-01-01")
-    private val CODE = "VOUCHER"
+    private val CODE = "COPPER"
 
     override fun applyOffer(cart: Cart): Cart {
         if (LocalDate.now() > EXPIRATION) return cart

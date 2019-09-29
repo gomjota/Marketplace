@@ -43,12 +43,12 @@ class DeleteProductUseCaseTest {
         val cart = Cart(
             mutableListOf(
                 CartItem(
-                    Product("VOUCHER", "Cabify Voucher", 5f)
+                    Product("COPPER", "COPPER", 5f)
                 )
             )
         )
 
-        val productToDelete = Product("VOUCHER", "Cabify Voucher", 5f)
+        val productToDelete = Product("COPPER", "COPPER", 5f)
 
         stubCartRepositoryGetCart(cart)
         stubCartRepositoryDeleteCart(Completable.complete())

@@ -31,7 +31,7 @@ class CartRepositoryImplTest {
 
     @Test
     fun `should get cart and have the same quantity of items`() {
-        val cartEntity = CartEntity(listOf(ProductEntity("VOUCHER", "Cabify Voucher", 5f)))
+        val cartEntity = CartEntity(listOf(ProductEntity("COPPER", "COPPER", 5f)))
 
         stubDatabaseCartSourceGetCart(Flowable.just(cartEntity))
 
@@ -48,8 +48,8 @@ class CartRepositoryImplTest {
 
     @Test
     fun `should insert cart`() {
-        val cartEntity = CartEntity(listOf(ProductEntity("VOUCHER", "Cabify Voucher", 5f)))
-        val cartItem = CartItem(product = Product("VOUCHER", "Cabify Voucher", 5f))
+        val cartEntity = CartEntity(listOf(ProductEntity("COPPER", "COPPER", 5f)))
+        val cartItem = CartItem(product = Product("COPPER", "COPPER", 5f))
         val cart = Cart(mutableListOf(cartItem))
         stubDatabaseCartSourceInsertCart(cartEntity, Completable.complete())
 

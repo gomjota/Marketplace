@@ -32,17 +32,17 @@ class GetRemoteProductsTest {
             MockResponse()
                 .setResponseCode(200)
                 .setBody(
-                    "{\"products\":[{\"code\":\"VOUCHER\",\"name\":\"Cabify Voucher\"," +
-                            "\"price\":5},{\"code\":\"TSHIRT\",\"name\":\"Cabify T-Shirt\"," +
-                            "\"price\":20},{\"code\":\"MUG\",\"name\":\"Cabify Coffee Mug\"," +
+                    "{\"products\":[{\"code\":\"COPPER\",\"name\":\"COPPER\"," +
+                            "\"price\":5},{\"code\":\"COMMANDER2\",\"name\":\"T-Shirt\"," +
+                            "\"price\":20},{\"code\":\"PULSAR\",\"name\":\"Coffee PULSAR\"," +
                             "\"price\":7.5}]}"
                 )
         )
 
         val productsExpected = listOf(
-            ProductEntity("VOUCHER", "Cabify Voucher", 5f),
-            ProductEntity("TSHIRT", "Cabify T-Shirt", 20f),
-            ProductEntity("MUG", "Cabify Coffee Mug", 7.5f)
+            ProductEntity("COPPER", "COPPER", 5f),
+            ProductEntity("COMMANDER2", "T-Shirt", 20f),
+            ProductEntity("PULSAR", "Coffee PULSAR", 7.5f)
         )
 
         remoteProductsSource.getProducts()
