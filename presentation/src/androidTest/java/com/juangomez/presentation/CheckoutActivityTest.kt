@@ -23,15 +23,15 @@ import com.juangomez.presentation.models.CheckoutPresentationModel
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
 import com.juangomez.presentation.recyclerview.viewaction.ChildViewAction
 import com.juangomez.presentation.rule.DataBindingIdlingResourceRule
-import com.juangomez.presentation.rule.RxSchedulerRule
 import com.juangomez.presentation.views.CheckoutActivity
 import io.mockk.MockKAnnotations
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import io.mockk.just
 import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
 import org.junit.*
 import org.junit.runner.RunWith
@@ -95,9 +95,6 @@ class CheckoutActivityTest {
     val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
 
     @get:Rule
-    val rxSchedulerRule = RxSchedulerRule()
-
-    @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
 
     @Test
@@ -150,7 +147,7 @@ class CheckoutActivityTest {
         checkout.checkoutCart.items.add(checkout.checkoutCart.items.last())
         val checkoutPresentation = checkout.toPresentationModel()
 
-        every { cartRepository.getCart() } answers { Flowable.just(checkout.checkoutCart) }
+        every { runBlocking { cartRepository.getCart() } } returns checkout.checkoutCart
 
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -191,7 +188,7 @@ class CheckoutActivityTest {
         checkout.checkoutCart.items.removeAt(productIndex)
         val checkoutPresentation = checkout.toPresentationModel()
 
-        every { cartRepository.getCart() } answers { Flowable.just(checkout.checkoutCart) }
+        every { runBlocking { cartRepository.getCart() } } returns checkout.checkoutCart
 
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -221,9 +218,9 @@ class CheckoutActivityTest {
     }
 
     private fun setupDefaultCartRepositoryMock() {
-        every { cartRepository.getCart() } answers { Flowable.just(Cart(mutableListOf())) }
-        every { cartRepository.setCart(any()) } answers { Completable.complete() }
-        every { cartRepository.deleteCart() } answers { Completable.complete() }
+        every { runBlocking { cartRepository.getCart() } } returns Cart(mutableListOf())
+        every { runBlocking { cartRepository.setCart(any()) } } just Runs
+        every { runBlocking { cartRepository.deleteCart() } } just Runs
     }
 
     private fun startActivity() {
@@ -232,7 +229,7 @@ class CheckoutActivityTest {
 
     private fun givenCartEmpty(): Checkout {
         val cart = Cart(mutableListOf())
-        every { cartRepository.getCart() } answers { Flowable.just(cart) }
+        every { runBlocking { cartRepository.getCart() } } returns cart
         return Checkout(cart, twoForOneOffer, bulkOffer)
     }
 
@@ -250,7 +247,7 @@ class CheckoutActivityTest {
         }.map { CartItem(it) }.toMutableList()
 
         val cart = Cart(cartItems)
-        every { cartRepository.getCart() } answers { Flowable.just(cart) }
+        every { runBlocking { cartRepository.getCart() } } returns cart
         return Checkout(cart, twoForOneOffer, bulkOffer)
     }
 }

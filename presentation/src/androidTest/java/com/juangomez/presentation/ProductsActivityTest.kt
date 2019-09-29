@@ -25,15 +25,14 @@ import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.recyclerview.RecyclerViewInteraction
 import com.juangomez.presentation.recyclerview.matcher.RecyclerViewItemsCountMatcher.Companion.recyclerViewHasItemCount
 import com.juangomez.presentation.rule.DataBindingIdlingResourceRule
-import com.juangomez.presentation.rule.RxSchedulerRule
-import com.juangomez.presentation.util.minDelay
 import com.juangomez.presentation.views.ProductsActivity
 import io.mockk.MockKAnnotations
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.mockk.just
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.not
 import org.junit.*
 import org.junit.runner.RunWith
@@ -48,7 +47,7 @@ class ProductsActivityTest {
     companion object {
 
         private const val DEFAULT_LIST_SIZE = 10
-        private const val DEFAULT_MILLISECONDS_TO_LOAD_PRODUCTS_DELAY = 2000L
+        private const val DEFAULT_DELAY = 10000L
 
         @MockK
         lateinit var productRepository: ProductRepository
@@ -91,9 +90,6 @@ class ProductsActivityTest {
 
     @get:Rule
     val dataBindingIdlingResourceRule = DataBindingIdlingResourceRule(activityTestRule)
-
-    @get:Rule
-    val rxSchedulerRule = RxSchedulerRule()
 
     @get:Rule
     val taskExecutorRule = InstantTaskExecutorRule()
@@ -152,16 +148,6 @@ class ProductsActivityTest {
 
     @Test
     @Throws(InterruptedException::class)
-    fun shouldShowLoadingIfProductsAreLoading() {
-        givenThereAreNoProducts(DEFAULT_MILLISECONDS_TO_LOAD_PRODUCTS_DELAY)
-
-        startActivity()
-
-        onView(withId(R.id.progress_bar)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    @Throws(InterruptedException::class)
     fun shouldShowTheExactNumberOfProducts() {
         givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
 
@@ -179,7 +165,7 @@ class ProductsActivityTest {
         val productIndex = 0
         val cart = Cart(mutableListOf(CartItem(products[productIndex])))
 
-        every { cartRepository.getCart() } answers { Flowable.just(cart) }
+        every { runBlocking { cartRepository.getCart() } } returns cart
 
         startActivity()
 
@@ -201,11 +187,10 @@ class ProductsActivityTest {
     @Test
     @Throws(InterruptedException::class)
     fun shouldShowCountOfItemsAddedToCart() {
-        val products = givenThereAreDifferentProducts(DEFAULT_LIST_SIZE)
         val productIndex = 0
-        val cart = Cart(mutableListOf(CartItem(products[productIndex])))
+        val cart = Cart(mutableListOf())
 
-        every { cartRepository.getCart() } answers { Flowable.just(cart) }
+        every { runBlocking { cartRepository.getCart() } } returns cart
 
         startActivity()
 
@@ -233,19 +218,21 @@ class ProductsActivityTest {
     }
 
     private fun setupDefaultCartRepositoryMock() {
-        every { cartRepository.getCart() } answers { Flowable.just(Cart(mutableListOf())) }
-        every { cartRepository.setCart(any()) } answers { Completable.complete() }
-        every { cartRepository.deleteCart() } answers { Completable.complete() }
+        every { runBlocking { cartRepository.getCart() } } returns Cart(mutableListOf())
+        every { runBlocking { cartRepository.setCart(any()) } } just Runs
+        every { runBlocking { cartRepository.deleteCart() } } just Runs
     }
 
     private fun startActivity() {
         activityTestRule.launchActivity(null)
     }
 
-    private fun givenThereAreNoProducts(delay: Long = 0) {
-        every { productRepository.getProducts() } returns Single.just(emptyList<Product>()).minDelay(
-            delay
-        )
+    private fun givenThereAreNoProducts(delayInMilliseconds: Long = 0) {
+        every {
+            runBlocking {
+                productRepository.getProducts()
+            }
+        } returns emptyList()
     }
 
     private fun givenThereAreDifferentProducts(amount: Int): List<Product> {
@@ -261,7 +248,7 @@ class ProductsActivityTest {
             )
         }
 
-        every { productRepository.getProducts() } returns Single.just(products)
+        every { runBlocking { productRepository.getProducts() } } returns products
 
         return products
     }
