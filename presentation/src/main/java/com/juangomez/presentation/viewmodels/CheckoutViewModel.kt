@@ -29,20 +29,23 @@ class CheckoutViewModel(
     val error = SingleLiveEvent<Void>()
     val checkoutProductsToShow = MediatorLiveData<List<CheckoutPresentationModel>>()
 
-    private lateinit var cart: Cart
+    var createCheckoutDisposable = CreateCheckoutSubscriber()
+    var addProductDisposable = AddProductSubscriber()
+    var deleteProductDisposable = DeleteProductSubscriber()
+    var deleteCartDisposable = DeleteCartSubscriber()
+
+    lateinit var cart: Cart
 
     fun prepare() {
         createCheckout()
     }
 
     private fun createCheckout() {
-        val createCheckoutDisposable = CreateCheckoutSubscriber()
         createCheckoutUseCase.execute(createCheckoutDisposable)
         addDisposable(createCheckoutDisposable)
     }
 
     override fun onAddProductClicked(code: String) {
-        val addProductDisposable = AddProductSubscriber()
         addProductUseCase.execute(
             addProductDisposable,
             cart.items.find { it.product.code == code }!!.product
@@ -51,7 +54,6 @@ class CheckoutViewModel(
     }
 
     override fun onDeleteProductClicked(code: String) {
-        val deleteProductDisposable = DeleteProductSubscriber()
         deleteProductUseCase.execute(
             deleteProductDisposable,
             cart.items.find { it.product.code == code }!!.product
@@ -60,7 +62,6 @@ class CheckoutViewModel(
     }
 
     private fun deleteCart() {
-        val deleteCartDisposable = DeleteCartSubscriber()
         deleteCartUseCase.execute(deleteCartDisposable)
         addDisposable(deleteCartDisposable)
     }
@@ -78,10 +79,12 @@ class CheckoutViewModel(
         override fun onNext(t: Checkout?) {
             Logger.createCheckoutNext()
             cart = t!!.checkoutCart
-            checkoutProductsToShow.postValue(t.toPresentationModel())
-            if (t.checkoutCart.items.isEmpty()) cartEmpty.call() else checkoutPrice.postValue(
-                t.checkoutCart.totalPrice
-            )
+            if (t.checkoutCart.items.isEmpty()) {
+                cartEmpty.call()
+            } else {
+                checkoutProductsToShow.postValue(t.toPresentationModel())
+                checkoutPrice.postValue(t.checkoutCart.totalPrice)
+            }
         }
 
         override fun onError(e: Throwable) {
