@@ -5,12 +5,13 @@
 
     <data>
 
-        <import type="android.view.View"/>
-        <import type="com.juangomez.presentation.viewmodels.CheckoutViewModel"/>
+        <import type="android.view.View" />
+
+        <import type="com.juangomez.presentation.viewmodels.CheckoutViewModel" />
 
         <variable
                 name="listener"
-                type="com.juangomez.presentation.viewmodels.CheckoutListener"/>
+                type="com.juangomez.presentation.viewmodels.CheckoutListener" />
 
     </data>
 
@@ -27,34 +28,35 @@
                 android:paddingBottom="90dp"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/checkout_row"
-                tools:showIn="@layout/checkout_activity"/>
+                tools:showIn="@layout/checkout_activity" />
 
         <View
                 android:id="@+id/checkout_view"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:background="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
                 android:id="@+id/pay_text"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:clickable="true"
                 android:gravity="center"
+                android:onClick="@{ () -> listener.onPayClicked() }"
+                android:textAppearance="@style/BodyAppearance"
+                android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@id/checkout_view"
                 app:layout_constraintEnd_toEndOf="@id/checkout_view"
                 app:layout_constraintStart_toStartOf="@id/checkout_view"
-                android:textColor="@android:color/white"
-                android:textAppearance="@style/BodyAppearance"
-                android:onClick="@{ () -> listener.onPayClicked() }"
-                android:clickable="true"
-                app:layout_constraintTop_toTopOf="@id/checkout_view"/>
+                app:layout_constraintTop_toTopOf="@id/checkout_view" />
 
         <androidx.constraintlayout.widget.Group
                 android:id="@+id/cart_group"
                 android:layout_width="wrap_content"
-                app:constraint_referenced_ids="checkout_view, pay_text"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="checkout_view, pay_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

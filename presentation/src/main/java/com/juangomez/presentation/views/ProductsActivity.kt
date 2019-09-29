@@ -42,7 +42,7 @@ class ProductsActivity : BaseActivity<ProductsActivityBinding>() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.initCartSubscriber()
+        viewModel.getCart()
     }
 
     private fun onProductsStateChange(state: ProductsViewModel.ProductsState?) {

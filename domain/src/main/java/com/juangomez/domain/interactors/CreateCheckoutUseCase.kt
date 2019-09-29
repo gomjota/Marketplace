@@ -1,32 +1,30 @@
 package com.juangomez.domain.interactors
 
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
-import com.juangomez.domain.interactors.base.FlowableUseCase
-import com.juangomez.domain.interactors.base.SingleUseCase
-import com.juangomez.domain.models.cart.Cart
+import com.juangomez.domain.interactors.base.BaseUseCase
+import com.juangomez.domain.interactors.base.BaseUseCase.None
+import com.juangomez.domain.models.base.Either
+import com.juangomez.domain.models.base.Failure
 import com.juangomez.domain.models.checkout.Checkout
 import com.juangomez.domain.models.offer.BulkOffer
 import com.juangomez.domain.models.offer.TwoForOneOffer
-import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.CartRepository
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
 
-open class CreateCheckoutUseCase constructor(
-    val cartRepository: CartRepository,
-    val twoForOneOffer: TwoForOneOffer,
-    val bulkOffer: BulkOffer,
-    threadExecutor: ThreadExecutor,
-    postExecutionThread: PostExecutionThread
-) :
-    FlowableUseCase<Checkout, Void>(threadExecutor, postExecutionThread) {
+class CreateCheckoutUseCase(
+    private val cartRepository: CartRepository,
+    private val twoForOneOffer: TwoForOneOffer,
+    private val bulkOffer: BulkOffer
+) : BaseUseCase<Checkout, None?>() {
 
-    public override fun buildUseCaseFlowable(params: Void?): Flowable<Checkout> {
-        return cartRepository.getCart()
-            .flatMap {
-                Flowable.just(Checkout(it, twoForOneOffer, bulkOffer))
+    override suspend fun run(params: None?): Either<Failure, Checkout> {
+        return try {
+            val cart = cartRepository.getCart()
+            val checkout = Checkout(cart, twoForOneOffer, bulkOffer)
+
+            Either.Right(checkout)
+        } catch (exp: Exception) {
+            Either.Left(AddProductFailure(exp))
         }
     }
+
+    data class AddProductFailure(val error: Exception) : Failure.FeatureFailure(error)
 }

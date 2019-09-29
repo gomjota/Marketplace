@@ -1,10 +1,13 @@
 package com.juangomez.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.juangomez.domain.interactors.AddProductUseCase
 import com.juangomez.domain.interactors.CreateCheckoutUseCase
 import com.juangomez.domain.interactors.DeleteCartUseCase
 import com.juangomez.domain.interactors.DeleteProductUseCase
+import com.juangomez.domain.interactors.base.BaseUseCase
+import com.juangomez.domain.models.base.Failure
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.checkout.Checkout
 import com.juangomez.presentation.logger.Logger
@@ -31,11 +34,6 @@ class CheckoutViewModel(
 
     val state = MutableLiveData<CheckoutState>()
 
-    lateinit var createCheckoutDisposable: CreateCheckoutSubscriber
-    lateinit var addProductDisposable: AddProductSubscriber
-    lateinit var deleteProductDisposable: DeleteProductSubscriber
-    lateinit var deleteCartDisposable: DeleteCartSubscriber
-
     lateinit var cart: Cart
 
     fun prepare() {
@@ -43,99 +41,55 @@ class CheckoutViewModel(
     }
 
     private fun createCheckout() {
-        createCheckoutDisposable = CreateCheckoutSubscriber()
-        createCheckoutUseCase.execute(createCheckoutDisposable)
-        addDisposable(createCheckoutDisposable)
+        createCheckoutUseCase.invoke(viewModelScope) { it.either(::handleError, ::handleCreateCheckoutSuccess) }
     }
 
     override fun onAddProductClicked(code: String) {
-        addProductDisposable = AddProductSubscriber()
-        addProductUseCase.execute(
-            addProductDisposable,
-            cart.items.find { it.product.code == code }!!.product
-        )
-        addDisposable(addProductDisposable)
+        val productToAdd = cart.items.find { it.product.code == code }!!.product
+        addProductUseCase.invoke(viewModelScope, AddProductUseCase.Params(productToAdd)) { it.either(::handleError, ::handleAddProductToCartSuccess) }
     }
 
     override fun onDeleteProductClicked(code: String) {
-        deleteProductDisposable = DeleteProductSubscriber()
-        deleteProductUseCase.execute(
-            deleteProductDisposable,
-            cart.items.find { it.product.code == code }!!.product
-        )
-        addDisposable(deleteProductDisposable)
+        val productToDelete = cart.items.find { it.product.code == code }!!.product
+        deleteProductUseCase.invoke(viewModelScope, DeleteProductUseCase.Params(productToDelete)) { it.either(::handleError, ::handleDeleteProductFromCartSuccess) }
     }
 
     private fun deleteCart() {
-        deleteCartDisposable = DeleteCartSubscriber()
-        deleteCartUseCase.execute(deleteCartDisposable)
-        addDisposable(deleteCartDisposable)
+        deleteCartUseCase.invoke(viewModelScope) { it.either(::handleError, ::handleDeleteCartSuccess) }
     }
 
     override fun onPayClicked() {
         deleteCart()
     }
 
-    inner class CreateCheckoutSubscriber : DisposableSubscriber<Checkout>() {
+    private fun handleCreateCheckoutSuccess(checkout: Checkout) {
+        Logger.createCheckoutCompleted()
+        cart = checkout.checkoutCart
 
-        override fun onComplete() {
-            Logger.createCheckoutCompleted()
-        }
-
-        override fun onNext(t: Checkout?) {
-            Logger.createCheckoutNext()
-            cart = t!!.checkoutCart
-
-            when {
-                t.checkoutCart.items.isEmpty() -> state.value = CheckoutState.Empty
-                t.checkoutCart.items.isNotEmpty() -> state.value =
-                    CheckoutState.Cart(t.toPresentationModel(), t.checkoutCart.totalPrice)
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Logger.createCheckoutError()
-            state.value = CheckoutState.Error
-        }
-
-    }
-
-    inner class AddProductSubscriber : DisposableCompletableObserver() {
-
-        override fun onComplete() {
-            Logger.addProductCompleted()
-        }
-
-        override fun onError(e: Throwable) {
-            Logger.addProductError()
-            state.value = CheckoutState.Error
-        }
-
-    }
-
-    inner class DeleteProductSubscriber : DisposableCompletableObserver() {
-
-        override fun onComplete() {
-            Logger.deleteProductCompleted()
-        }
-
-        override fun onError(e: Throwable) {
-            Logger.deleteProductError()
-            state.value = CheckoutState.Error
+        when {
+            checkout.checkoutCart.items.isEmpty() -> state.value = CheckoutState.Empty
+            checkout.checkoutCart.items.isNotEmpty() -> state.value =
+                CheckoutState.Cart(checkout.toPresentationModel(), checkout.checkoutCart.totalPrice)
         }
     }
 
-    inner class DeleteCartSubscriber : DisposableCompletableObserver() {
+    private fun handleAddProductToCartSuccess(emptyResponse: BaseUseCase.None) {
+        Logger.addProductCompleted()
+        createCheckout()
+    }
 
-        override fun onComplete() {
-            Logger.deleteCartCompleted()
-            state.value = CheckoutState.Complete
-        }
+    private fun handleDeleteProductFromCartSuccess(emptyResponse: BaseUseCase.None) {
+        Logger.deleteProductCompleted()
+        createCheckout()
+    }
 
-        override fun onError(e: Throwable) {
-            Logger.deleteCartError()
-            state.value = CheckoutState.Error
-        }
+    private fun handleDeleteCartSuccess(emptyResponse: BaseUseCase.None) {
+        Logger.deleteCartError()
+    }
+
+    private fun handleError(failure: Failure) {
+        Logger.createCheckoutError()
+        state.value = CheckoutState.Error
     }
 }
 

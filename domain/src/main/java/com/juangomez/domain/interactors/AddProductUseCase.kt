@@ -1,31 +1,28 @@
 package com.juangomez.domain.interactors
 
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
+import com.juangomez.domain.interactors.base.BaseUseCase
+import com.juangomez.domain.interactors.base.BaseUseCase.None
+import com.juangomez.domain.models.base.Either
+import com.juangomez.domain.models.base.Failure
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.CartRepository
-import com.juangomez.domain.interactors.base.CompletableUseCase
-import com.juangomez.domain.mappers.toCartItemModel
-import com.juangomez.domain.models.cart.Cart
-import com.juangomez.domain.models.cart.CartItem
-import io.reactivex.Completable
 
-open class AddProductUseCase constructor(
-    val cartRepository: CartRepository,
-    threadExecutor: ThreadExecutor,
-    postExecutionThread: PostExecutionThread
-) :
-    CompletableUseCase<Void, Product?>(threadExecutor, postExecutionThread) {
+class AddProductUseCase(
+    private val cartRepository: CartRepository
+) : BaseUseCase<None, AddProductUseCase.Params>() {
 
-    public override fun buildUseCaseCompletable(params: Product?): Completable {
-        return cartRepository.getCart()
-            .take(1)
-            .map {
-                it.addProduct(params!!)
-            }
-            .flatMapCompletable {
-                cartRepository.setCart(it)
-            }
+    override suspend fun run(params: Params?): Either<Failure, None> {
+        return try {
+            val cartWithProductAdded = cartRepository.getCart().addProduct(params!!.product)
+            cartRepository.setCart(cartWithProductAdded)
+
+            Either.Right(None())
+        } catch (exp: Exception) {
+            Either.Left(AddProductFailure(exp))
+        }
     }
 
+    data class Params(val product: Product)
+
+    data class AddProductFailure(val error: Exception) : Failure.FeatureFailure(error)
 }

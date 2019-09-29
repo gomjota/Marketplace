@@ -2,21 +2,19 @@ package com.juangomez.persistence.dao
 
 import androidx.room.*
 import com.juangomez.persistence.entities.DatabaseCartEntity
-import io.reactivex.Completable
-import io.reactivex.Flowable
 
 @Dao
 interface CartDao {
 
     @Query("SELECT * FROM cart")
-    fun getCart(): Flowable<List<DatabaseCartEntity>>
+    suspend fun getCart(): List<DatabaseCartEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCart(cart: DatabaseCartEntity): Completable
+    suspend fun insertCart(cart: DatabaseCartEntity)
 
     @Update
-    fun updateCart(cart: DatabaseCartEntity): Completable
+    suspend fun updateCart(cart: DatabaseCartEntity)
 
     @Query("DELETE FROM cart")
-    fun deleteCart(): Completable
+    suspend fun deleteCart()
 }

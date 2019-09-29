@@ -49,6 +49,7 @@ dependencies {
             support.cardview,
             support.lifecycleRuntime,
             support.lifecycleExtensions,
+            support.lifecycleViewModel,
             retrofit.runtime,
             koin.viewModel,
             koin.core,

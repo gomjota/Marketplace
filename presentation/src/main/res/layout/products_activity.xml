@@ -5,12 +5,13 @@
 
     <data>
 
-        <import type="android.view.View"/>
-        <import type="com.juangomez.presentation.viewmodels.ProductsViewModel"/>
+        <import type="android.view.View" />
+
+        <import type="com.juangomez.presentation.viewmodels.ProductsViewModel" />
 
         <variable
                 name="listener"
-                type="com.juangomez.presentation.viewmodels.ProductsListener"/>
+                type="com.juangomez.presentation.viewmodels.ProductsListener" />
 
     </data>
 
@@ -26,12 +27,12 @@
                 android:clipToPadding="false"
                 android:paddingBottom="90dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="0dp"
                 tools:listitem="@layout/product_row"
-                tools:showIn="@layout/products_activity" >
+                tools:showIn="@layout/products_activity">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -40,12 +41,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/empty_case"
                 android:textColor="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible" />
 
         <androidx.core.widget.ContentLoadingProgressBar
@@ -56,34 +57,35 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
         <View
                 android:id="@+id/cart_view"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:background="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
                 android:id="@+id/cart_text"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:clickable="true"
                 android:gravity="center"
+                android:onClick="@{ () -> listener.onCheckoutClicked() }"
+                android:textAppearance="@style/BodyAppearance"
+                android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@id/cart_view"
                 app:layout_constraintEnd_toEndOf="@id/cart_view"
                 app:layout_constraintStart_toStartOf="@id/cart_view"
-                android:textColor="@android:color/white"
-                android:textAppearance="@style/BodyAppearance"
-                android:onClick="@{ () -> listener.onCheckoutClicked() }"
-                android:clickable="true"
-                app:layout_constraintTop_toTopOf="@id/cart_view"/>
+                app:layout_constraintTop_toTopOf="@id/cart_view" />
 
         <androidx.constraintlayout.widget.Group
                 android:id="@+id/cart_group"
                 android:layout_width="wrap_content"
-                app:constraint_referenced_ids="cart_view, cart_text"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="cart_view, cart_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

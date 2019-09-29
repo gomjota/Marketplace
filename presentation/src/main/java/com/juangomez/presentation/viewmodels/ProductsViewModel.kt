@@ -1,18 +1,18 @@
 package com.juangomez.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.juangomez.domain.interactors.AddProductUseCase
 import com.juangomez.domain.interactors.GetCartUseCase
 import com.juangomez.domain.interactors.GetProductsUseCase
+import com.juangomez.domain.interactors.base.BaseUseCase
+import com.juangomez.domain.models.base.Failure
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.product.Product
 import com.juangomez.presentation.logger.Logger
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
-import io.reactivex.observers.DisposableCompletableObserver
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.subscribers.DisposableSubscriber
 
 open class ProductsViewModel(
     private val getProductsUseCase: GetProductsUseCase,
@@ -33,84 +33,58 @@ open class ProductsViewModel(
         this.value = ProductsState.Loading
     }
 
-    lateinit var getProductsDisposable: GetProductsSubscriber
-    lateinit var getCartDisposable: GetCartSubscriber
-    lateinit var addProductDisposable: AddProductSubscriber
-
     var products: List<Product> = emptyList()
 
     fun prepare() {
-        getProductsDisposable = GetProductsSubscriber()
-        getProductsUseCase.execute(getProductsDisposable)
-        addDisposable(getProductsDisposable)
+        getProductsUseCase.invoke(viewModelScope) {
+            it.either(
+                ::handleError,
+                ::handleGetProductsSuccess
+            )
+        }
     }
 
-    fun initCartSubscriber() {
-        getCartDisposable = GetCartSubscriber()
-        getCartUseCase.execute(getCartDisposable)
-        addDisposable(getCartDisposable)
+    fun getCart() {
+        getCartUseCase.invoke(viewModelScope) { it.either(::handleError, ::handleGetCartSuccess) }
     }
 
     override fun onProductClicked(code: String) {
-        addProductDisposable = AddProductSubscriber()
-        addProductUseCase.execute(addProductDisposable, products.find { it.code == code }!!)
-        addDisposable(addProductDisposable)
+        val productToAdd = products.find { it.code == code }!!
+        addProductUseCase.invoke(
+            viewModelScope,
+            AddProductUseCase.Params(productToAdd)
+        ) { it.either(::handleError, ::handleAddProductSuccess) }
+    }
+
+    private fun handleGetProductsSuccess(products: List<Product>) {
+        Logger.getProductsCompleted()
+        this.products = products
+
+        when {
+            products.isEmpty() -> state.value = ProductsState.Empty
+            products.isNotEmpty() -> state.value =
+                ProductsState.Products(products.toPresentationModel())
+        }
+    }
+
+    private fun handleGetCartSuccess(cart: Cart) {
+        Logger.getCartCompleted()
+        state.value = ProductsState.Cart(cart.items.size)
+    }
+
+    private fun handleAddProductSuccess(none: BaseUseCase.None) {
+        Logger.addProductCompleted()
+        getCart()
+    }
+
+    private fun handleError(failure: Failure) {
+        Logger.createCheckoutError()
+        state.value = ProductsState.Error
     }
 
     override fun onCheckoutClicked() {
         state.value = ProductsState.Checkout
     }
-
-    inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
-
-        override fun onSuccess(t: List<Product>) {
-            Logger.getProductsCompleted()
-            products = t
-
-            when {
-                products.isEmpty() -> state.value = ProductsState.Empty
-                products.isNotEmpty() -> state.value =
-                    ProductsState.Products(products.toPresentationModel())
-            }
-        }
-
-        override fun onError(exception: Throwable) {
-            Logger.getProductsError()
-            state.value = ProductsState.Error
-        }
-
-    }
-
-    inner class AddProductSubscriber : DisposableCompletableObserver() {
-
-        override fun onComplete() {
-            Logger.addProductCompleted()
-        }
-
-        override fun onError(e: Throwable) {
-            Logger.addProductError()
-            state.value = ProductsState.Error
-        }
-
-    }
-
-    inner class GetCartSubscriber : DisposableSubscriber<Cart>() {
-
-        override fun onComplete() {
-            Logger.getCartCompleted()
-        }
-
-        override fun onNext(t: Cart) {
-            Logger.getCartNext()
-            state.value = ProductsState.Cart(t.items.size)
-        }
-
-        override fun onError(t: Throwable?) {
-            Logger.getCartError()
-            state.value = ProductsState.Error
-        }
-    }
-
 }
 
 interface ProductsListener {

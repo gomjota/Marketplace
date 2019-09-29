@@ -1,11 +1,9 @@
 package com.juangomez.presentation.views
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.Observer
 import com.juangomez.presentation.R
 import com.juangomez.presentation.databinding.SplashActivityBinding
-import com.juangomez.presentation.viewmodels.SplashState
 import com.juangomez.presentation.viewmodels.SplashViewModel
 import com.juangomez.presentation.views.base.BaseActivity
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -25,9 +23,9 @@ class SplashActivity : BaseActivity<SplashActivityBinding>() {
         binding.viewModel = viewModel
     }
 
-    private fun goToNextView(splashState: SplashState) {
+    private fun goToNextView(splashState: SplashViewModel.SplashState) {
         when(splashState) {
-            is SplashState.MainActivity -> { ProductsActivity.open(this) }
+            is SplashViewModel.SplashState.MainActivity -> { ProductsActivity.open(this) }
         }
     }
 }

@@ -1,20 +1,24 @@
 package com.juangomez.domain.interactors
 
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
+import com.juangomez.domain.interactors.base.BaseUseCase
+import com.juangomez.domain.interactors.base.BaseUseCase.None
+import com.juangomez.domain.models.base.Either
+import com.juangomez.domain.models.base.Failure
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.repositories.CartRepository
-import com.juangomez.domain.interactors.base.FlowableUseCase
-import io.reactivex.Flowable
 
-open class GetCartUseCase constructor(
-    val cartRepository: CartRepository,
-    threadExecutor: ThreadExecutor,
-    postExecutionThread: PostExecutionThread
-) :
-    FlowableUseCase<Cart, Void?>(threadExecutor, postExecutionThread) {
+class GetCartUseCase(
+    private val cartRepository: CartRepository
+) : BaseUseCase<Cart, None>() {
 
-    public override fun buildUseCaseFlowable(params: Void?): Flowable<Cart> {
-        return cartRepository.getCart()
+    override suspend fun run(params: None?): Either<Failure, Cart> {
+        return try {
+            val cart = cartRepository.getCart()
+            Either.Right(cart)
+        } catch (exp: Exception) {
+            Either.Left(GetCartFailure(exp))
+        }
     }
+
+    data class GetCartFailure(val error: Exception) : Failure.FeatureFailure(error)
 }

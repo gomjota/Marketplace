@@ -27,10 +27,9 @@ android {
 dependencies {
     implementation(
             kotlin.stdlib,
-            rx.rxKotlin,
             room.runtime,
             room.ktx,
-            room.rxjava,
+            coroutines.core,
             gson.gson
     )
 

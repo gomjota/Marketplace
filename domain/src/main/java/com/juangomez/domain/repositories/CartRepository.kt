@@ -1,14 +1,12 @@
 package com.juangomez.domain.repositories
 
 import com.juangomez.domain.models.cart.Cart
-import io.reactivex.Completable
-import io.reactivex.Flowable
 
 interface CartRepository {
 
-    fun getCart(): Flowable<Cart>
+    suspend fun getCart(): Cart
 
-    fun setCart(cart: Cart): Completable
+    suspend fun setCart(cart: Cart)
 
-    fun deleteCart(): Completable
+    suspend fun deleteCart()
 }

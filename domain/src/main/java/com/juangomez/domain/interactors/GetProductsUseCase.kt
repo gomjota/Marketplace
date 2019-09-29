@@ -1,23 +1,24 @@
 package com.juangomez.domain.interactors
 
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
+import com.juangomez.domain.interactors.base.BaseUseCase
+import com.juangomez.domain.interactors.base.BaseUseCase.None
+import com.juangomez.domain.models.base.Either
+import com.juangomez.domain.models.base.Failure
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.ProductRepository
-import com.juangomez.domain.interactors.base.FlowableUseCase
-import com.juangomez.domain.interactors.base.SingleUseCase
-import io.reactivex.Flowable
-import io.reactivex.Single
 
-open class GetProductsUseCase constructor(
-    private val productRepository: ProductRepository,
-    threadExecutor: ThreadExecutor,
-    postExecutionThread: PostExecutionThread
-) :
-    SingleUseCase<List<Product>, Void?>(threadExecutor, postExecutionThread) {
+class GetProductsUseCase(
+    private val productRepository: ProductRepository
+) : BaseUseCase<List<Product>, None>() {
 
-    public override fun buildUseCaseSingle(params: Void?): Single<List<Product>> {
-        return productRepository.getProducts()
+    override suspend fun run(params: None?): Either<Failure, List<Product>> {
+        return try {
+            val products = productRepository.getProducts()
+            Either.Right(products)
+        } catch (exp: Exception) {
+            Either.Left(GetProductsFailure(exp))
+        }
     }
 
+    data class GetProductsFailure(val error: Exception) : Failure.FeatureFailure(error)
 }

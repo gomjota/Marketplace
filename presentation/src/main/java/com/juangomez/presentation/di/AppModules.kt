@@ -1,15 +1,12 @@
 package com.juangomez.presentation.di
 
 import androidx.room.Room
-import com.juangomez.data.executor.JobExecutor
 import com.juangomez.data.repositories.CartRepositoryImpl
 import com.juangomez.data.repositories.ProductRepositoryImpl
 import com.juangomez.data.sources.persistence.DatabaseCartSource
 import com.juangomez.data.sources.remote.RemoteProductsSource
 import com.juangomez.persistence.MarketplaceDatabase
 import com.juangomez.persistence.sources.DatabaseCartSourceImpl
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
 import com.juangomez.domain.interactors.*
 import com.juangomez.domain.models.offer.BulkOffer
 import com.juangomez.domain.models.offer.TwoForOneOffer
@@ -17,7 +14,6 @@ import com.juangomez.domain.repositories.CartRepository
 import com.juangomez.domain.repositories.ProductRepository
 import com.juangomez.presentation.BuildConfig.BASE_URL
 import com.juangomez.presentation.BuildConfig.DEBUG
-import com.juangomez.presentation.common.UiThread
 import com.juangomez.presentation.viewmodels.CheckoutViewModel
 import com.juangomez.presentation.viewmodels.ProductsViewModel
 import com.juangomez.presentation.viewmodels.SplashViewModel
@@ -67,17 +63,9 @@ val dataModules = module {
     single {
         ProductRepositoryImpl(get()) as ProductRepository
     }
-
-    single {
-        JobExecutor() as ThreadExecutor
-    }
 }
 
 val domainModules = module {
-    single {
-        UiThread() as PostExecutionThread
-    }
-
     single {
         TwoForOneOffer()
     }
@@ -87,13 +75,11 @@ val domainModules = module {
     }
 
     factory {
-        AddProductUseCase(get(), get(), get())
+        AddProductUseCase(get())
     }
 
     factory {
         CreateCheckoutUseCase(
-            get(),
-            get(),
             get(),
             get(),
             get()
@@ -101,19 +87,19 @@ val domainModules = module {
     }
 
     factory {
-        DeleteProductUseCase(get(), get(), get())
+        DeleteProductUseCase(get())
     }
 
     factory {
-        GetCartUseCase(get(), get(), get())
+        GetCartUseCase(get())
     }
 
     factory {
-        DeleteCartUseCase(get(), get(), get())
+        DeleteCartUseCase(get())
     }
 
     factory {
-        GetProductsUseCase(get(), get(), get())
+        GetProductsUseCase(get())
     }
 }
 

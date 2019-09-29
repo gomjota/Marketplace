@@ -5,22 +5,20 @@ import com.juangomez.data.mappers.toModel
 import com.juangomez.data.sources.persistence.DatabaseCartSource
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.repositories.CartRepository
-import io.reactivex.Completable
-import io.reactivex.Flowable
 
 class CartRepositoryImpl constructor(
     private val database: DatabaseCartSource
 ) : CartRepository {
 
-    override fun getCart(): Flowable<Cart> {
-        return database.getCart().map { it.toModel() }
+    override suspend fun getCart(): Cart {
+        return database.getCart().toModel()
     }
 
-    override fun setCart(cart: Cart): Completable {
+    override suspend fun setCart(cart: Cart) {
         return database.insertCart(cart.toEntity())
     }
 
-    override fun deleteCart(): Completable {
+    override suspend fun deleteCart() {
         return database.deleteCart()
     }
 }

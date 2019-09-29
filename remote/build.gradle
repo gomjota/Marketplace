@@ -4,10 +4,7 @@ apply plugin: 'kotlin-kapt'
 dependencies {
     implementation(
             kotlin.stdlib,
-            rx.rxKotlin,
-            rx.rxAndroid,
-            rx.rxJava2,
-            retrofit.rx,
+            retrofit.runtime,
             retrofit.gson,
             okhttp.interceptor
     )

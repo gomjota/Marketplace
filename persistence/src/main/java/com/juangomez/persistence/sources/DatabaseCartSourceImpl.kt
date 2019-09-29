@@ -6,26 +6,22 @@ import com.juangomez.persistence.MarketplaceDatabase
 import com.juangomez.persistence.dao.CartDao
 import com.juangomez.persistence.mappers.toDatabaseEntity
 import com.juangomez.persistence.mappers.toEntity
-import io.reactivex.Completable
-import io.reactivex.Flowable
 
 class DatabaseCartSourceImpl(private val database: MarketplaceDatabase) : DatabaseCartSource {
 
     private val cartDao: CartDao = database.cartDao()
 
-    override fun getCart(): Flowable<CartEntity> {
-        return cartDao.getCart().map {
-            if (it.isEmpty()) CartEntity(emptyList())
-            else it.last().toEntity()
-        }
+    override suspend fun getCart(): CartEntity {
+        val cart = cartDao.getCart()
+        return if (cart.isEmpty()) CartEntity(emptyList()) else cart.last().toEntity()
     }
 
-    override fun insertCart(cart: CartEntity): Completable {
-        return cartDao.insertCart(cart.toDatabaseEntity())
+    override suspend fun insertCart(cart: CartEntity) {
+        cartDao.insertCart(cart.toDatabaseEntity())
     }
 
-    override fun deleteCart(): Completable {
-        return cartDao.deleteCart()
+    override suspend fun deleteCart() {
+        cartDao.deleteCart()
     }
 
 }
