@@ -9,12 +9,12 @@ import com.juangomez.domain.interactors.DeleteProductUseCase
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.checkout.Checkout
 import com.juangomez.presentation.common.SingleLiveEvent
+import com.juangomez.presentation.logger.Logger
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.subscribers.DisposableSubscriber
-import timber.log.Timber
 
 class CheckoutViewModel(
     private val addProductUseCase: AddProductUseCase,
@@ -72,21 +72,21 @@ class CheckoutViewModel(
     inner class CreateCheckoutSubscriber : DisposableSubscriber<Checkout>() {
 
         override fun onComplete() {
-            Timber.d("CREATE CHECKOUT COMPLETED")
+            Logger.createCheckoutCompleted()
         }
 
         override fun onNext(t: Checkout?) {
-            Timber.d("CREATE CHECKOUT NEXT")
+            Logger.createCheckoutNext()
             cart = t!!.checkoutCart
             checkoutProductsToShow.postValue(t.toPresentationModel())
-            if (t.checkoutCart.items.isEmpty()) cartEmpty.postValue(null) else checkoutPrice.postValue(
+            if (t.checkoutCart.items.isEmpty()) cartEmpty.call() else checkoutPrice.postValue(
                 t.checkoutCart.totalPrice
             )
         }
 
         override fun onError(e: Throwable) {
-            Timber.d("ERROR CREATING CHECKOUT")
-            error.postValue(null)
+            Logger.createCheckoutError()
+            error.call()
         }
 
     }
@@ -94,12 +94,12 @@ class CheckoutViewModel(
     inner class AddProductSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Timber.d("ADD PRODUCT COMPLETED")
+            Logger.addProductCompleted()
         }
 
         override fun onError(e: Throwable) {
-            Timber.d("ERROR ADDING PRODUCT")
-            error.postValue(null)
+            Logger.addProductError()
+            error.call()
         }
 
     }
@@ -107,25 +107,25 @@ class CheckoutViewModel(
     inner class DeleteProductSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Timber.d("DELETE PRODUCT COMPLETED")
+            Logger.deleteProductCompleted()
         }
 
         override fun onError(e: Throwable) {
-            Timber.d("ERROR DELETING PRODUCT")
-            error.postValue(null)
+            Logger.deleteProductError()
+            error.call()
         }
     }
 
     inner class DeleteCartSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Timber.d("DELETE CART COMPLETED")
-            paymentDone.postValue(null)
+            Logger.deleteCartCompleted()
+            paymentDone.call()
         }
 
         override fun onError(e: Throwable) {
-            Timber.d("ERROR DELETING CART")
-            error.postValue(null)
+            Logger.deleteCartError()
+            error.call()
         }
     }
 }

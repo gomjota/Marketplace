@@ -8,6 +8,7 @@ import com.juangomez.domain.interactors.GetProductsUseCase
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.product.Product
 import com.juangomez.presentation.common.SingleLiveEvent
+import com.juangomez.presentation.logger.Logger
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.ProductPresentationModel
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
@@ -58,7 +59,7 @@ open class ProductsViewModel(
 
     inner class GetProductsSubscriber : DisposableSingleObserver<List<Product>>() {
         override fun onSuccess(t: List<Product>) {
-            Timber.d("GET PRODUCTS SUCCESS")
+            Logger.getProductsCompleted()
             isLoading.postValue(false)
             products = t
             if (products.isNotEmpty()) {
@@ -69,7 +70,7 @@ open class ProductsViewModel(
         }
 
         override fun onError(exception: Throwable) {
-            Timber.d("ERROR GETTING PRODUCTS")
+            Logger.getProductsError()
             isLoading.postValue(false)
             error.call()
             isShowingEmptyCase.postValue(true)
@@ -80,11 +81,11 @@ open class ProductsViewModel(
     inner class AddProductSubscriber : DisposableCompletableObserver() {
 
         override fun onComplete() {
-            Timber.d("ADD PRODUCT COMPLETED")
+            Logger.addProductCompleted()
         }
 
         override fun onError(e: Throwable) {
-            Timber.d("ERROR ADDING PRODUCT")
+            Logger.addProductError()
             error.call()
         }
 
@@ -93,16 +94,16 @@ open class ProductsViewModel(
     inner class GetCartSubscriber : DisposableSubscriber<Cart>() {
 
         override fun onComplete() {
-            Timber.d("GET CART COMPLETED")
+            Logger.getCartCompleted()
         }
 
         override fun onNext(t: Cart) {
-            Timber.d("GET CART NEXT")
+            Logger.getCartNext()
             productsInCart.postValue(t.items.size)
         }
 
         override fun onError(t: Throwable?) {
-            Timber.d("ERROR GETTING CART")
+            Logger.getCartError()
             error.call()
         }
     }
