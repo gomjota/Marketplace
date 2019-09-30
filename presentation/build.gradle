@@ -38,8 +38,6 @@ android {
 dependencies {
     implementation(
             kotlin.stdlib,
-            rx.rxKotlin,
-            rx.rxAndroid,
             coroutines.core,
             coroutines.android,
             timber.timber,

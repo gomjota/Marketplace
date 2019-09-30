@@ -4,8 +4,7 @@ import com.juangomez.data.entities.ProductEntity
 import com.juangomez.data.sources.remote.RemoteProductsSource
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.ProductRepository
-import io.reactivex.Completable
-import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,13 +34,11 @@ class ProductRepositoryImplTest {
             ProductEntity("COPPER", "COPPER", 5f)
         )
 
-        Mockito.`when`(mockRemoteProductSource.getProducts())
-            .thenReturn(Single.just(products))
-
-        productRepository.getProducts()
-            .test()
-            .assertComplete()
-
-        Mockito.verify(mockRemoteProductSource, Mockito.times(1)).getProducts()
+        runBlocking {
+            Mockito.`when`(mockRemoteProductSource.getProducts())
+                .thenReturn(products)
+            productRepository.getProducts()
+            Mockito.verify(mockRemoteProductSource, Mockito.times(1)).getProducts()
+        }
     }
 }

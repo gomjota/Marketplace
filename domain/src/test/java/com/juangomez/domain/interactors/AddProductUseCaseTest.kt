@@ -1,42 +1,35 @@
 package com.juangomez.domain.interactors
 
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.cart.CartItem
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.CartRepository
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class AddProductUseCaseTest {
 
     private lateinit var addProductUseCase: AddProductUseCase
-
-    @Mock
-    private lateinit var mockThreadExecutor: ThreadExecutor
-
-    @Mock
-    private lateinit var mockPostExecutionThread: PostExecutionThread
+    private lateinit var scope: CoroutineScope
 
     @Mock
     private lateinit var mockCartRepository: CartRepository
 
     @Before
     fun setUp() {
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         addProductUseCase = AddProductUseCase(
-            mockCartRepository,
-            mockThreadExecutor,
-            mockPostExecutionThread
+            mockCartRepository
         )
     }
 
@@ -52,28 +45,25 @@ class AddProductUseCaseTest {
 
         val productToAdd = Product("COPPER", "COPPER", 5f)
 
-        stubCartRepositoryGetCart(Flowable.just(cart))
-        stubCartRepositorySetCart(cart, Completable.complete())
-        addProductUseCase.buildUseCaseCompletable(productToAdd)
-            .test()
-            .assertNoErrors()
-            .assertComplete()
+        runBlocking {
+            stubCartRepositoryGetCart(cart)
+            stubCartRepositorySetCart(cart)
+            addProductUseCase.invoke(scope, AddProductUseCase.Params(productToAdd))
 
-        verifyNumberOfInvocations(cart)
-
+            verifyNumberOfInvocations(cart)
+        }
     }
 
-    private fun stubCartRepositoryGetCart(single: Flowable<Cart>) {
-        Mockito.`when`(mockCartRepository.getCart())
-            .thenReturn(single)
+    private suspend fun stubCartRepositoryGetCart(cart: Cart) {
+        `when`(mockCartRepository.getCart())
+            .thenReturn(cart)
     }
 
-    private fun stubCartRepositorySetCart(cart: Cart, completable: Completable) {
-        Mockito.`when`(mockCartRepository.setCart(cart))
-            .thenReturn(completable)
+    private suspend fun stubCartRepositorySetCart(cart: Cart) {
+        doNothing().`when`(mockCartRepository.setCart(cart))
     }
 
-    private fun verifyNumberOfInvocations(cart: Cart) {
+    private suspend fun verifyNumberOfInvocations(cart: Cart) {
         verify(mockCartRepository, times(1)).getCart()
         verify(mockCartRepository, times(1)).setCart(cart)
     }

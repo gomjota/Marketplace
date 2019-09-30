@@ -1,13 +1,13 @@
 package com.juangomez.domain.interactors
 
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.cart.CartItem
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.CartRepository
-import io.reactivex.Completable
-import io.reactivex.Flowable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,22 +19,16 @@ import org.mockito.junit.MockitoJUnitRunner
 class DeleteProductUseCaseTest {
 
     private lateinit var deleteProductUseCase: DeleteProductUseCase
-
-    @Mock
-    private lateinit var mockThreadExecutor: ThreadExecutor
-
-    @Mock
-    private lateinit var mockPostExecutionThread: PostExecutionThread
+    private lateinit var scope: CoroutineScope
 
     @Mock
     private lateinit var mockCartRepository: CartRepository
 
     @Before
     fun setUp() {
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         deleteProductUseCase = DeleteProductUseCase(
-            mockCartRepository,
-            mockThreadExecutor,
-            mockPostExecutionThread
+            mockCartRepository
         )
     }
 
@@ -50,27 +44,26 @@ class DeleteProductUseCaseTest {
 
         val productToDelete = Product("COPPER", "COPPER", 5f)
 
-        stubCartRepositoryGetCart(cart)
-        stubCartRepositoryDeleteCart(Completable.complete())
-        deleteProductUseCase.buildUseCaseCompletable(productToDelete)
-            .test()
-            .assertNoErrors()
-            .assertComplete()
+        runBlocking {
+            stubCartRepositoryGetCart(cart)
+            stubCartRepositoryDeleteCart()
+            deleteProductUseCase.invoke(scope, DeleteProductUseCase.Params(productToDelete))
 
-        verifyNumberOfInvocations()
+            verifyNumberOfInvocations()
+        }
+
     }
 
-    private fun stubCartRepositoryGetCart(cart: Cart) {
+    private suspend fun stubCartRepositoryGetCart(cart: Cart) {
         Mockito.`when`(mockCartRepository.getCart())
-            .thenReturn(Flowable.just(cart))
+            .thenReturn(cart)
     }
 
-    private fun stubCartRepositoryDeleteCart(completable: Completable) {
-        Mockito.`when`(mockCartRepository.deleteCart())
-            .thenReturn(completable)
+    private suspend fun stubCartRepositoryDeleteCart() {
+        Mockito.doNothing().`when`(mockCartRepository.deleteCart())
     }
 
-    private fun verifyNumberOfInvocations() {
+    private suspend fun verifyNumberOfInvocations() {
         Mockito.verify(mockCartRepository, Mockito.times(1)).getCart()
         Mockito.verify(mockCartRepository, Mockito.times(1)).deleteCart()
     }

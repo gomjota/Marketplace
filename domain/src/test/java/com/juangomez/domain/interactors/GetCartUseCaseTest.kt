@@ -1,12 +1,13 @@
 package com.juangomez.domain.interactors
 
-import com.juangomez.domain.executor.PostExecutionThread
-import com.juangomez.domain.executor.ThreadExecutor
 import com.juangomez.domain.models.cart.Cart
 import com.juangomez.domain.models.cart.CartItem
 import com.juangomez.domain.models.product.Product
 import com.juangomez.domain.repositories.CartRepository
-import io.reactivex.Flowable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,60 +19,30 @@ import org.mockito.junit.MockitoJUnitRunner
 class GetCartUseCaseTest {
 
     private lateinit var getCartUseCase: GetCartUseCase
-
-    @Mock
-    private lateinit var mockThreadExecutor: ThreadExecutor
-
-    @Mock
-    private lateinit var mockPostExecutionThread: PostExecutionThread
+    private lateinit var scope: CoroutineScope
 
     @Mock
     private lateinit var mockCartRepository: CartRepository
 
     @Before
     fun setUp() {
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         getCartUseCase = GetCartUseCase(
-            mockCartRepository,
-            mockThreadExecutor,
-            mockPostExecutionThread
+            mockCartRepository
         )
     }
 
     @Test
     fun buildUseCaseCallsRepository() {
-        getCartUseCase.buildUseCaseFlowable(null)
-        verify(mockCartRepository).getCart()
+        runBlocking {
+            getCartUseCase.invoke(scope)
+            verify(mockCartRepository).getCart()
+        }
     }
 
-    @Test
-    fun buildUseCaseCompletes() {
-        val cart = Cart(mutableListOf())
-
-        stubCartRepositoryGetCart(Flowable.just(cart))
-        getCartUseCase.buildUseCaseFlowable(null)
-            .test()
-            .assertComplete()
-    }
-
-    @Test
-    fun buildUseCaseReturnsData() {
-        val cart = Cart(
-            mutableListOf(
-                CartItem(
-                    Product("COPPER", "COPPER", 5f)
-                )
-            )
-        )
-
-        stubCartRepositoryGetCart(Flowable.just(cart))
-        getCartUseCase.buildUseCaseFlowable(null)
-            .test()
-            .assertValue(cart)
-    }
-
-    private fun stubCartRepositoryGetCart(single: Flowable<Cart>) {
+    private suspend fun stubCartRepositoryGetCart(cart: Cart) {
         `when`(mockCartRepository.getCart())
-            .thenReturn(single)
+            .thenReturn(cart)
     }
 
 }

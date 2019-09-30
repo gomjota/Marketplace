@@ -14,8 +14,6 @@ import com.juangomez.presentation.logger.Logger
 import com.juangomez.presentation.mappers.toPresentationModel
 import com.juangomez.presentation.models.CheckoutPresentationModel
 import com.juangomez.presentation.viewmodels.base.BaseViewModel
-import io.reactivex.observers.DisposableCompletableObserver
-import io.reactivex.subscribers.DisposableSubscriber
 
 class CheckoutViewModel(
     private val addProductUseCase: AddProductUseCase,

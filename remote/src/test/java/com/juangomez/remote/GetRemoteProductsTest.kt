@@ -3,8 +3,9 @@ package com.juangomez.remote
 import com.juangomez.data.entities.ProductEntity
 import com.juangomez.data.sources.remote.RemoteProductsSource
 import com.juangomez.remote.api.RemoteProductsApi
-import com.juangomez.remote.sources.RemoteProductsSourceImpl
 import com.juangomez.remote.services.createNetworkClient
+import com.juangomez.remote.sources.RemoteProductsSourceImpl
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -45,24 +46,23 @@ class GetRemoteProductsTest {
             ProductEntity("PULSAR", "Coffee PULSAR", 7.5f)
         )
 
-        remoteProductsSource.getProducts()
-            .test()
-            .assertNoErrors()
-            .assertValue { it == productsExpected }
-            .assertComplete()
+        runBlocking {
+            val remoteProducts = remoteProductsSource.getProducts()
+            assert(remoteProducts == productsExpected)
+        }
+
     }
 
-
-    @Test
+    @Test(expected = HttpException::class)
     fun `should get a server error`() {
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(500)
         )
 
-        remoteProductsSource.getProducts()
-            .test()
-            .assertError { (it as? HttpException)?.code() == 500 }
+        runBlocking {
+            remoteProductsSource.getProducts()
+        }
     }
 
     @After

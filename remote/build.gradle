@@ -12,7 +12,8 @@ dependencies {
     testImplementation(
             junit.junit,
             okhttp.mockWebServer,
-            mockito.core
+            mockito.core,
+            coroutines.test
     )
 
     implementation project(":data")
