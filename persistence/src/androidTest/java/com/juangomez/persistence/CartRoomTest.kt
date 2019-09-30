@@ -45,7 +45,7 @@ class CartRoomTest {
             ),
             DatabaseProductEntity(
                 code = "COMMANDER2",
-                name = "T-Shirt",
+                name = "COMMANDER",
                 price = 10f
             ),
             DatabaseProductEntity(

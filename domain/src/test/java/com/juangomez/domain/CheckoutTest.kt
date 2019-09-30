@@ -14,8 +14,8 @@ class CheckoutTest {
     fun `should be the same cart with no offers`() {
         val products = mutableListOf(
             CartItem(Product("COPPER", "COPPER", 5f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
+            CartItem(Product("COMMANDER2", "COMMANDER", 20f)),
+            CartItem(Product("PULSAR", "PULSAR", 7.5f))
         )
 
         val cart = Cart(products)
@@ -33,10 +33,10 @@ class CheckoutTest {
     fun `should be different carts with bulk offer`() {
         val products = mutableListOf(
             CartItem(Product("COPPER", "COPPER", 5f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
+            CartItem(Product("COMMANDER2", "COMMANDER", 1200f)),
+            CartItem(Product("COMMANDER2", "COMMANDER", 1200f)),
+            CartItem(Product("COMMANDER2", "COMMANDER", 1200f)),
+            CartItem(Product("PULSAR", "PULSAR", 7.5f))
         )
 
         val cart = Cart(products)
@@ -47,8 +47,8 @@ class CheckoutTest {
         val checkout = Checkout(cart, twoForOneOffer, bulkOffer)
         val finalCart = checkout.checkoutCart
 
-        assert(cart.totalPrice == 72.5f)
-        assert(finalCart.totalPrice == 69.5f)
+        assert(cart.totalPrice == 3612.5f)
+        assert(finalCart.totalPrice == 3012.5f)
     }
 
     @Test
@@ -56,8 +56,8 @@ class CheckoutTest {
         val products = mutableListOf(
             CartItem(Product("COPPER", "COPPER", 5f)),
             CartItem(Product("COPPER", "COPPER", 5f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
+            CartItem(Product("COMMANDER2", "COMMANDER", 20f)),
+            CartItem(Product("PULSAR", "PULSAR", 7.5f))
         )
 
         val cart = Cart(products)
@@ -77,11 +77,11 @@ class CheckoutTest {
         val products = mutableListOf(
             CartItem(Product("COPPER", "COPPER", 5f)),
             CartItem(Product("COPPER", "COPPER", 5f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("COMMANDER2", "T-Shirt", 20f)),
-            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f)),
-            CartItem(Product("PULSAR", "Coffee PULSAR", 7.5f))
+            CartItem(Product("COMMANDER2", "COMMANDER", 1200f)),
+            CartItem(Product("COMMANDER2", "COMMANDER", 1200f)),
+            CartItem(Product("COMMANDER2", "COMMANDER", 1200f)),
+            CartItem(Product("PULSAR", "PULSAR", 7.5f)),
+            CartItem(Product("PULSAR", "PULSAR", 7.5f))
         )
 
         val cart = Cart(products)
@@ -92,7 +92,7 @@ class CheckoutTest {
         val checkout = Checkout(cart, twoForOneOffer, bulkOffer)
         val finalCart = checkout.checkoutCart
 
-        assert(cart.totalPrice == 85f)
-        assert(finalCart.totalPrice == 77f)
+        assert(cart.totalPrice == 3625f)
+        assert(finalCart.totalPrice == 3020f)
     }
 }

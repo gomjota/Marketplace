@@ -33,16 +33,16 @@ class GetRemoteProductsTest {
                 .setResponseCode(200)
                 .setBody(
                     "{\"products\":[{\"code\":\"COPPER\",\"name\":\"COPPER\"," +
-                            "\"price\":5},{\"code\":\"COMMANDER2\",\"name\":\"T-Shirt\"," +
-                            "\"price\":20},{\"code\":\"PULSAR\",\"name\":\"Coffee PULSAR\"," +
+                            "\"price\":5},{\"code\":\"COMMANDER2\",\"name\":\"COMMANDER\"," +
+                            "\"price\":20},{\"code\":\"PULSAR\",\"name\":\"PULSAR\"," +
                             "\"price\":7.5}]}"
                 )
         )
 
         val productsExpected = listOf(
             ProductEntity("COPPER", "COPPER", 5f),
-            ProductEntity("COMMANDER2", "T-Shirt", 20f),
-            ProductEntity("PULSAR", "Coffee PULSAR", 7.5f)
+            ProductEntity("COMMANDER2", "COMMANDER", 20f),
+            ProductEntity("PULSAR", "PULSAR", 7.5f)
         )
 
         remoteProductsSource.getProducts()

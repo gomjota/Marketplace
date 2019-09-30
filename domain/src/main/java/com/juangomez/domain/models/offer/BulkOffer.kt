@@ -8,7 +8,7 @@ class BulkOffer : Offer() {
     private val OFFER_CODE = "BULK"
     private val EXPIRATION = LocalDate.parse("2020-01-01")
     private val PRODUCT_CODE = "COMMANDER2"
-    private val PRICE_PER_UNIT = 19f
+    private val PRICE_PER_UNIT = 1000f
 
     override fun applyOffer(cart: Cart): Cart {
         if (LocalDate.now() > EXPIRATION) return cart

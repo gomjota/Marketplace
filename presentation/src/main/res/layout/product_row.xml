@@ -47,7 +47,7 @@
                     android:layout_marginEnd="15dp"
                     android:lineSpacingExtra="8dp"
                     android:text="@{ product.name }"
-                    tools:text="T-Shirt"
+                    tools:text="COMMANDER"
                     app:layout_constraintTop_toBottomOf="@+id/product_image"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/product_price"

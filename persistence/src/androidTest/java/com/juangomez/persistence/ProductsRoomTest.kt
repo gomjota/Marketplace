@@ -37,7 +37,7 @@ class ProductsRoomTest {
             ),
             DatabaseProductEntity(
                 code = "COMMANDER2",
-                name = "T-Shirt",
+                name = "COMMANDER",
                 price = 10f
             ),
             DatabaseProductEntity(
@@ -67,12 +67,12 @@ class ProductsRoomTest {
             ),
             DatabaseProductEntity(
                 code = "COMMANDER2",
-                name = "T-Shirt",
+                name = "COMMANDER",
                 price = 20f
             ),
             DatabaseProductEntity(
                 code = "PULSAR",
-                name = "Coffee PULSAR",
+                name = "PULSAR",
                 price = 7.5f
             )
         )
