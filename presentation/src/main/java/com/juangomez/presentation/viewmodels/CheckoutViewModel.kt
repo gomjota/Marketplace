@@ -84,6 +84,7 @@ class CheckoutViewModel(
     }
 
     private fun handleDeleteCartSuccess(emptyResponse: BaseUseCase.None) {
+        state.value = CheckoutState.Complete
         Logger.deleteCartError()
     }
 
