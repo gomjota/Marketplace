@@ -74,6 +74,7 @@ dependencies {
     testImplementation(
             junit.junitX,
             arch.test,
+            coroutines.test,
             robolectric.robolectric
     )
 

@@ -34,9 +34,10 @@ open class ProductsViewModel(
     }
 
     var products: List<Product> = emptyList()
+    var scope = viewModelScope
 
     fun prepare() {
-        getProductsUseCase.invoke(viewModelScope) {
+        getProductsUseCase.invoke(scope) {
             it.either(
                 ::handleError,
                 ::handleGetProductsSuccess
@@ -56,8 +57,8 @@ open class ProductsViewModel(
         ) { it.either(::handleError, ::handleAddProductSuccess) }
     }
 
-    private fun handleGetProductsSuccess(products: List<Product>) {
-        Logger.getProductsCompleted()
+    fun handleGetProductsSuccess(products: List<Product>) {
+        //Logger.getProductsCompleted()
         this.products = products
 
         when {
